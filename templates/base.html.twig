@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Welcome!{% endblock %}</title>
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('images/mathieu.png') }}">
+{#    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('images/mathieu.png') }}">#}
 
     {% block stylesheets %}
 
         <link rel="stylesheet" href="{{ asset('librairies/font-awesome-7-0-1/css/all.min.css') }}">
-        
+
     {% endblock %}
 
     {% block javascripts %}
@@ -37,8 +37,8 @@
                     <div class="col-xl-3 col-auto">
                         <div class="header-logo">
                             <a href="{{ path('app_main') }}">
-                                <img src="{{ asset('images/logo_eluv.png') }}"
-                                     alt="Logo LaPirFormation">
+{#                                <img src="{{ asset('images/logo_eluv.png') }}"#}
+{#                                     alt="Logo Algorythme Formation">#}
                             </a>
                         </div>
                     </div>
@@ -135,9 +135,9 @@
                         <h4 class="footer-widget-title">Nous contacter</h4>
                         <div class="footer-widget-content">
                             <div class="content">
-                                <p>3 rue Jean Treffel - 24430 Annesse et Beaulieu</p>
+                                <p>422 avenue de verdun - 33700 Mérignac</p>
                                 <p>Téléphone : +33 6 62 67 15 55</p>
-                                <p>Email : contact@lapir.fr</p>
+                                <p>Email : contact@algorythme-formation.fr</p>
                             </div>
                         </div>
                     </div>
@@ -148,7 +148,7 @@
                 <div class="col-md-4 col-sm-7 col-12 max-mb-50">
                     <img src="{{ asset('images/logo-qualiopi.png') }}" alt="logo qualiopi" class="w-50">
                     <p class="mt-3">
-                        LaPir Formation est un organisme de formation créé en 2022 dont le catalogue comprend plusieurs
+                        Algorythme Formation est un organisme de formation créé en 2022 dont le catalogue comprend plusieurs
                         dizaine de formations dans le domaine de l'informatique.
                     </p>
                     <p>
@@ -165,9 +165,8 @@
                         <h4 class="footer-widget-title">Informations</h4>
                         <div class="footer-widget-content">
                             <ul>
-                                <li><a href="#">Mentions légales</a></li>
-                                <li><a href="#">Vos données personnelles</a></li>
-                                <li><a href="#">Plan du site</a></li>
+                                <li><a href="{{ path('app_mentions_legales') }}">Mentions légales</a></li>
+                                <li><a href="{{ path('app_donnees_personnelles') }}">Vos données personnelles</a></li>
                             </ul>
                         </div>
                     </div>
@@ -180,7 +179,7 @@
             <!-- Footer Copyright Start -->
             <div class="row max-mt-20">
                 <div class="col">
-                    <p class="copyright">&copy; {{ 'now'|date('Y') }} LaPir Formation.
+                    <p class="copyright">&copy; {{ 'now'|date('Y') }} Algorythme Formation.
                     </p>
                 </div>
             </div>

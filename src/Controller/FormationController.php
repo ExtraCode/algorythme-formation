@@ -25,7 +25,7 @@ class FormationController extends AbstractController
     #[Route('/', name: '')]
     public function index(): Response
     {
-        return $this->render('formation/index.html.twig', [
+        return $this->render('front/formation/index.html.twig', [
             'domainesFormation' => $this->domaineFormationRepository->findDomaineFormationWithFormation()
         ]);
     }
@@ -38,7 +38,7 @@ class FormationController extends AbstractController
             return $this->redirectToRoute('app_main');
         }
 
-        return $this->render('formation/voir.html.twig', [
+        return $this->render('front/formation/voir.html.twig', [
             'formation' => $formation
         ]);
     }
@@ -51,7 +51,7 @@ class FormationController extends AbstractController
             return $this->redirectToRoute('app_main');
         }
 
-        return $this->render('formation/inscription.html.twig', [
+        return $this->render('front/formation/inscription.html.twig', [
             'formation' => $formation
         ]);
 

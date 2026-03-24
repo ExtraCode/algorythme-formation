@@ -15,7 +15,8 @@
                     <ul class="nav">
                         {% for domaineFormation in domainesFormation %}
 
-                            <li><a {{ loop.first ? 'class="active"' : '' }} data-bs-toggle="tab"
+                            <li>
+                                <a {{ loop.first ? 'class="active"' : '' }} data-bs-toggle="tab"
                                                                             href="#{{ domaineFormation.slug }}">
                                     {{ domaineFormation.nom }}
                                 </a>
