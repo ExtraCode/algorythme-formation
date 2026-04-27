@@ -19,16 +19,6 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 class FormationController extends AbstractController
 {
 
-    private FormationRepository $formationRepository;
-    private DomaineFormationRepository $domaineFormationRepository;
-
-    public function __construct(FormationRepository        $formationRepository,
-                                DomaineFormationRepository $domaineFormationRepository)
-    {
-        $this->formationRepository = $formationRepository;
-        $this->domaineFormationRepository = $domaineFormationRepository;
-    }
-
     /**
      * @throws TransportExceptionInterface
      * @throws InvalidArgumentException
@@ -78,36 +68,36 @@ class FormationController extends AbstractController
             ksort($sousCategories, SORT_NATURAL | SORT_FLAG_CASE);
         }
         unset($sousCategories);
-        
+
         return $this->render('front/formation/index.html.twig', [
             'formationsParCategorie' => $formationsParCategorie
         ]);
     }
 
-    #[Route('/details/{slug}', name: '_voir')]
-    public function voir(string $slug): Response
-    {
-        $formation = $this->formationRepository->findOneBy(['slug' => $slug]);
-        if ($formation == null) {
-            return $this->redirectToRoute('app_main');
-        }
-
-        return $this->render('front/formation/voir.html.twig', [
-            'formation' => $formation
-        ]);
-    }
-
-    #[Route('/inscription/{slug}', name: '_inscription')]
-    public function inscription(string $slug): Response
-    {
-        $formation = $this->formationRepository->findOneBy(['slug' => $slug]);
-        if ($formation == null) {
-            return $this->redirectToRoute('app_main');
-        }
-
-        return $this->render('front/formation/inscription.html.twig', [
-            'formation' => $formation
-        ]);
-
-    }
+//    #[Route('/details/{slug}', name: '_voir')]
+//    public function voir(string $slug): Response
+//    {
+//        $formation = $this->formationRepository->findOneBy(['slug' => $slug]);
+//        if ($formation == null) {
+//            return $this->redirectToRoute('app_main');
+//        }
+//
+//        return $this->render('front/formation/voir.html.twig', [
+//            'formation' => $formation
+//        ]);
+//    }
+//
+//    #[Route('/inscription/{slug}', name: '_inscription')]
+//    public function inscription(string $slug): Response
+//    {
+//        $formation = $this->formationRepository->findOneBy(['slug' => $slug]);
+//        if ($formation == null) {
+//            return $this->redirectToRoute('app_main');
+//        }
+//
+//        return $this->render('front/formation/inscription.html.twig', [
+//            'formation' => $formation
+//        ]);
+//
+//    }
 }

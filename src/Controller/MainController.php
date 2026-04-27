@@ -2,11 +2,9 @@
 
 namespace App\Controller;
 
-use App\Repository\FormationRepository;
 use App\Service\SmartOfApiService;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -17,13 +15,6 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class MainController extends AbstractController
 {
-
-    private FormationRepository $formationRepository;
-
-    public function __construct(FormationRepository $formationRepository)
-    {
-        $this->formationRepository = $formationRepository;
-    }
 
     /**
      * @throws TransportExceptionInterface
