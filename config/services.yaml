@@ -22,3 +22,9 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Service\SmartOfApiService:
+        arguments:
+            $smartofEmail: '%env(SMARTOF_EMAIL)%'
+            $smartofPassword: '%env(SMARTOF_PASSWORD)%'
+            $smartofApiKey: '%env(SMARTOF_API_KEY)%'

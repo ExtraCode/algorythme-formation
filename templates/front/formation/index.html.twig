@@ -13,12 +13,14 @@
 
                 <div class="learn-press-profile-nav">
                     <ul class="nav">
-                        {% for domaineFormation in domainesFormation %}
+                        {% for categorie, sousCategories  in formationsParCategorie %}
 
                             <li>
-                                <a {{ loop.first ? 'class="active"' : '' }} data-bs-toggle="tab"
-                                                                            href="#{{ domaineFormation.slug }}">
-                                    {{ domaineFormation.nom }}
+                                <a {{ loop.first ? 'class="active"' : '' }}
+                                    data-bs-toggle="tab"
+                                    href="#categorie{{ loop.index }}">
+
+                                    {{ categorie }}
                                 </a>
                             </li>
                         {% endfor %}
@@ -27,93 +29,104 @@
 
             </section>
 
-            <!-- Domaine Start -->
-            {% for domaineFormation in domainesFormation %}
-                <div class="tab-content">
-                    <div id="{{ domaineFormation.slug }}"
+            {# Catégorie de la formation #}
+            <div class="tab-content">
+                {% for categorie, sousCategories in formationsParCategorie %}
+
+                    <div id="categorie{{ loop.index }}"
                          class="tab-pane fade {{ loop.first ? 'active show' : '' }}">
 
-                        <!-- Thématique menu Start -->
+                        {# Sous-catégories #}
                         <ul class="lp-tab-menu nav">
+                            {% for sousCategorie, formations in sousCategories %}
+                                {% set tabId = 'souscategorie-' ~ loop.parent.loop.index ~ '-' ~ loop.index %}
 
-                            {% for thematiqueFormation in domaineFormation.thematiqueFormations %}
-
-                                {% if thematiqueFormation.formations is not empty %}
-                                    <li><a {{ loop.parent.loop.first and loop.first ? 'class="active"' : '' }}
-                                            data-bs-toggle="tab"
-                                            href="#{{ thematiqueFormation.slug }}"
-                                            aria-selected="true"
-                                            role="tab">
-                                            {{ thematiqueFormation.nom }}
-                                        </a>
-                                    </li>
-                                {% endif %}
-
+                                <li>
+                                    <a class="{{ loop.first ? 'active' : '' }}"
+                                       data-bs-toggle="tab"
+                                       href="#{{ tabId }}"
+                                       aria-selected="{{ loop.first ? 'true' : 'false' }}"
+                                       role="tab">
+                                        {{ sousCategorie }}
+                                    </a>
+                                </li>
                             {% endfor %}
                         </ul>
-                        <!-- Thématique menu end -->
 
-                        <!-- Formation Start -->
+                        {# Formations par sous-catégorie #}
                         <div class="tab-content">
-                            {% for thematiqueFormation in domaineFormation.thematiqueFormations %}
-                                {% if thematiqueFormation.formations is not empty %}
+                            {% for sousCategorie, formations in sousCategories %}
+                                {% set tabId = 'souscategorie-' ~ loop.parent.loop.index ~ '-' ~ loop.index %}
 
-                                    <div id="{{ thematiqueFormation.slug }}"
-                                         class="tab-pane fade {{ loop.parent.loop.first and loop.first ? 'active show' : '' }}">
+                                <div id="{{ tabId }}"
+                                     class="tab-pane fade {{ loop.first ? 'active show' : '' }}"
+                                     role="tabpanel">
 
-                                        <table class="lp-list-table table">
-                                            <thead>
+                                    <table class="lp-list-table table">
+                                        <thead>
+                                        <tr>
+                                            <th>Formation</th>
+                                            <th>Durée</th>
+                                            <th>Niveau</th>
+                                            <th>Prix</th>
+                                            <th>Note moyenne</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        </thead>
+
+                                        <tbody>
+                                        {% for produitFormation in formations %}
                                             <tr>
-                                                <th>Formation</th>
-                                                <th>Durée</th>
-                                                <th>Niveau</th>
-                                                <th>Prix</th>
-                                                <th>Note moyenne</th>
-                                                <th>Action</th>
+                                                <td>
+                                                    {{ produitFormation.description.nom ?? produitFormation.description.titre ?? produitFormation.customId ?? 'Formation' }}
+                                                </td>
+
+                                                <td>
+                                                    {% set duree = produitFormation.description.dureeDeLaFormation ?? null %}
+                                                    {% if duree %}
+                                                        {{ duree }} jour{{ duree > 1 ? 's' : '' }}
+                                                    {% endif %}
+                                                </td>
+
+                                                <td>
+                                                    {{ produitFormation.custom_fields.custom_field_7 ?? '-' }}
+                                                </td>
+
+                                                <td>
+                                                    {% set prixHT = produitFormation.presetTarification.tarifs[0].budget[0].prixUnitaireHT ?? null %}
+                                                    {% if prixHT %}
+                                                        {{ prixHT|number_format(0, ',', ' ') }}€ HT
+                                                    {% endif %}
+                                                </td>
+
+                                                <td>
+                                                    {% set note = (produitFormation.custom_fields.custom_field_5 ?? 0) + 0 %}
+                                                    {% if note %}
+                                                        {{ note|number_format(1, ',', ' ') }}/5
+                                                    {% endif %}
+                                                </td>
+
+                                                <td>
+                                                    {# Mets ici ton lien API si tu en as un #}
+                                                    <a href="#"
+                                                       class="btn btn-primary btn-v-sm">
+                                                        Voir la formation
+                                                    </a>
+                                                </td>
                                             </tr>
-                                            </thead>
-                                            <tbody>
-                                            {% for formation in thematiqueFormation.formations %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
 
-                                                <tr>
-                                                    <td>
-                                                        <a href="{{ path('app_formation_voir', {'slug': formation.slug}) }}">{{ formation.nom }}</a>
-                                                    </td>
-                                                    <td>
-                                                        {{ formation.nbJour }}
-                                                        jour{{ (formation.nbJour > 1 ? 's' : '') }}
-                                                    </td>
-                                                    <td>{{ formation.niveau.nom }}</td>
-                                                    <td>{{ formation.prixInter }}€</td>
-                                                    <td>
-                                                        {% if formation.avisFormations is not empty %}
-
-                                                            nul
-
-                                                        {% endif %}
-                                                    </td>
-                                                    <td>
-                                                        <a href="{{ path('app_formation_voir', {'slug': formation.slug}) }}"
-                                                           class="btn btn-primary btn-v-sm">Voir la
-                                                            formation
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                            </tbody>
-                                        </table>
-
-                                    </div>
-                                {% endif %}
+                                </div>
                             {% endfor %}
                         </div>
-                        <!-- Formation End -->
+
                     </div>
-                </div>
-            {% endfor %}
-            <!-- Domaine End -->
+
+                {% endfor %}
+            </div>
 
         </div>
     </section>
-    <!-- Les formations End -->
 {% endblock %}

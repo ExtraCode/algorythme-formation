@@ -8493,11 +8493,6 @@ textarea:focus {
     max-width: 158px;
 }
 
-.header-logo a img {
-    width: 60%;
-    padding: 15px 0;
-}
-
 .header-logo a img.light-logo {
     position: absolute;
     top: 0;

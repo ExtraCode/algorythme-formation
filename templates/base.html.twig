@@ -2,9 +2,11 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Welcome!{% endblock %}</title>
-{#    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('images/mathieu.png') }}">#}
-
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('images/favicon.png') }}">
+    <meta name="description"
+          content="{% block meta_description %}{% endblock %}">
+    {# #}
     {% block stylesheets %}
 
         <link rel="stylesheet" href="{{ asset('librairies/font-awesome-7-0-1/css/all.min.css') }}">
@@ -37,8 +39,8 @@
                     <div class="col-xl-3 col-auto">
                         <div class="header-logo">
                             <a href="{{ path('app_main') }}">
-{#                                <img src="{{ asset('images/logo_eluv.png') }}"#}
-{#                                     alt="Logo Algorythme Formation">#}
+                                <img src="{{ asset('images/logo_algorythme_formation.png') }}"
+                                     alt="Logo Algorythme Formation">
                             </a>
                         </div>
                     </div>
@@ -81,7 +83,9 @@
                             <div class="inner">
 
                                 <!-- Header Search End -->
-                                <div><i class="fa-solid fa-phone-volume"></i> 01 45 33 60 58</div>
+                                <div>
+                                    <a href="tel:05 54 54 24 84"><i class="fa-solid fa-phone-volume"></i> 05 54 54 24 84</a>
+                                </div>
 
                                 <!-- Header Mobile Menu Toggle Start -->
                                 <div class="header-mobile-menu-toggle d-xl-none ml-sm-2">
@@ -136,8 +140,10 @@
                         <div class="footer-widget-content">
                             <div class="content">
                                 <p>422 avenue de verdun - 33700 Mérignac</p>
-                                <p>Téléphone : +33 6 62 67 15 55</p>
-                                <p>Email : contact@algorythme-formation.fr</p>
+                                <p><a href="tel:05 54 54 24 84"><i class="fa-solid fa-phone-volume"></i> 05 54 54 24 84</a>
+                                </p>
+                                <p><a href="mailto:contact@algorythme-formation.fr">
+                                        Email : contact@algorythme-formation.fr</a></p>
                             </div>
                         </div>
                     </div>
@@ -148,7 +154,8 @@
                 <div class="col-md-4 col-sm-7 col-12 max-mb-50">
                     <img src="{{ asset('images/logo-qualiopi.png') }}" alt="logo qualiopi" class="w-50">
                     <p class="mt-3">
-                        Algorythme Formation est un organisme de formation créé en 2022 dont le catalogue comprend plusieurs
+                        Algorythme Formation est un organisme de formation créé en 2022 dont le catalogue comprend
+                        plusieurs
                         dizaine de formations dans le domaine de l'informatique.
                     </p>
                     <p>

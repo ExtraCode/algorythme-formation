@@ -1,6 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ APP_NOM_OF }} - organisme de formation spécialisé dans l'informatique{% endblock %}
+{% block title %}{{ APP_NOM_OF }} - Organisme de formation spécialisé dans l'intelligence artificielle{% endblock %}
+
+{% block meta_description %}
+    Organisme de formation spécialisé en intelligence artificielle et en informatique, basé dans le Sud-Ouest.
+    Formations pratiques et adaptées aux entreprises pour maîtriser les outils IA dans l'informatique et booster votre performance.
+{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('styles/pages/accueil.scss') }}">
@@ -21,11 +26,13 @@
 
                 <div class="col align-self-center max-mb-30" data-aos="fade-up">
                     <div class="intro2-content text-center text-md-start">
-                        <h1 class="title">Formations en informatique</h1>
+                        <h1 class="title">Formations en Intelligence Artificielle</h1>
                         <div class="desc">
-                            <p>Organisme de formation dans l'informatique basé à Bordeaux, <u>implanté</u> dans le sud
-                                ouest.
-                                <br><u>Dédié</u> à la formation <b>en informatique</b> pour les professionnels.
+                            <p>Organisme de formation spécialisé en <strong>intelligence artificielle</strong>, basé à
+                                Bordeaux,
+                                <u>implanté</u> dans le sud ouest.
+                                <br><u>Dédié</u> à la formation <strong>en informatique</strong> pour les
+                                professionnels.
                             </p>
                         </div>
 
@@ -49,7 +56,8 @@
                 {# Photo animée #}
                 <div class="col max-mb-30" data-aos="fade-up">
                     <div class="contact-image intro2-image">
-                        <img src="{{ asset('images/algorythme-formation-flat.png') }}" width="78%" alt="Algorythme Formation">
+                        <img src="{{ asset('images/algorythme-formation-flat.png') }}" width="78%"
+                             alt="Algorythme Formation">
 
                         <div class="shape shape-1 scene">
                                 <span data-depth="3">
@@ -91,34 +99,128 @@
             {# Liste des formations #}
             <div class="row row-cols-lg-3 row-cols-md-2 row-cols-1 max-mb-n30">
 
-                {% for formation in formations %}
+                {% for produitFormation in produitsFormation %}
+
+                    {# Catégorie de la formation et couleur #}
+                    {% if produitFormation.custom_fields is defined
+                        and produitFormation.custom_fields.custom_field_4 is defined
+                        and produitFormation.custom_fields.custom_field_4 %}
+
+                        {% set categorie = produitFormation.custom_fields.custom_field_4 %}
+                        {% set couleurCategorie = getCouleurByCategorieFormation(categorie) %}
+
+                    {% endif %}
 
                     <!-- Formation Start -->
                     <div class="col max-mb-30 aos-init aos-animate" data-aos="fade-up">
                         <div class="course-2">
-                            <div class="thumbnail">
-                                <a href="{{ path('app_formation_voir', {'slug': formation.slug}) }}" class="image"><img
-                                        src="{{ asset('images/formations/course-6.jpg') }}" alt="Course Image"></a>
+
+                            {# Header de la formation #}
+                            <div class="formation__header">
+
+                                {# Catégorie #}
+                                {% if categorie is defined %}
+                                    <p class="formation__categorie"
+                                       style="background-color: {{ couleurCategorie }}">{{ categorie }}</p>
+                                {% else %}
+                                    <p class="formation__categorie">Informatique</p>
+                                {% endif %}
+
+                                {# Référence #}
+                                {% if produitFormation.customId is defined and produitFormation.customId %}
+                                    <p class="formation__reference">Ref : {{ produitFormation.customId }}</p>
+                                {% endif %}
+
                             </div>
+
+                            {# Contenu de la formation #}
                             <div class="info">
-                                <span class="price"
-                                      style="background-color: {{ formation.thematique.domaine.couleur }};">{{ formation.nbJour }} jr{{ formation.nbJour == 1 ? '' : 's' }}</span>
 
-                                <h3 class="title">
-                                    <a href="{{ path('app_formation_voir', {'slug': formation.slug}) }}">{{ formation.nom }}</a>
-                                </h3>
+                                {# Nom de la formation #}
+                                {% if produitFormation.meta is defined
+                                    and produitFormation.meta.nom is defined
+                                    and produitFormation.meta.nom %}
+                                    <h3 class="title formation__titre">
+                                        <a href="">{{ produitFormation.meta.nom }}</a>
+                                    </h3>
+                                {% endif %}
 
-                                <span class="littleOne">{{ formation.prixInter }}€ HT</span>
-                                <p>
-                                    <small>{{ formation.nbApprenant }} <i class="fa-solid fa-person"></i> formées en
-                                        {% if "now"|date("Y-m-d") > "now"|date("Y") ~ "-06-30" %}
-                                            {{ "now"|date("Y") }}
-                                        {% else %}
-                                            {{ "now"|date_modify("-1 year")|date("Y") }}
+                                {# Tarifs #}
+                                {% if produitFormation.presetTarification is defined
+                                    and produitFormation.presetTarification.tarifs is defined
+                                    and produitFormation.presetTarification.tarifs[0] is defined
+                                    and produitFormation.presetTarification.tarifs[0].budget is defined
+                                    and produitFormation.presetTarification.tarifs[0].budget[0] is defined
+                                    and produitFormation.presetTarification.tarifs[0].budget[0].prixUnitaireHT is defined
+                                    and produitFormation.presetTarification.tarifs[0].budget[0].prixUnitaireHT %}
+
+                                    <span class="littleOne">
+                                        {{ produitFormation.presetTarification.tarifs[0].budget[0].prixUnitaireHT }}€ HT
+                                    </span>
+
+                                {% endif %}
+
+                                {# Nombre d'apprenants #}
+                                {% if produitFormation.custom_fields is defined
+                                    and produitFormation.custom_fields.custom_field_3 is defined
+                                    and produitFormation.custom_fields.custom_field_3 %}
+
+                                    {% set nbApprenants = produitFormation.custom_fields.custom_field_3 %}
+
+                                    <p>
+                                        <small>
+                                            {{ calculNbApprenants(nbApprenants) }}
+                                            <i class="fa-solid fa-person"></i>
+                                            formées en 2026.
+                                        </small>
+                                    </p>
+                                {% endif %}
+
+                                {# Durée de la formation #}
+                                {% if produitFormation.description is defined
+                                    and produitFormation.description.dureeDeLaFormation is defined
+                                    and produitFormation.description.dureeDeLaFormation %}
+
+                                    {% set nbJours = produitFormation.description.dureeDeLaFormation / 7 %}
+                                    <span class="price formation__jours"
+                                          style="background-color: {{ couleurCategorie is defined ? couleurCategorie : "grey" }}">{{ nbJours }} jr{{ nbJours == 1 ? '' : 's' }}
+                                </span>
+                                {% endif %}
+
+                                {# Nombre d'étoiles #}
+                                {% if produitFormation.custom_fields is defined
+                                    and produitFormation.custom_fields.custom_field_5 is defined
+                                    and produitFormation.custom_fields.custom_field_5 %}
+
+                                    {% set note = (produitFormation.custom_fields.custom_field_5 ?? 0) + 0 %}
+
+                                    {% set fullStars = note|round(0, 'floor') %}
+                                    {% set hasHalfStar = (note - fullStars) >= 0.5 %}
+                                    {% set emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0) %}
+
+                                    <div class="stars">
+                                        {# étoiles pleines #}
+                                        {% for i in 1..fullStars %}
+                                            <i class="fa-solid fa-star"></i>
+                                        {% endfor %}
+
+                                        {# demi étoile #}
+                                        {% if hasHalfStar %}
+                                            <i class="fa-solid fa-star-half-stroke"></i>
                                         {% endif %}
 
-                                    </small>
-                                </p>
+                                        {# étoiles vides (sécurisé) #}
+                                        {% if emptyStars > 0 %}
+                                            {% for i in 1..emptyStars %}
+                                                <i class="fa-regular fa-star"></i>
+                                            {% endfor %}
+                                        {% endif %}
+
+                                        <span>{{ note|number_format(1, '.', '') }}/5</span>
+                                    </div>
+
+                                {% endif %}
+
                             </div>
                         </div>
                     </div>
