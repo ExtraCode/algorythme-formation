@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Service;
 
 use App\Entity\SmartOfAuth;
@@ -18,19 +19,21 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  * Doc : https://europe-west3-algorythme-formation-mobileo.cloudfunctions.net/docs/swagger/
  * Mail : support@smartof.tech
  */
+
 class SmartOfApiService
 {
     private const string CACHE_KEY = 'smartof_id_token';
 
     public function __construct(
-        private HttpClientInterface $httpClient,
-        private CacheInterface $cache,
-        private SmartOfAuthRepository $smartofAuthRepository,
+        private HttpClientInterface    $httpClient,
+        private CacheInterface         $cache,
+        private SmartOfAuthRepository  $smartofAuthRepository,
         private EntityManagerInterface $entityManager,
-        private string $smartofEmail,
-        private string $smartofPassword,
-        private string $smartofApiKey,
-    ) {
+        private string                 $smartofEmail,
+        private string                 $smartofPassword,
+        private string                 $smartofApiKey,
+    )
+    {
     }
 
     /**
@@ -73,7 +76,7 @@ class SmartOfApiService
                 $this->entityManager->flush();
             }
 
-            $expiresIn = (int) ($data['expiresIn'] ?? $data['expires_in'] ?? 3600);
+            $expiresIn = (int)($data['expiresIn'] ?? $data['expires_in'] ?? 3600);
 
             $item->expiresAfter(max($expiresIn - 60, 300));
 
@@ -138,16 +141,17 @@ class SmartOfApiService
      * @throws ClientExceptionInterface
      * Appelle un endpoint SmartOF
      */
-    public function callSmartofApi(string $url): array
+    public function callSmartofApi(string $url, array $data = []): array
     {
         $token = $this->getToken();
         $baseUrl = 'https://europe-west3-algorythme-formation-mobileo.cloudfunctions.net/external';
 
-        $response = $this->httpClient->request('POST', $baseUrl.$url, [
+        $response = $this->httpClient->request('POST', $baseUrl . $url, [
             'headers' => [
                 'Accept' => 'application/json',
-                'Authorization' => 'Bearer '.$token,
+                'Authorization' => 'Bearer ' . $token,
             ],
+            'json' => $data, //
         ]);
 
         return $response->toArray();

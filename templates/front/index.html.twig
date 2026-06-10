@@ -134,14 +134,14 @@
                             </div>
 
                             {# Contenu de la formation #}
-                            <div class="info">
+                            <div class="info formation__info">
 
                                 {# Nom de la formation #}
                                 {% if produitFormation.meta is defined
                                     and produitFormation.meta.nom is defined
                                     and produitFormation.meta.nom %}
                                     <h3 class="title formation__titre">
-                                        <a href="">{{ produitFormation.meta.nom }}</a>
+                                        <a href="{{ path('app_formation_voir', {'formationId': produitFormation.produitFormationUid, 'slug': produitFormation.slug}) }}">{{ produitFormation.meta.nom }}</a>
                                     </h3>
                                 {% endif %}
 

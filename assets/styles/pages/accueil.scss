@@ -105,6 +105,11 @@ CARTE FRANCE
         min-height: 155px;
     }
 
+    &__info {
+        border: 1px solid #f3f3f3;
+        border-top: none;
+    }
+
     &__categorie {
 
         width: fit-content;

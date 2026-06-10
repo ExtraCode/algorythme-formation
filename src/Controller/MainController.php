@@ -2,19 +2,27 @@
 
 namespace App\Controller;
 
+use AllowDynamicProperties;
 use App\Service\SmartOfApiService;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
+#[AllowDynamicProperties]
 class MainController extends AbstractController
 {
+
+    public function __construct(SluggerInterface $slugger)
+    {
+        $this->slugger = $slugger;
+    }
 
     /**
      * @throws TransportExceptionInterface
@@ -33,10 +41,16 @@ class MainController extends AbstractController
         $formations = $response['produits'] ?? [];
 
         // Uniquement les formations à mettre en page d'accueil
-        $produitsFormation = array_values(array_filter($formations, static function (array $formation): bool {
-            return !empty(trim((string)($formation['custom_fields']['custom_field_1'] ?? '')));
-        }));
+        $produitsFormation = array_values(array_map(function (array $formation) {
+            $formation['slug'] = $this->slugger
+                ->slug($formation['meta']['nom'])
+                ->lower();
 
+            return $formation;
+        }, array_filter($formations, static function (array $formation): bool {
+            return !empty(trim((string)($formation['custom_fields']['custom_field_1'] ?? '')));
+        })));
+     
         return $this->render('front/index.html.twig', [
             'produitsFormation' => $produitsFormation
         ]);

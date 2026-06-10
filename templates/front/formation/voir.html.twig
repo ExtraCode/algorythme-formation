@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ nom }}{% endblock %}
+{% block title %}Formation {{ formation.meta.nom }}{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -9,267 +9,267 @@
 
 {% block body %}
 
-<div class="page-title-section section">
+    <div class="page-title-section section">
 
-    <div class="container text-center">
-        <h1 class="title">{{ nom }}</h1>
+        <div class="container text-center">
+            <h1 class="title">{{ formation.meta.nom }}</h1>
+        </div>
+
     </div>
 
-</div>
+    <div class="section">
+        <div class="container">
+            <div class="row">
 
-<!-- Formation Start -->
-<div class="section">
-    <div class="container">
-        <div class="row">
+                <div class="col-lg-8 col-12 order-lg-1 max-mb-50">
+                    <div class="course-details-wrapper">
 
-            <!-- Contenu formation Start -->
-            <div class="col-lg-8 col-12 order-lg-1 max-mb-50">
-                <div class="course-details-wrapper">
+                        {# Menu de la formation #}
+                        <div class="course-nav-tab">
+                            <ul class="nav">
+                                <li><a class="active" data-bs-toggle="tab" href="#resume">Résumé</a></li>
+                                <li><a data-bs-toggle="tab" href="#contenu">Programme</a></li>
+                                {% if(formation.avisFormations is defined) %}
+                                    <li><a data-bs-toggle="tab" href="#reviews">Appréciations</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
 
-                    <!-- Menu formation Start -->
-                    <div class="course-nav-tab">
-                        <ul class="nav">
-                            <li><a class="active" data-bs-toggle="tab" href="#contenu">Contenu</a></li>
-                            <li><a data-bs-toggle="tab" href="#resume">Résumé</a></li>
-                            {% if(formation.avisFormations is not empty) %}
-                                <li><a data-bs-toggle="tab" href="#reviews">Appréciations</a></li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                    <!-- Menu formation End -->
+                        <div class="tab-content">
 
-                    <div class="tab-content">
+                            <!-- Résumé -->
+                            <div id="resume" class="tab-pane fade show active">
 
-                        <!-- Contenu Start -->
-                        <div id="contenu" class="tab-pane fade show active">
-                            <ul class="nice-ul-box">
+                                <ul class="nice-ul-box resume d-flex flex-wrap justify-content-between">
 
-                                <!-- Module Formation Start -->
-                                {% for moduleFormation in formation.modulesFormationTries %}
-
-                                    <li>
+                                    <!-- Public de la formation Start -->
+                                    <li class="resume__bloc mt-3">
                                         <div class="section-header">
-                                            <div class="section-left">
-
-                                                <h5 class="title">{{ loop.index ~ " - " ~ modulenom }}</h5>
-
+                                            <div class="resume__bloc__titre section-left">
+                                                <h2 class="title mb-0">Pour qui ?</h2>
                                             </div>
                                         </div>
-                                        <ul class="section-content">
-
-                                            <!-- Chapitre Module Formation Start -->
-                                            {% for chapitreModuleFormation in moduleFormation.chapitresModuleFormationTries %}
-                                                <li class="course-item">
-                                                            <span class="section-item-link lesson">
-                                                                <span
-                                                                    class="item-name">{{ chapitreModule.nom }}</span>
-                                                            </span>
-                                                </li>
-                                            {% endfor %}
-                                            <!-- Chapitre Module Formation End -->
-
-                                        </ul>
+                                        {{ formation.description.publicVise | nl2br }}
                                     </li>
+                                    <!-- Public de la formation Start -->
 
-                                {% endfor %}
-                                <!-- Module Formation End -->
-                            </ul>
-                        </div>
-                        <!-- Contenu End -->
-
-                        <!-- Résumé -->
-                        <div id="resume" class="tab-pane fade">
-
-                            <ul class="nice-ul-box resume d-flex flex-wrap justify-content-between">
-
-                                <!-- Public de la formation Start -->
-                                <li class="resume__bloc mt-3">
-                                    <div class="section-header">
-                                        <div class="resume__bloc__titre section-left">
-                                            <h2 class="title mb-0">Pour qui ?</h2>
-                                        </div>
-                                    </div>
-                                    <ul class="section-content">
-                                        {% for publicFormation in formation.publicFormationTries %}
-                                            <li class="course-item">
-                                                    <span class="resume__bloc__item section-item-link">
-                                                        <span class="item-name">{{ publicnom }}</span>
-                                                    </span>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </li>
-                                <!-- Public de la formation Start -->
-
-                                <!-- Prérequis de la formation Start -->
-                                <li class="resume__bloc mt-3">
-                                    <div class="section-header">
-                                        <div class="resume__bloc__titre section-left">
-                                            <h2 class="title mb-0">Prérequis</h2>
-                                        </div>
-                                    </div>
-                                    <ul class="section-content">
-                                        {% for prerequisFormation in formation.prerequisFormationTries %}
-                                            <li class="course-item">
-                                                    <span class="resume__bloc__item section-item-link">
-                                                        <span class="item-name">{{ prerequisnom }}</span>
-                                                    </span>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </li>
-                                <!-- Prérequis de la formation End -->
-
-                                <!-- Objectifs de la formation Start -->
-                                <li class="resume__bloc w-100 mt-3">
-                                    <div class="section-header">
-                                        <div class="resume__bloc__titre section-left">
-                                            <h2 class="title mb-0">Objectifs</h2>
-                                        </div>
-                                    </div>
-                                    <ul class="section-content">
-                                        {% for objectifFormation in formation.objectifsFormationTries %}
-                                            <li class="course-item">
-                                                    <span class="resume__bloc__item section-item-link">
-                                                        <span class="item-name">{{ objectifFormation.texte }}</span>
-                                                    </span>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </li>
-                                <!-- Objectifs de la formation End -->
-
-                            </ul>
-
-                            <!-- Description de la formation Start -->
-                            <h2 class="title mt-5">Description de la formation</h2>
-                            <p class="text-justify">{{ formation.description }}</p>
-                            <!-- Description de la formation End -->
-
-                        </div>
-                        <!-- Résumé End -->
-
-                        <!-- Notes Start -->
-                        {% if(formation.avisFormations is not empty) %}
-                            <div id="reviews" class="tab-pane fade">
-                                <div class="course-reviews">
-
-                                    <!-- Note moyenne Start -->
-                                    <div class="course-rating">
-                                        <div class="course-rating-content justify-content-center">
-
-                                            <div class="average-rating">
-                                                <div class="rating-box">
-                                                    <div class="average-value primary-color">
-                                                        {{ formation.moyenneAvis }}
-                                                    </div>
-                                                    <div class="review-star">
-                                                        <div class="tm-star-rating">
-
-                                                            {% include '../../partials/_notation_etoiles.html.twig' with {'note': formation.moyenneAvis} %}
-
-                                                        </div>
-                                                    </div>
-                                                    <div class="review-amount">
-                                                        ({{ formation.avisFormations|length }} notes)
-                                                    </div>
-                                                </div>
+                                    <!-- Prérequis de la formation Start -->
+                                    <li class="resume__bloc mt-3">
+                                        <div class="section-header">
+                                            <div class="resume__bloc__titre section-left">
+                                                <h2 class="title mb-0">Prérequis</h2>
                                             </div>
-
                                         </div>
-                                    </div>
-                                    <!-- Note moyenne End -->
+                                        {{ formation.description.preRequis | nl2br }}
+                                    </li>
+                                    <!-- Prérequis de la formation End -->
 
-                                    <!-- Témoignages Start -->
-                                    <div class="course-reviews-area">
-                                        <ul class="course-reviews-list">
+                                    <!-- Objectifs de la formation Start -->
+                                    <li class="resume__bloc w-100 mt-3">
+                                        <div class="section-header">
+                                            <div class="resume__bloc__titre section-left">
+                                                <h2 class="title mb-0">Objectifs pédagogiques</h2>
+                                            </div>
+                                        </div>
+                                        {{ formation.description.objectifsDeLaFormation | nl2br }}
+                                    </li>
+                                    <!-- Objectifs de la formation End -->
 
-                                            {% for avis in formation.avisFormations %}
+                                </ul>
 
-                                                <li class="review">
-                                                    <div class="review-container">
+                                <!-- Description de la formation Start -->
+                                <h2 class="title mt-5">Description de la formation</h2>
+                                <p class="text-justify">{{ formation.description.contenuDeLaFormation | nl2br }}</p>
+                                <!-- Description de la formation End -->
 
-                                                        <div class="review-content">
-                                                            <h4 class="title">{{ avis.fullName }}</h4>
-                                                            <div class="review-stars-rated">
-                                                                {% include '../../partials/_notation_etoiles.html.twig' with {'note': avis.note} %}
-                                                            </div>
-                                                            <div class="review-text mt-3">{{ avis.resume }}</div>
-                                                        </div>
-                                                    </div>
-                                                </li>
-
-                                            {% endfor %}
-
-                                        </ul>
-                                    </div>
-                                    <!-- Témoignages End -->
-                                </div>
                             </div>
-                        {% endif %}
-                        <!-- Notes End -->
+                            <!-- Résumé End -->
 
+                            {# Contenu #}
+                            <div id="contenu" class="tab-pane fade">
+                                {{ formation.description.contenuDeLaFormation | nl2br }}
+                            </div>
+                            <!-- Contenu End -->
+
+                            {#                        <!-- Notes Start --> #}
+                            {#                        {% if(formation.avisFormations is not empty) %} #}
+                            {#                            <div id="reviews" class="tab-pane fade"> #}
+                            {#                                <div class="course-reviews"> #}
+
+                            {#                                    <!-- Note moyenne Start --> #}
+                            {#                                    <div class="course-rating"> #}
+                            {#                                        <div class="course-rating-content justify-content-center"> #}
+
+                            {#                                            <div class="average-rating"> #}
+                            {#                                                <div class="rating-box"> #}
+                            {#                                                    <div class="average-value primary-color"> #}
+                            {#                                                        {{ formation.moyenneAvis }} #}
+                            {#                                                    </div> #}
+                            {#                                                    <div class="review-star"> #}
+                            {#                                                        <div class="tm-star-rating"> #}
+
+                            {#                                                            #}{#                                                            {% include '../../partials/_notation_etoiles.html.twig' with {'note': formation.moyenneAvis} %} #}
+
+                            {#                                                        </div> #}
+                            {#                                                    </div> #}
+                            {#                                                    <div class="review-amount"> #}
+                            {#                                                        ({{ formation.avisFormations|length }} notes) #}
+                            {#                                                    </div> #}
+                            {#                                                </div> #}
+                            {#                                            </div> #}
+
+                            {#                                        </div> #}
+                            {#                                    </div> #}
+                            {#                                    <!-- Note moyenne End --> #}
+
+                            {#                                    <!-- Témoignages Start --> #}
+                            {#                                    <div class="course-reviews-area"> #}
+                            {#                                        <ul class="course-reviews-list"> #}
+
+                            {#                                            {% for avis in formation.avisFormations %} #}
+
+                            {#                                                <li class="review"> #}
+                            {#                                                    <div class="review-container"> #}
+
+                            {#                                                        <div class="review-content"> #}
+                            {#                                                            <h4 class="title">{{ avis.fullName }}</h4> #}
+                            {#                                                            <div class="review-stars-rated"> #}
+                            {#                                                                {% include '../../partials/_notation_etoiles.html.twig' with {'note': avis.note} %} #}
+                            {#                                                            </div> #}
+                            {#                                                            <div class="review-text mt-3">{{ avis.resume }}</div> #}
+                            {#                                                        </div> #}
+                            {#                                                    </div> #}
+                            {#                                                </li> #}
+
+                            {#                                            {% endfor %} #}
+
+                            {#                                        </ul> #}
+                            {#                                    </div> #}
+                            {#                                    <!-- Témoignages End --> #}
+                            {#                                </div> #}
+                            {#                            </div> #}
+                            {#                        {% endif %} #}
+                            {#                        <!-- Notes End --> #}
+
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!-- Contenu formation End -->
+                <!-- Contenu formation End -->
 
-            <!-- Sidebar Start -->
-            <div class="col-lg-4 col-12 order-lg-2 max-mb-50" id="sticky-sidebar">
-                <div class="sidebar-widget-wrapper pr-0">
-                    <div class="sidebar-widget">
-                        <div class="sidebar-widget-content">
-                            <div class="sidebar-entry-course-info">
-                                <div class="course-price">
+                <!-- Sidebar Start -->
+                <div class="col-lg-4 col-12 order-lg-2 max-mb-50" id="sticky-sidebar">
+                    <div class="sidebar-widget-wrapper pr-0">
+                        <div class="sidebar-widget">
+                            <div class="sidebar-widget-content">
+                                <div class="sidebar-entry-course-info">
+                                    <div class="course-price">
                                     <span class="meta-label">
                                         <i class="meta-icon fas fa-money-bill-wave"></i>
                                         Tarif (HT)
                                     </span>
-                                    <span class="meta-value">
-                                        <span class="price">{{ formation.prixInter }}€</span>
+                                        <span class="meta-value">
+                                        <span
+                                            class="price">{{ formation.presetTarification.tarifs[0].budget[0].prixUnitaireHT }}€</span>
                                     </span>
-                                </div>
-                                <div class="course-meta">
-                                    <div>
+                                    </div>
+                                    <div class="course-meta">
+                                        <div>
                                         <span class="meta-label">
                                             <i class="fas fa-clock"></i>
                                             Durée
                                         </span>
-                                        <span
-                                            class="meta-value">{{ formation.nbJour }} jour{{ formation.nbJour > 1 ? 's' : '' }}</span>
-                                    </div>
+                                            <span
+                                                class="meta-value">{{ formation.description.dureeDeLaFormation }} heures de formation</span>
+                                        </div>
 
-                                    <div>
-                                        <span class="meta-label">
-                                            <i class="fa-solid fa-signal"></i>
-                                            Niveau
-                                        </span>
-                                        <span class="meta-value">{{ formation.niveau.nom }}</span>
-                                    </div>
-
-                                    <div>
+                                        <div>
                                         <span class="meta-label">
                                             <i class="fa-solid fa-location-dot"></i>
                                             Lieu
                                         </span>
-                                        <span class="meta-value">Présentiel ou distanciel</span>
-                                    </div>
+                                            <span class="meta-value">Présentiel ou distanciel</span>
+                                        </div>
 
-                                    <div class="lp-course-buttons">
-                                        <a class="btn btn-primary btn-hover-secondary btn-width-100"
-                                           href="{{ path('app_formation_inscription', {'slug': formation.slug}) }}">
-                                            Inscription et devis
-                                        </a>
+                                        {# Nombre d'apprenants #}
+                                        {% if formation.custom_fields is defined
+                                            and formation.custom_fields.custom_field_3 is defined
+                                            and formation.custom_fields.custom_field_3 %}
+
+                                            {% set nbApprenants = formation.custom_fields.custom_field_3 %}
+
+                                            <div>
+                                                <span class="meta-label">
+                                                     <i class="fa-solid fa-person"></i>
+                                                    Stagiaire
+                                                </span>
+                                                <span class="meta-value">{{ calculNbApprenants(nbApprenants) }}<i
+                                                        class="fa-solid fa-person"></i> formées en {{ "now" | date('Y') }}</span>
+                                            </div>
+
+                                        {% endif %}
+
+                                        {# Nombre d'étoiles #}
+                                        {% if formation.custom_fields is defined
+                                            and formation.custom_fields.custom_field_5 is defined
+                                            and formation.custom_fields.custom_field_5 %}
+
+                                            {% set note = (formation.custom_fields.custom_field_5 ?? 0) + 0 %}
+
+                                            {% set fullStars = note|round(0, 'floor') %}
+                                            {% set hasHalfStar = (note - fullStars) >= 0.5 %}
+                                            {% set emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0) %}
+
+                                            <div>
+                                                <span class="meta-label">
+                                                     <i class="fa-solid fa-heart"></i>
+                                                    Avis
+                                                </span>
+                                                <div class="meta-value">
+
+                                                    <div class="stars">
+                                                        {# étoiles pleines #}
+                                                        {% for i in 1..fullStars %}
+                                                            <i class="fa-solid fa-star"></i>
+                                                        {% endfor %}
+
+                                                        {# demi étoile #}
+                                                        {% if hasHalfStar %}
+                                                            <i class="fa-solid fa-star-half-stroke"></i>
+                                                        {% endif %}
+
+                                                        {# étoiles vides (sécurisé) #}
+                                                        {% if emptyStars > 0 %}
+                                                            {% for i in 1..emptyStars %}
+                                                                <i class="fa-regular fa-star"></i>
+                                                            {% endfor %}
+                                                        {% endif %}
+
+                                                        <span>{{ note|number_format(1, '.', '') }}/5</span>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+
+                                        {% endif %}
+
+                                        <div class="lp-course-buttons">
+                                            <a class="btn btn-primary btn-hover-secondary btn-width-100"
+                                               href="{{ path('app_contact') }}">
+                                                Inscription et devis
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- Sidebar End -->
+                    <!-- Sidebar End -->
 
+                </div>
             </div>
         </div>
+        <!-- Formation End -->
     </div>
-    <!-- Formation End -->
-    {% endblock %}
+{% endblock %}
+

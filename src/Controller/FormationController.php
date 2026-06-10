@@ -2,13 +2,12 @@
 
 namespace App\Controller;
 
-use App\Repository\DomaineFormationRepository;
-use App\Repository\FormationRepository;
 use App\Service\SmartOfApiService;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -28,7 +27,7 @@ class FormationController extends AbstractController
      * @throws ClientExceptionInterface
      */
     #[Route('/', name: '')]
-    public function index(SmartOfApiService $smartOfApiService): Response
+    public function index(SmartOfApiService $smartOfApiService, SluggerInterface $slugger): Response
     {
 
         // Récupération des formations à mettre en page d'accueil
@@ -48,14 +47,8 @@ class FormationController extends AbstractController
             $categorie = trim((string)($formation['custom_fields']['custom_field_4'] ?? ''));
             $sousCategorie = trim((string)($formation['custom_fields']['custom_field_6'] ?? ''));
 
-            if ($categorie === '') {
-                continue;
-            }
-
-            // Si pas de sous-catégorie, on met "Autres"
-            if ($sousCategorie === '') {
-                $sousCategorie = 'Autres';
-            }
+            // 👉 Ajout du slug
+            $formation['slug'] = $slugger->slug($formation['meta']["nom"])->lower();
 
             $formationsParCategorie[$categorie][$sousCategorie][] = $formation;
         }
@@ -74,18 +67,26 @@ class FormationController extends AbstractController
         ]);
     }
 
-//    #[Route('/details/{slug}', name: '_voir')]
-//    public function voir(string $slug): Response
-//    {
-//        $formation = $this->formationRepository->findOneBy(['slug' => $slug]);
-//        if ($formation == null) {
-//            return $this->redirectToRoute('app_main');
-//        }
-//
-//        return $this->render('front/formation/voir.html.twig', [
-//            'formation' => $formation
-//        ]);
-//    }
+    /**
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws InvalidArgumentException
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     */
+    #[Route('/details/{slug}/{formationId}', name: '_voir')]
+    public function voir(SmartOfApiService $smartOfApiService, string $formationId): Response
+    {
+        // Récupération des formations à mettre en page d'accueil
+        $formation = $smartOfApiService->callSmartofApi('/api/produit/get', [
+            "produitFormationUid" => $formationId
+        ]);
+       
+        return $this->render('front/formation/voir.html.twig', [
+            'formation' => $formation
+        ]);
+    }
 //
 //    #[Route('/inscription/{slug}', name: '_inscription')]
 //    public function inscription(string $slug): Response
