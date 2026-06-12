@@ -162,15 +162,64 @@
                         <div class="sidebar-widget">
                             <div class="sidebar-widget-content">
                                 <div class="sidebar-entry-course-info">
-                                    <div class="course-price">
-                                    <span class="meta-label">
-                                        <i class="meta-icon fas fa-money-bill-wave"></i>
-                                        Tarif (HT)
-                                    </span>
-                                        <span class="meta-value">
-                                        <span
-                                            class="price">{{ formation.presetTarification.tarifs[0].budget[0].prixUnitaireHT }}€</span>
-                                    </span>
+                                    <div class="course-price-tabs">
+                                        <ul class="nav nav-tabs" role="tablist">
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link active"
+                                                   data-bs-toggle="tab"
+                                                   href="#tarif-inter"
+                                                   role="tab"
+                                                   aria-selected="true">
+                                                    Inter
+                                                </a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link"
+                                                   data-bs-toggle="tab"
+                                                   href="#tarif-intra"
+                                                   role="tab"
+                                                   aria-selected="false">
+                                                    Intra
+                                                </a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link"
+                                                   data-bs-toggle="tab"
+                                                   href="#tarif-sur-mesure"
+                                                   role="tab"
+                                                   aria-selected="false">
+                                                    Sur mesure
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <div class="tab-content">
+
+                                            {# Inter #}
+                                            <div id="tarif-inter" class="tab-pane fade mt-3 active show"
+                                                 role="tabpanel">
+                                                <div class="course-price">
+                                                    <span class="meta-label">
+                                                        <i class="meta-icon fas fa-money-bill-wave"></i>
+                                                        Tarif (HT)
+                                                    </span>
+                                                    <span class="meta-value">
+                                                        <span
+                                                            class="price">{{ formation.presetTarification.tarifs[0].budget[0].prixUnitaireHT }}€</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {# Intra #}
+                                            <div id="tarif-intra" class="tab-pane mt-3 fade" role="tabpanel">
+                                                <p>Texte à personnaliser pour l'offre Intra.</p>
+                                            </div>
+
+                                            {# Sur mesure #}
+                                            <div id="tarif-sur-mesure" class="tab-pane mt-3 fade" role="tabpanel">
+                                                <p>Texte à personnaliser pour l'offre Sur mesure.</p>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="course-meta">
                                         <div>
@@ -190,68 +239,68 @@
                                             <span class="meta-value">Présentiel ou distanciel</span>
                                         </div>
 
-                                        {# Nombre d'apprenants #}
-                                        {% if formation.custom_fields is defined
-                                            and formation.custom_fields.custom_field_3 is defined
-                                            and formation.custom_fields.custom_field_3 %}
+                                        {#                                        #}{# Nombre d'apprenants #}
+                                        {#                                        {% if formation.custom_fields is defined #}
+                                        {#                                            and formation.custom_fields.custom_field_3 is defined #}
+                                        {#                                            and formation.custom_fields.custom_field_3 %} #}
 
-                                            {% set nbApprenants = formation.custom_fields.custom_field_3 %}
+                                        {#                                            {% set nbApprenants = formation.custom_fields.custom_field_3 %} #}
 
-                                            <div>
-                                                <span class="meta-label">
-                                                     <i class="fa-solid fa-person"></i>
-                                                    Stagiaire
-                                                </span>
-                                                <span class="meta-value">{{ calculNbApprenants(nbApprenants) }}<i
-                                                        class="fa-solid fa-person"></i> formées en {{ "now" | date('Y') }}</span>
-                                            </div>
+                                        {#                                            <div> #}
+                                        {#                                                <span class="meta-label"> #}
+                                        {#                                                     <i class="fa-solid fa-person"></i> #}
+                                        {#                                                    Stagiaire #}
+                                        {#                                                </span> #}
+                                        {#                                                <span class="meta-value">{{ calculNbApprenants(nbApprenants) }}<i #}
+                                        {#                                                        class="fa-solid fa-person"></i> formées en {{ "now" | date('Y') }}</span> #}
+                                        {#                                            </div> #}
 
-                                        {% endif %}
+                                        {#                                        {% endif %} #}
 
-                                        {# Nombre d'étoiles #}
-                                        {% if formation.custom_fields is defined
-                                            and formation.custom_fields.custom_field_5 is defined
-                                            and formation.custom_fields.custom_field_5 %}
+                                        {#                                        #}{# Nombre d'étoiles #}
+                                        {#                                        {% if formation.custom_fields is defined #}
+                                        {#                                            and formation.custom_fields.custom_field_5 is defined #}
+                                        {#                                            and formation.custom_fields.custom_field_5 %} #}
 
-                                            {% set note = (formation.custom_fields.custom_field_5 ?? 0) + 0 %}
+                                        {#                                            {% set note = (formation.custom_fields.custom_field_5 ?? 0) + 0 %} #}
 
-                                            {% set fullStars = note|round(0, 'floor') %}
-                                            {% set hasHalfStar = (note - fullStars) >= 0.5 %}
-                                            {% set emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0) %}
+                                        {#                                            {% set fullStars = note|round(0, 'floor') %} #}
+                                        {#                                            {% set hasHalfStar = (note - fullStars) >= 0.5 %} #}
+                                        {#                                            {% set emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0) %} #}
 
-                                            <div>
-                                                <span class="meta-label">
-                                                     <i class="fa-solid fa-heart"></i>
-                                                    Avis
-                                                </span>
-                                                <div class="meta-value">
+                                        {#                                            <div> #}
+                                        {#                                                <span class="meta-label"> #}
+                                        {#                                                     <i class="fa-solid fa-heart"></i> #}
+                                        {#                                                    Avis #}
+                                        {#                                                </span> #}
+                                        {#                                                <div class="meta-value"> #}
 
-                                                    <div class="stars">
-                                                        {# étoiles pleines #}
-                                                        {% for i in 1..fullStars %}
-                                                            <i class="fa-solid fa-star"></i>
-                                                        {% endfor %}
+                                        {#                                                    <div class="stars"> #}
+                                        {#                                                        #}{# étoiles pleines #}
+                                        {#                                                        {% for i in 1..fullStars %} #}
+                                        {#                                                            <i class="fa-solid fa-star"></i> #}
+                                        {#                                                        {% endfor %} #}
 
-                                                        {# demi étoile #}
-                                                        {% if hasHalfStar %}
-                                                            <i class="fa-solid fa-star-half-stroke"></i>
-                                                        {% endif %}
+                                        {#                                                        #}{# demi étoile #}
+                                        {#                                                        {% if hasHalfStar %} #}
+                                        {#                                                            <i class="fa-solid fa-star-half-stroke"></i> #}
+                                        {#                                                        {% endif %} #}
 
-                                                        {# étoiles vides (sécurisé) #}
-                                                        {% if emptyStars > 0 %}
-                                                            {% for i in 1..emptyStars %}
-                                                                <i class="fa-regular fa-star"></i>
-                                                            {% endfor %}
-                                                        {% endif %}
+                                        {#                                                        #}{# étoiles vides (sécurisé) #}
+                                        {#                                                        {% if emptyStars > 0 %} #}
+                                        {#                                                            {% for i in 1..emptyStars %} #}
+                                        {#                                                                <i class="fa-regular fa-star"></i> #}
+                                        {#                                                            {% endfor %} #}
+                                        {#                                                        {% endif %} #}
 
-                                                        <span>{{ note|number_format(1, '.', '') }}/5</span>
-                                                    </div>
+                                        {#                                                        <span>{{ note|number_format(1, '.', '') }}/5</span> #}
+                                        {#                                                    </div> #}
 
-                                                </div>
-                                            </div>
+                                        {#                                                </div> #}
+                                        {#                                            </div> #}
 
 
-                                        {% endif %}
+                                        {#                                        {% endif %} #}
 
                                         <div class="lp-course-buttons">
                                             <a class="btn btn-primary btn-hover-secondary btn-width-100"

@@ -1,6 +1,20 @@
 /* ---------------------------------
 VOIR FORMATION
 --------------------------------- */
+@use "../variables" as *;
+
+.course-price-tabs {
+    .nav-tabs {
+        .nav-link {
+            color: #ababab;
+
+            &.active {
+                color: $primary-color;
+            }
+        }
+    }
+}
+
 .course-details-wrapper {
     & .title {
         font-size: 20px;
