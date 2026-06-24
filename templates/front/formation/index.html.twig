@@ -78,13 +78,13 @@
                                         {% for produitFormation in formations %}
                                             <tr>
                                                 <td>
-                                                    {{ produitFormation.description.nom ?? produitFormation.description.titre ?? produitFormation.customId ?? 'Formation' }}
+                                                    {{ produitFormation.meta.nom }}
                                                 </td>
 
                                                 <td>
                                                     {% set duree = produitFormation.description.dureeDeLaFormation ?? null %}
                                                     {% if duree %}
-                                                        {{ duree }} jour{{ duree > 1 ? 's' : '' }}
+                                                        {{ duree }} heures
                                                     {% endif %}
                                                 </td>
 
@@ -107,7 +107,7 @@
                                                 </td>
 
                                                 <td>
-                                                    <a href="#"
+                                                    <a href="{{ path('app_formation_voir', {'formationId': produitFormation.produitFormationUid, 'slug': produitFormation.slug}) }}"
                                                        class="btn btn-primary btn-v-sm">
                                                         Voir la formation
                                                     </a>
