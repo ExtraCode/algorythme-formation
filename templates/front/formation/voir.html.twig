@@ -29,6 +29,7 @@
                             <ul class="nav">
                                 <li><a class="active" data-bs-toggle="tab" href="#resume">Résumé</a></li>
                                 <li><a data-bs-toggle="tab" href="#contenu">Programme</a></li>
+                                <li><a data-bs-toggle="tab" href="#modalites">Modalités</a></li>
                                 {% if(formation.avisFormations is defined) %}
                                     <li><a data-bs-toggle="tab" href="#reviews">Appréciations</a></li>
                                 {% endif %}
@@ -37,7 +38,7 @@
 
                         <div class="tab-content">
 
-                            <!-- Résumé -->
+                            {# Résumé #}
                             <div id="resume" class="tab-pane fade show active">
 
                                 <ul class="nice-ul-box resume d-flex flex-wrap justify-content-between">
@@ -83,13 +84,130 @@
                                 <!-- Description de la formation End -->
 
                             </div>
-                            <!-- Résumé End -->
 
                             {# Contenu #}
                             <div id="contenu" class="tab-pane fade">
                                 {{ formation.description.contenuDeLaFormation | nl2br }}
                             </div>
-                            <!-- Contenu End -->
+
+                            {# Modalités #}
+                            <div id="modalites" class="tab-pane fade">
+
+                                {# Modalités pédagogiques #}
+                                <h2 class="title">Modalités pédagogiques</h2>
+
+                                <p>La formation s'appuie sur une pédagogie active et participative,
+                                    alternant
+                                    apports théoriques, démonstrations et mises en situation pratiques.
+                                </p>
+                                <p>Les stagiaires sont sollicités tout au long de la session par des exercices
+                                    d'application, des études de cas concrets et des temps d'échange permettant
+                                    l'ancrage progressif des connaissances. Le formateur adapte son rythme et
+                                    ses
+                                    exemples au niveau du groupe et au contexte professionnel des
+                                    participants.
+                                </p>
+                                <p>En distanciel, la formation se déroule en classe virtuelle synchrone, via
+                                    une plateforme de visioconférence permettant le partage d'écran, le travail
+                                    en
+                                    sous-groupes et l'interaction continue avec le formateur.
+                                </p>
+                                <p>En présentiel, les exercices peuvent être réalisés individuellement ou en
+                                    petits groupes selon les objectifs pédagogiques de chaque séquence.
+                                </p>
+
+                                {# MOYENS ET SUPPORTS PÉDAGOGIQUES #}
+                                <h2 class="title">Moyens et supports pédagogiques</h2>
+                                <p>Chaque stagiaire dispose d'un support de cours numérique reprenant l'ensemble des
+                                    contenus abordés, complété par les exercices pratiques et les ressources
+                                    complémentaires utilisées pendant la session. Ce support est transmis à l'issue de
+                                    la formation et reste accessible au stagiaire pour consultation ultérieure.
+                                </p>
+                                <p>En présentiel, une salle équipée d'un vidéoprojecteur, d’ordinateurs et d'une
+                                    connexion
+                                    internet est mise à disposition.
+                                </p>
+                                <p>En distanciel, la formation s'appuie sur une plateforme de classe virtuelle (lien
+                                    d'accès transmis avec la convocation), accessible depuis un ordinateur muni d'un
+                                    micro,
+                                    d'une caméra et d'une connexion internet stable. Les exercices et études de cas sont
+                                    partagés en temps réel via la plateforme.
+                                    L'ensemble des supports pédagogiques est conçu par le formateur ou par Algorythme
+                                    Formation et reste leur propriété exclusive.
+                                </p>
+
+                                {# Modalités d'évaluation et de suivi #}
+                                <h2 class="title">Modalités d'évaluation et de suivi</h2>
+                                <p>L'évaluation des acquis est continue tout au long de la formation, à travers les
+                                    exercices pratiques, les mises en situation et les échanges avec le formateur. À
+                                    l'issue de la session, un questionnaire d'évaluation à chaud est administré à chaque
+                                    stagiaire pour mesurer l'atteinte des objectifs pédagogiques et recueillir son
+                                    ressenti.
+                                </p>
+
+                                <p>Un questionnaire de satisfaction est également complété par chaque stagiaire à la
+                                    fin de la formation, permettant à Algorythme Formation de s'assurer de la qualité de
+                                    la prestation et d'identifier les axes d'amélioration éventuels.
+                                    Le suivi administratif de la formation est assuré par la signature, à chaque
+                                    demi-journée, d'une feuille de présence par les stagiaires et le formateur. À
+                                    l'issue de la session, un certificat de réalisation est remis à chaque stagiaire
+                                    ayant suivi l'intégralité de la formation, mentionnant les objectifs, la durée et
+                                    les acquis évalués.
+                                </p>
+                                <p>En cas de besoin, un échange post-formation peut être organisé avec le formateur ou
+                                    le référent pédagogique d'Algorythme Formation pour répondre aux questions des
+                                    apprenants dans les semaines suivant la session.
+                                </p>
+
+                                {# Modalités et délais d'accès #}
+                                <h2 class="title">Modalités et délais d'accès</h2>
+                                <p>
+                                    L'inscription se fait par contact direct avec Algorythme Formation (téléphone, email
+                                    ou formulaire en ligne). Un échange préalable est organisé pour vérifier
+                                    l'adéquation entre les objectifs de la formation, les prérequis et le profil du
+                                    candidat. Un devis et un programme détaillé sont ensuite transmis. Une fois le devis
+                                    accepté, une convention de formation (ou un contrat de formation pour les
+                                    particuliers) est signée entre les parties.
+                                </p>
+                                <p>Accès au lieu de formation : les modalités précises d'accès sont communiquées à
+                                    chaque stagiaire au plus tard 11 jours ouvrés avant le début de la formation, par
+                                    l'envoi d'une convocation détaillée. Pour les formations en présentiel, cette
+                                    convocation précise l'adresse exacte de la salle, les indications d'accès
+                                    (transports, parking) et les horaires d'arrivée. Pour les formations en distanciel,
+                                    elle contient le lien de connexion à la classe virtuelle, les identifiants d'accès
+                                    le cas échéant, ainsi que les prérequis techniques (navigateur, micro, caméra, débit
+                                    internet).
+                                </p>
+                                <p>Accessibilité aux personnes en situation de handicap : tout besoin d'adaptation doit
+                                    être signalé dès l'inscription afin d'étudier les aménagements possibles. Le
+                                    référent
+                                    handicap d'Algorythme Formation est Mathieu Piron-Lafleur
+                                    (mathieu@algorythme-formation.fr).
+                                </p>
+                                <p>Délai d'accès : le délai entre la demande d'inscription et le démarrage effectif de
+                                    la
+                                    formation est de 11 jours ouvrés minimum, pour permettre la mise en place
+                                    administrative
+                                    et le respect des délais légaux des financeurs (OPCO, CPF, France Travail). Ce délai
+                                    peut être plus long si la session demandée n'est pas encore programmée ou si une
+                                    ingénierie sur mesure est nécessaire (jusqu'à 2 mois). À l'inverse, il peut être
+                                    raccourci sur accord des parties dans le cas de formations intra-entreprise
+                                    urgentes.
+                                </p>
+                                <p>Conformément à la réglementation (loi du 11 Février 2005 et Articles D.5211-1 et
+                                    suivants du code du travail), Algorythme Formation s’engage à répondre aux besoins
+                                    particuliers des stagiaires en situation de handicap en proposant des aménagements
+                                    en
+                                    termes de durée, rythme, méthodes et supports pédagogiques...).
+                                </p>
+                                <p>Le cas échéant, l’organisme de formation pourra mobiliser des compétences externes
+                                    (Centre de Ressources Formation Handicap, P.A.S AGEFIPH-FIPHFP) et les ressources AD
+                                    HOC
+                                    (ACCEA, EPATECH,..) pour la recherche de solutions permettant l’accès aux
+                                    formations.
+                                </p>
+
+                            </div>
 
                             {#                        <!-- Notes Start --> #}
                             {#                        {% if(formation.avisFormations is not empty) %} #}

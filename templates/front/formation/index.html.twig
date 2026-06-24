@@ -100,7 +100,7 @@
                                                 </td>
 
                                                 <td>
-                                                    {% set note = (produitFormation.custom_fields.custom_field_5 ?? 0) + 0 %}
+                                                    {% set note = produitFormation.custom_fields.custom_field_5|default(0) * 1 %}
                                                     {% if note %}
                                                         {{ note|number_format(1, ',', ' ') }}/5
                                                     {% endif %}
