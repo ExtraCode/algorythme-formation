@@ -67,9 +67,9 @@
                                         <tr>
                                             <th>Formation</th>
                                             <th>Durée</th>
-                                            <th>Niveau</th>
+                                            {#                                            <th>Niveau</th> #}
                                             <th>Prix</th>
-                                            <th>Note moyenne</th>
+                                            {#                                            <th>Note moyenne</th> #}
                                             <th>Action</th>
                                         </tr>
                                         </thead>
@@ -88,9 +88,9 @@
                                                     {% endif %}
                                                 </td>
 
-                                                <td>
-                                                    {{ produitFormation.custom_fields.custom_field_7 ?? '-' }}
-                                                </td>
+                                                {#                                                <td> #}
+                                                {#                                                    {{ produitFormation.custom_fields.custom_field_7 ?? '-' }} #}
+                                                {#                                                </td> #}
 
                                                 <td>
                                                     {% set prixHT = produitFormation.presetTarification.tarifs[0].budget[0].prixUnitaireHT ?? null %}
@@ -99,12 +99,12 @@
                                                     {% endif %}
                                                 </td>
 
-                                                <td>
-                                                    {% set note = produitFormation.custom_fields.custom_field_5|default(0) * 1 %}
-                                                    {% if note %}
-                                                        {{ note|number_format(1, ',', ' ') }}/5
-                                                    {% endif %}
-                                                </td>
+                                                {#                                                <td> #}
+                                                {#                                                    {% set note = produitFormation.custom_fields.custom_field_5|default(0) * 1 %} #}
+                                                {#                                                    {% if note %} #}
+                                                {#                                                        {{ note|number_format(1, ',', ' ') }}/5 #}
+                                                {#                                                    {% endif %} #}
+                                                {#                                                </td> #}
 
                                                 <td>
                                                     <a href="{{ path('app_formation_voir', {'formationId': produitFormation.produitFormationUid, 'slug': produitFormation.slug}) }}"

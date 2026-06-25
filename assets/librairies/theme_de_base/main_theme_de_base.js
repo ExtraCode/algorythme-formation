@@ -16,14 +16,9 @@
             $image = $this.data('bg-image');
         $this.css('background-image', 'url(' + $image + ')');
     });
-    $('[data-bg-color]').each(function () {
-        var $this = $(this),
-            $color = $this.data('bg-color');
-        $this.css('background-color', $color);
-    });
 
     /*------------------------------
-        Parallax Motion Animation 
+        Parallax Motion Animation
     -------------------------------*/
     $('.scene').each(function () {
         new Parallax($(this)[0]);
@@ -89,7 +84,7 @@
 
 
     /* -----------------------------------
-        Selectric Fake Select Plugin 
+        Selectric Fake Select Plugin
     -------------------------------------*/
     $('.selectric').selectric({
         arrowButtonMarkup: '<span class="arrow"><i class="fas fa-angle-down"></i></span>',
@@ -102,7 +97,7 @@
     });
 
     /* ----------------------------
-        AOS Scroll Animation 
+        AOS Scroll Animation
     -------------------------------*/
     AOS.init({
         offset: 80,
@@ -113,7 +108,7 @@
 
 
     /*----------------------------------------
-         SVG Inject With Vivus(After Inject) 
+         SVG Inject With Vivus(After Inject)
     ------------------------------------------*/
     SVGInject(document.querySelectorAll("img.svgInject"), {
         makeIdsUnique: true,
@@ -132,7 +127,7 @@
     })
 
     /*----------------------------
-        Justified Gallery 
+        Justified Gallery
     ------------------------------*/
     var $justifiedGallery = $('.justified-gallery');
 
@@ -144,21 +139,21 @@
             border: 0,
             lastRow: 'nojustify'
         });
-        
+
     });
 
     /*-----------------------
-        CounterUp JS 
+        CounterUp JS
     -------------------------*/
     $('.counter').counterUp({
         time: 2000
     });
 
     /*--------------------------------
-        Swiper Slider Activation JS 
+        Swiper Slider Activation JS
     ----------------------------------*/
-     // Home 7 Slider
-     var intro7Slider = new Swiper('.intro7-slider', {
+    // Home 7 Slider
+    var intro7Slider = new Swiper('.intro7-slider', {
         loop: true,
         speed: 750,
         spaceBetween: 30,
@@ -237,7 +232,7 @@
             el: '.swiper-pagination',
             type: 'bullets',
             clickable: true,
-          },
+        },
         breakpoints: {
             320: {
                 slidesPerView: 1
@@ -250,12 +245,12 @@
 
     // Testimonial Slider Two
     var testimonialSlider = new Swiper('.testimonial-slider-two', {
-        slidesPerView : 1,
+        slidesPerView: 1,
         slidesPerGroup: 1,
         centeredSlides: true,
         loop: true,
         speed: 1000,
-        spaceBetween : 50,
+        spaceBetween: 50,
         autoHeight: true,
         pagination: {
             el: '.swiper-pagination',
@@ -263,33 +258,33 @@
             clickable: true
         },
         breakpoints: {
-            1499:{
-                slidesPerView : 3
+            1499: {
+                slidesPerView: 3
             },
 
-            991:{
-                slidesPerView : 2
+            991: {
+                slidesPerView: 2
             },
 
-            767:{
-                slidesPerView : 1
+            767: {
+                slidesPerView: 1
 
             },
 
-            575:{
-                slidesPerView : 1
+            575: {
+                slidesPerView: 1
             }
         }
     });
 
     // Testimonial Slider Three
     var testimonialSlider = new Swiper('.testimonial-slider-three', {
-        slidesPerView : 1,
+        slidesPerView: 1,
         slidesPerGroup: 1,
         loop: true,
         speed: 1000,
         autoHeight: true,
-        spaceBetween : 30,
+        spaceBetween: 30,
         navigation: {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev',
@@ -300,54 +295,54 @@
             clickable: true
         },
         breakpoints: {
-            1499:{
-                slidesPerView : 1
+            1499: {
+                slidesPerView: 1
             },
 
-            991:{
-                slidesPerView : 1
+            991: {
+                slidesPerView: 1
             },
 
-            767:{
-                slidesPerView : 1
+            767: {
+                slidesPerView: 1
 
             },
 
-            575:{
-                slidesPerView : 1
+            575: {
+                slidesPerView: 1
             }
         }
     });
 
     // Testimonial Slider Vertical
     var testimonialSlider = new Swiper('.testimonial-slider-vertical', {
-        slidesPerView : 1,
+        slidesPerView: 1,
         slidesPerGroup: 1,
         effect: 'coverflow',
         loop: true,
         speed: 1000,
-        spaceBetween : 30,
+        spaceBetween: 30,
         pagination: {
             el: '.swiper-pagination',
             type: 'bullets',
             clickable: true,
         },
         breakpoints: {
-            1499:{
-                slidesPerView : 1
+            1499: {
+                slidesPerView: 1
             },
 
-            991:{
-                slidesPerView : 1
+            991: {
+                slidesPerView: 1
             },
 
-            767:{
-                slidesPerView : 1
+            767: {
+                slidesPerView: 1
 
             },
 
-            575:{
-                slidesPerView : 1
+            575: {
+                slidesPerView: 1
             }
         }
     });
@@ -362,7 +357,7 @@
             el: '.swiper-pagination',
             type: 'bullets',
             clickable: true,
-          },
+        },
         breakpoints: {
             1200: {
                 slidesPerView: 3
@@ -393,7 +388,7 @@
             el: '.swiper-pagination',
             type: 'bullets',
             clickable: true,
-          },
+        },
     })
 
     // Testimonial Slider Three Item
@@ -431,14 +426,14 @@
         watchSlidesVisibility: true,
         loop: true,
         pagination: {
-          el: '.swiper-pagination',
-          type: 'fraction',
+            el: '.swiper-pagination',
+            type: 'fraction',
         },
         navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev',
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
         },
-      });
+    });
 
     // Brand Carousel Slider
     var brandSlider = new Swiper('.brand-carousel', {
@@ -477,7 +472,7 @@
             el: '.swiper-pagination',
             type: 'bullets',
             clickable: true,
-          },
+        },
         breakpoints: {
             1200: {
                 slidesPerView: 3
@@ -534,7 +529,7 @@
             el: '.swiper-pagination',
             type: 'bullets',
             clickable: true,
-          },
+        },
         breakpoints: {
             1200: {
                 slidesPerView: 3
@@ -566,7 +561,7 @@
             el: '.swiper-pagination',
             type: 'bullets',
             clickable: true,
-          },
+        },
         breakpoints: {
             1200: {
                 slidesPerView: 4
@@ -598,7 +593,7 @@
             el: '.swiper-pagination',
             type: 'bullets',
             clickable: true,
-          },
+        },
         breakpoints: {
             320: {
                 slidesPerView: 1
@@ -626,7 +621,7 @@
             el: '.swiper-pagination',
             type: 'bullets',
             clickable: true,
-          },
+        },
     })
 
     /*--
@@ -685,73 +680,73 @@
     });
 
 
-    /*----------------------------------- 
-        Count Down Active 
-    ----------------------------------*/  
-    $('[data-countdown]:not(.pro-countdown-1,.pro-countdown-2)').each(function() {
+    /*-----------------------------------
+        Count Down Active
+    ----------------------------------*/
+    $('[data-countdown]:not(.pro-countdown-1,.pro-countdown-2)').each(function () {
         var $this = $(this), finalDate = $(this).data('countdown');
-        $this.countdown(finalDate, function(event) {
+        $this.countdown(finalDate, function (event) {
             $this.html(event.strftime('<div class="single-countdown-box"><span>%D</span>Day</div><div class="single-countdown-box"><span>%H</span>Hours</div><div class="single-countdown-box"><span>%M</span>Mins</div><div class="single-countdown-box"><span>%S</span>Secs</div>'));
         });
     });
-    $('[data-countdown].pro-countdown-1').each(function() {
+    $('[data-countdown].pro-countdown-1').each(function () {
         var $this = $(this), finalDate = $(this).data('countdown');
-        $this.countdown(finalDate, function(event) {
+        $this.countdown(finalDate, function (event) {
             $this.html(event.strftime('<div class="single-countdown-box-1"><span>%D</span>Day</div><div class="single-countdown-box-1"><span>%H</span>Hours</div><div class="single-countdown-box-1"><span>%M</span>Mins</div><div class="single-countdown-box-1"><span>%S</span>Secs</div>'));
         });
     });
-    $('[data-countdown].pro-countdown-2').each(function() {
+    $('[data-countdown].pro-countdown-2').each(function () {
         var $this = $(this), finalDate = $(this).data('countdown');
-        $this.countdown(finalDate, function(event) {
+        $this.countdown(finalDate, function (event) {
             $this.html(event.strftime('<div class="countdown-item before-none"><span>%D</span></div><div class="countdown-item"><span>%H</span></div><div class="countdown-item"><span>%M</span></div><div class="countdown-item"><span>%S</span></div>'));
         });
     });
-    
-    /*----- 
+
+    /*-----
         Quantity
     --------------------------------*/
     $('.pro-qty').prepend('<button class="dec qtybtn">-</button>');
     $('.pro-qty').append('<button class="inc qtybtn">+</button>');
-    $('.qtybtn').on('click', function() {
+    $('.qtybtn').on('click', function () {
         var $button = $(this);
         var oldValue = $button.parent().find('input').val();
         if ($button.hasClass('inc')) {
-        var newVal = parseFloat(oldValue) + 1;
+            var newVal = parseFloat(oldValue) + 1;
         } else {
-        // Don't allow decrementing below zero
-        if (oldValue > 0) {
-            var newVal = parseFloat(oldValue) - 1;
+            // Don't allow decrementing below zero
+            if (oldValue > 0) {
+                var newVal = parseFloat(oldValue) - 1;
             } else {
-            newVal = 0;
-        }
+                newVal = 0;
+            }
         }
         $button.parent().find('input').val(newVal);
     });
 
-    /*----- 
+    /*-----
 	Shipping Form Toggle
-    --------------------------------*/ 
-    $('[data-shipping]').on('click', function(){
-        if( $('[data-shipping]:checked').length > 0 ) {
+    --------------------------------*/
+    $('[data-shipping]').on('click', function () {
+        if ($('[data-shipping]:checked').length > 0) {
             $('#shipping-form').slideDown();
         } else {
             $('#shipping-form').slideUp();
         }
     })
-        
-    /*----- 
+
+    /*-----
         Payment Method Select
     --------------------------------*/
-    $('[name="payment-method"]').on('click', function(){
-        
+    $('[name="payment-method"]').on('click', function () {
+
         var $value = $(this).attr('value');
 
         $('.single-method p').slideUp();
-        $('[data-method="'+$value+'"]').slideDown();
-        
+        $('[data-method="' + $value + '"]').slideDown();
+
     })
 
-    /*----- 
+    /*-----
         Animate Headline Active
     --------------------------------*/
     $('.headline-active').animatedHeadline({
@@ -792,13 +787,14 @@
             evt.preventDefault();
         });
     }
+
     scrollToTop();
 
 
     /*-------------------------
-        Ajax Contact Form 
+        Ajax Contact Form
     ---------------------------*/
-    $(function() {
+    $(function () {
 
         // Get the form.
         var form = $('#contact-form');
@@ -807,7 +803,7 @@
         var formMessages = $('.form-messege');
 
         // Set up an event listener for the contact form.
-        $(form).submit(function(e) {
+        $(form).submit(function (e) {
             // Stop the browser from submitting the form.
             e.preventDefault();
 
@@ -820,29 +816,29 @@
                 url: $(form).attr('action'),
                 data: formData
             })
-            .done(function(response) {
-                // Make sure that the formMessages div has the 'success' class.
-                $(formMessages).removeClass('error');
-                $(formMessages).addClass('success');
+                .done(function (response) {
+                    // Make sure that the formMessages div has the 'success' class.
+                    $(formMessages).removeClass('error');
+                    $(formMessages).addClass('success');
 
-                // Set the message text.
-                $(formMessages).text(response);
+                    // Set the message text.
+                    $(formMessages).text(response);
 
-                // Clear the form.
-                $('#contact-form input,#contact-form textarea').val('');
-            })
-            .fail(function(data) {
-                // Make sure that the formMessages div has the 'error' class.
-                $(formMessages).removeClass('success');
-                $(formMessages).addClass('error');
+                    // Clear the form.
+                    $('#contact-form input,#contact-form textarea').val('');
+                })
+                .fail(function (data) {
+                    // Make sure that the formMessages div has the 'error' class.
+                    $(formMessages).removeClass('success');
+                    $(formMessages).addClass('error');
 
-                // Set the message text.
-                if (data.responseText !== '') {
-                    $(formMessages).text(data.responseText);
-                } else {
-                    $(formMessages).text('Oops! An error occured and your message could not be sent.');
-                }
-            });
+                    // Set the message text.
+                    if (data.responseText !== '') {
+                        $(formMessages).text(data.responseText);
+                    } else {
+                        $(formMessages).text('Oops! An error occured and your message could not be sent.');
+                    }
+                });
         });
 
     });
@@ -850,11 +846,13 @@
     /*--
         On Load Function
     -----------------------------------*/
-    $window.on('load', function () {});
+    $window.on('load', function () {
+    });
 
     /*--
         Resize Function
     -----------------------------------*/
-    $window.resize(function () {});
+    $window.resize(function () {
+    });
 
 })(jQuery);
