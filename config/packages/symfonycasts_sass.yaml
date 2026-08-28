@@ -1,7 +1,6 @@
 symfonycasts_sass:
     root_sass:
+        # Feuille commune : jetons de design, base HTML, composants, header/footer.
         - 'assets/styles/app.scss'
+        # Une feuille par page, chargée dans le block `stylesheets` du template.
         - 'assets/styles/pages/accueil.scss'
-        - 'assets/styles/pages/formation.scss'
-        #Admin
-        - 'assets/styles/admin/app_admin.scss'

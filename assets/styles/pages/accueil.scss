@@ -1,135 +1,440 @@
-@use '../variables';
+@use "../variables" as *;
 
-/* ---------------------------------
-CARTE FRANCE
---------------------------------- */
+// =====================================================================
+// Page d'accueil — Algorythme Formation
+// Sections dans l'ordre du gabarit :
+//   hero → conviction → domaines → quiz → approche →
+//   formateurs → financement → CTA final
+// Les jetons, l'en-tête, le pied de page et les composants communs
+// (.af-btn, .af-card, .af-container…) sont dans app.scss.
+// =====================================================================
 
-.salles {
-    &__carte {
+.accueil {
 
-        background-color: #3f3a64;
-        padding: 20px 0;
-        border-radius: 20px;
+    // Les ancres de navigation ne doivent pas passer sous l'en-tête collant.
+    [id] {
+        scroll-margin-top: 88px;
+    }
 
-        &__pin {
-            position: absolute;
-            font-size: 35px;
-            color: #3f3a64;
+    // -----------------------------------------------------------------
+    // Hero
+    // -----------------------------------------------------------------
+    .hero {
+        padding-top: clamp(56px, 9vw, 96px);
+
+        // Bandeau blanc calé sur le texte : la maquette le figeait à 585px,
+        // largeur que le sur-titre dépasse dès qu'il repasse à la ligne.
+        &__eyebrow {
+            display: inline-flex;
+            align-items: center;
+            max-width: 100%;
+            min-height: 40px;
+            padding-right: $space-4;
+            background: var(--color-white);
+            font-size: 12px;
+            letter-spacing: 0.14em;
+        }
+
+        &__lead {
+            margin: 0 0 $space-6;
+            font-size: 1.1875rem;
+            color: var(--color-secondary);
+        }
+
+        &__actions {
+            display: flex;
+            align-items: center;
+            gap: $space-5;
+            flex-wrap: wrap;
+            margin-bottom: $space-4;
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Notre conviction — bande sombre
+    // -----------------------------------------------------------------
+    .dark-band {
+        background: var(--surface-dark);
+
+        .af-eyebrow {
+            color: var(--color-cta);
+        }
+
+        h2,
+        p {
+            color: var(--text-on-dark);
+        }
+
+        .pull {
+            margin-top: $space-7;
+            border-left-color: var(--color-accent);
+            color: var(--color-cta);
+        }
+    }
+
+    .conviction-xl {
+        max-width: none;
+        margin: 0 0 $space-6;
+        font-family: var(--font-display);
+        font-weight: $weight-regular;
+        font-size: clamp(1.375rem, 2.6vw, 2rem);
+        line-height: 1.4;
+        letter-spacing: -0.01em;
+    }
+
+    .pull {
+        margin: $space-6 0 0;
+        padding: 0 0 0 $space-5;
+        border-left: 3px solid var(--color-accent);
+        font-family: var(--font-display);
+        font-weight: $weight-bold;
+        font-size: 1.375rem;
+        color: var(--color-primary);
+    }
+
+    .section-intro {
+        margin-bottom: $space-6;
+        color: var(--color-secondary);
+    }
+
+    // -----------------------------------------------------------------
+    // Les 5 domaines d'expertise
+    // -----------------------------------------------------------------
+    .pillar-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: $space-5;
+    }
+
+    .pillar-card {
+
+        // Petit trait accent en tête de carte.
+        &__tick {
+            display: block;
+            width: 32px;
+            height: 3px;
+            border-radius: $radius-pill;
+            background: var(--color-accent);
+        }
+
+        h3 {
+            margin: $space-3 0 $space-2;
+        }
+
+        p {
+            margin: 0;
+            font-size: 0.9375rem;
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Quiz de cadrage
+    // -----------------------------------------------------------------
+    .quiz-section {
+        background: var(--color-cta-soft);
+    }
+
+    .quiz-card {
+        padding: clamp(24px, 4vw, 48px);
+        border: 1px solid var(--color-border);
+        border-radius: $radius-lg;
+        background: var(--color-white);
+        box-shadow: var(--shadow-card);
+    }
+
+    .quiz {
+
+        &__progress {
+            margin: $space-5 0 $space-2;
+            font-family: var(--font-display);
+            font-size: $text-caption;
+            font-weight: $weight-bold;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-secondary);
+        }
+
+        &__question {
+            margin: 0 0 $space-5;
+            font-size: 1.375rem;
+        }
+
+        &__options {
+            display: grid;
+            gap: $space-3;
+        }
+
+        &__option {
+            min-height: 48px;
+            padding: $space-3 $space-4;
+            border: 1px solid var(--color-border-strong);
+            border-radius: $space-2;
+            background: var(--color-white);
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: $weight-semibold;
+            color: var(--color-primary);
+            text-align: left;
+            cursor: pointer;
+            transition: background $transition-fast, border-color $transition-fast;
+
+            &:hover {
+                background: var(--color-cta-soft);
+                border-color: var(--color-cta);
+            }
+        }
+
+        &__back {
+            display: inline-block;
+            margin-top: $space-5;
+            padding: 0;
+            border: none;
+            background: none;
+            font-family: var(--font-body);
+            font-size: 0.9375rem;
+            font-weight: $weight-semibold;
+            color: var(--color-secondary);
+            text-decoration: none;
             cursor: pointer;
 
-            &.active {
-                transform: scale(1.5);
-                color: #20AD96;
-            }
-
-            &--nantes {
-                top: 36%;
-                left: 26%;
-            }
-
-            &--bordeaux {
-                top: 57%;
-                left: 33%;
-            }
-
-            &--toulouse {
-                top: 70%;
-                left: 46%;
-            }
-
-            &--marseille {
-                top: 73%;
-                left: 71%;
-            }
-
-            &--lyon {
-                top: 49%;
-                left: 66%;
-            }
-
-            &--dijon {
-                top: 35%;
-                left: 69%;
-            }
-
-            &--paris {
-                top: 21%;
-                left: 53%;
-            }
-
-            &--lille {
-                top: 7%;
-                left: 56%;
-            }
-
-            &--dax {
-                top: 77%;
-                left: 33%;
+            &:hover {
+                color: var(--color-primary);
             }
         }
 
-        &__img {
-            width: 80%;
+        // Récapitulatif des 4 réponses
+        &__recap {
+            display: grid;
+            gap: 0;
+            margin: 0 0 $space-5;
+        }
+
+        &__recap-row {
+            display: flex;
+            justify-content: space-between;
+            gap: $space-4;
+            padding: $space-3 0;
+            border-bottom: 1px solid var(--color-border);
+
+            dt {
+                font-size: 0.9375rem;
+                color: var(--color-secondary);
+            }
+
+            dd {
+                margin: 0;
+                font-family: var(--font-display);
+                font-size: 0.9375rem;
+                font-weight: $weight-semibold;
+                color: var(--color-primary);
+                text-align: right;
+            }
+        }
+
+        &__note {
+            font-size: 0.9375rem;
+            color: var(--color-secondary);
+        }
+
+        &__form {
+            margin: $space-5 0 $space-2;
+        }
+
+        &__form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: $space-4;
+            margin-bottom: $space-5;
+        }
+
+        // Retour du serveur après l'envoi : confirmation, ou panne d'envoi.
+        &__sent {
+            margin-top: $space-5;
+            padding: $space-4;
+            border-radius: $space-2;
+            background: var(--color-cta-soft);
+
+            &--error {
+                background: var(--color-accent-soft);
+                color: var(--color-primary);
+            }
         }
     }
 
-    &__informations {
+    // -----------------------------------------------------------------
+    // Notre approche — la trajectoire en 4 étapes
+    // -----------------------------------------------------------------
+    .approche-band {
+        background: var(--color-primary-soft);
+    }
 
-        display: none;
+    .timeline {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: $space-5;
+        margin-top: $space-4;
 
-        &.active {
-            display: block;
+        // Fil conducteur qui relie les quatre étapes.
+        &::before {
+            content: "";
+            position: absolute;
+            top: 43px;
+            left: $space-5;
+            right: $space-5;
+            height: 1px;
+            background: var(--color-border-strong);
+        }
+    }
+
+    .step {
+        position: relative;
+        padding: $space-5;
+        border: 1px solid var(--color-border);
+        border-radius: $radius-lg;
+        background: var(--color-white);
+
+        &__num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: $space-2;
+            background: var(--color-accent);
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: $weight-bold;
+            color: var(--color-primary);
         }
 
-        &__texte {
-            font-size: 1.25rem !important;
+        h3 {
+            margin: $space-4 0 $space-2;
+            font-size: 1.125rem;
+        }
+
+        p {
+            margin: 0;
+            font-size: 0.9375rem;
         }
     }
-}
 
-/*
-* Formations
- */
-.formation {
-    &__header {
-
-        background-color: #efefef;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px 10px;
-
+    // -----------------------------------------------------------------
+    // Nos formateurs
+    // -----------------------------------------------------------------
+    .people-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: $space-5;
     }
 
-    &__titre {
-        min-height: 155px;
+    .person-card {
+
+        &__avatar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            margin-bottom: $space-4;
+            border: 1px dashed var(--color-accent);
+            border-radius: $radius-pill;
+            background: var(--color-accent-soft);
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            font-weight: $weight-semibold;
+            color: var(--color-primary);
+        }
+
+        h3 {
+            margin: 0 0 $space-1;
+        }
+
+        &__role {
+            margin: 0 0 $space-3;
+            font-family: var(--font-display);
+            font-size: $text-caption;
+            font-weight: $weight-semibold;
+            color: var(--color-secondary);
+        }
+
+        p {
+            font-size: 0.9375rem;
+        }
     }
 
-    &__info {
-        border: 1px solid #f3f3f3;
-        border-top: none;
+    // -----------------------------------------------------------------
+    // Dispositifs de financement
+    // -----------------------------------------------------------------
+    .small-note {
+        font-size: 0.9375rem;
+        color: var(--color-secondary);
     }
 
-    &__categorie {
+    // -----------------------------------------------------------------
+    // CTA final
+    // -----------------------------------------------------------------
+    .cta-final {
+        padding: clamp(56px, 9vw, 96px) 0;
+        background: var(--surface-dark);
+        color: var(--text-on-dark);
 
-        width: fit-content;
-        padding: 4px 9px;
-        color: white;
-        border-radius: 8px;
-        font-size: 12px;
-        letter-spacing: 0.03rem;
-        background-color: grey;
-        margin-bottom: 0;
+        &__inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: $space-5;
+            text-align: center;
+        }
 
+        &__signal {
+            width: 100%;
+        }
+
+        h2 {
+            margin: 0;
+            color: var(--text-on-dark);
+        }
+
+        p {
+            margin: 0;
+            opacity: 0.92;
+        }
+
+        &__contact a {
+            color: var(--color-white);
+
+            &:hover {
+                color: var(--color-cta);
+            }
+        }
     }
 
-    &__reference {
-        color: variables.$quinary-color;
-        font-size: 21px;
+    // -----------------------------------------------------------------
+    // Adaptations mobiles
+    // -----------------------------------------------------------------
+    @media (max-width: $bp-md) {
+        .timeline {
+            grid-template-columns: 1fr;
+
+            &::before {
+                display: none;
+            }
+        }
+
+        .quiz__recap-row {
+            flex-direction: column;
+            gap: 2px;
+
+            dd {
+                text-align: left;
+            }
+        }
     }
 
-    &__jours {
-        bottom: 0;
-        top: auto !important;
+    @media (max-width: $bp-sm) {
+        .quiz__form-grid {
+            grid-template-columns: 1fr;
+        }
     }
 }

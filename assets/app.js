@@ -11,29 +11,4 @@ import * as bootstrap from 'bootstrap';
 
 import './librairies/font-awesome-7-0-1/css/all.min.css'
 
-import './librairies/theme_de_base/plugins_theme_de_base.min.css'
-import './librairies/theme_de_base/style_theme_de_base.css'
 import './styles/app.scss';
-
-/*
-* Montre elementsToShow et cache elementsToHide au lancement de la fonction
- */
-function showAndHideElements(elementsToShow = null, elementsToHide = null) {
-
-    if (elementsToShow != null) {
-        document.querySelectorAll('.' + elementsToShow).forEach((elementToShow) => {
-
-            elementToShow.classList.remove('d-none');
-
-        });
-    }
-
-    if (elementsToHide != null) {
-        document.querySelectorAll('.' + elementsToHide).forEach((elementToHide) => {
-
-            elementToHide.classList.add('d-none');
-
-        });
-    }
-
-}

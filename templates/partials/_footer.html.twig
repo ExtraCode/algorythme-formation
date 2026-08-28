@@ -1,0 +1,51 @@
+<footer class="site-footer">
+    <div class="af-container site-footer__grid">
+
+        <div>
+            <img src="{{ asset('images/logo-algorythme-formation-blanc.png') }}"
+                 alt="{{ APP_NOM_OF }}" class="site-footer__logo" width="649" height="187">
+            <p>Organisme de formation tech pour les entreprises.</p>
+
+            <div class="site-footer__qualiopi">
+                <img src="{{ asset('images/logo-qualiopi.png') }}"
+                     alt="Certification Qualiopi - République Française"
+                     class="site-footer__qualiopi-logos" width="500" height="267">
+                <div class="site-footer__qualiopi-text">
+                    <div><span>{{ APP_NOM_OF|upper }} a obtenu<br>la certification Qualiopi</span></div>
+                    <div><span>au titre de la catégorie<br>ACTIONS DE FORMATION</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <p class="site-footer__title">Coordonnées</p>
+            <p>
+                422 Avenue de Verdun<br>
+                33700 Mérignac<br>
+                <a href="tel:0554542484">05 54 54 24 84</a><br>
+                <a href="mailto:contact@algorythme-formation.fr">contact@algorythme-formation.fr</a>
+            </p>
+        </div>
+
+        <div>
+            <p class="site-footer__title">Légal</p>
+            <p>
+                <a href="{{ path('app_mentions_legales') }}">Mentions légales</a><br>
+                <a href="{{ asset('PDF/CGV AF.pdf') }}">CGV</a><br>
+                <a href="{{ path('app_donnees_personnelles') }}">Politique de confidentialité</a><br>
+                <a href="{{ path('home') }}#modalites">Accessibilité et handicap</a>
+            </p>
+        </div>
+
+        <div>
+            <p class="site-footer__title">{{ APP_NOM_OF }} (SAS)</p>
+            <p>
+                SIRET 101 916 674 00019<br>
+                NDA 75331851633<br>
+                Référent handicap :<br>
+                Mathieu Piron-Lafleur
+            </p>
+        </div>
+
+    </div>
+</footer>

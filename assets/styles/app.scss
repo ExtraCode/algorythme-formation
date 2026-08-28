@@ -1,94 +1,608 @@
 @use "variables" as *;
-@use "classes/colors";
 
-/* ---------------------------------
-CUSTOM
---------------------------------- */
-h1 {
-    font-size: 40px;
-    line-height: 1.17;
-    color: #3F3A64;
-}
+// =====================================================================
+// Feuille de style commune — Algorythme Formation
+//  1. Polices auto-hébergées
+//  2. Jetons de design exposés en custom properties
+//  3. Base des éléments HTML
+//  4. Utilitaires de mise en page
+//  5. Composants du design system (bouton, carte, champ de formulaire)
+//  6. En-tête et pied de page (présents sur toutes les pages)
+// Les styles propres à la page d'accueil vivent dans pages/accueil.scss.
+// =====================================================================
 
-.btn {
-    &-v-sm {
-        height: 35px;
-        padding: 5px 5px;
+// ---------------------------------------------------------------------
+// 1. Polices — DM Sans (titres) + Open Sans (corps)
+//    Auto-hébergées : aucun appel à un CDN tiers (RGPD).
+// ---------------------------------------------------------------------
+$font-faces: (
+    ("DM Sans", 400 700, "dm-sans-latin", $unicode-latin),
+    ("DM Sans", 400 700, "dm-sans-latin-ext", $unicode-latin-ext),
+    ("DM Sans", 800, "dm-sans-800-latin", $unicode-latin),
+    ("DM Sans", 800, "dm-sans-800-latin-ext", $unicode-latin-ext),
+    ("Open Sans", 400 700, "open-sans-latin", $unicode-latin),
+    ("Open Sans", 400 700, "open-sans-latin-ext", $unicode-latin-ext)
+);
+
+@each $family, $weight, $file, $range in $font-faces {
+    @font-face {
+        font-family: $family;
+        font-style: normal;
+        font-weight: $weight;
+        font-display: swap;
+        src: url("../fonts/#{$file}.woff2") format("woff2");
+        unicode-range: $range;
     }
 }
 
-.text-justify {
-    text-align: justify;
+// ---------------------------------------------------------------------
+// 2. Jetons de design
+// ---------------------------------------------------------------------
+:root {
+    // Palette
+    --color-primary: #{$color-primary};
+    --color-secondary: #{$color-secondary};
+    --color-cta: #{$color-cta};
+    --color-accent: #{$color-accent};
+    --color-page: #{$color-page};
+    --color-white: #{$color-white};
+
+    --color-cta-hover: #{$color-cta-hover};
+    --color-cta-active: #{$color-cta-active};
+    --color-accent-soft: #{$color-accent-soft};
+    --color-cta-soft: #{$color-cta-soft};
+    --color-primary-soft: #{$color-primary-soft};
+    --color-border: #{$color-border};
+    --color-border-strong: #{$color-border-strong};
+
+    // Sémantiques
+    --text-body: #{$text-body};
+    --text-muted: #{$text-muted};
+    --text-on-dark: #{$text-on-dark};
+    --text-on-cta: #{$text-on-cta};
+    --text-on-accent: #{$text-on-accent};
+    --link: #{$link};
+    --link-on-dark: #{$link-on-dark};
+
+    --surface-page: #{$color-page};
+    --surface-card: #{$color-white};
+    --surface-dark: #{$color-primary};
+    --surface-section: #{$color-secondary};
+
+    // Typographie
+    --font-display: #{$font-display};
+    --font-body: #{$font-body};
+    --text-display: #{$text-display};
+    --text-h2: #{$text-h2};
+    --text-h3: #{$text-h3};
+    --text-h4: #{$text-h4};
+    --text-body-size: #{$text-body-size};
+    --text-small: #{$text-small};
+    --text-caption: #{$text-caption};
+    --leading-tight: #{$leading-tight};
+    --leading-heading: #{$leading-heading};
+    --leading-body: #{$leading-body};
+    --tracking-caps: #{$tracking-caps};
+
+    // Espacements et gabarit
+    --space-1: #{$space-1};
+    --space-2: #{$space-2};
+    --space-3: #{$space-3};
+    --space-4: #{$space-4};
+    --space-5: #{$space-5};
+    --space-6: #{$space-6};
+    --space-7: #{$space-7};
+    --space-8: #{$space-8};
+    --space-9: #{$space-9};
+    --radius-sm: #{$radius-sm};
+    --radius-md: #{$radius-md};
+    --radius-lg: #{$radius-lg};
+    --radius-pill: #{$radius-pill};
+    --container: #{$container};
+
+    // Effets
+    --shadow-card: #{$shadow-card};
+    --shadow-raised: #{$shadow-raised};
+    --focus-ring: #{$focus-ring};
+    --transition-fast: #{$transition-fast};
+    --transition-base: #{$transition-base};
 }
 
-.star-primary-color {
-    color: #f6b500;
+// ---------------------------------------------------------------------
+// 3. Base
+// ---------------------------------------------------------------------
+html {
+    scroll-behavior: smooth;
 }
 
-.nice-ul-box {
+body {
+    margin: 0;
+    background: var(--surface-page);
+    color: var(--text-body);
+    font-family: var(--font-body);
+    font-size: var(--text-body-size);
+    line-height: var(--leading-body);
+}
 
-    list-style: none;
-    padding-left: 0;
+h1,
+h2,
+h3,
+h4 {
+    margin: 0;
+    font-family: var(--font-display);
+    color: var(--color-primary);
+    line-height: var(--leading-heading);
+}
 
-    & > li {
-        border: 1px solid #dedede;
-        border-radius: 5px;
-        overflow: hidden;
-        margin-top: 30px;
+h1 {
+    margin-bottom: $space-5;
+    font-size: $text-display;
+    font-weight: $weight-black;
+    letter-spacing: -0.02em;
+    line-height: $leading-tight;
+}
 
-        &:first-child {
-            margin-top: 0;
+h2 {
+    margin-bottom: $space-5;
+    font-size: $text-h2;
+    font-weight: $weight-bold;
+}
+
+h3 {
+    font-size: $text-h3;
+    font-weight: $weight-bold;
+}
+
+p {
+    max-width: 68ch;
+    text-wrap: pretty;
+}
+
+// Liens sans soulignement : le changement de couleur au survol reste le
+// seul retour visuel.
+a {
+    color: var(--color-secondary);
+    text-decoration: none;
+
+    &:hover {
+        color: var(--color-primary);
+    }
+}
+
+::selection {
+    background: var(--color-cta);
+    color: var(--text-on-cta);
+}
+
+:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    box-shadow: none;
+}
+
+// ---------------------------------------------------------------------
+// 4. Utilitaires de mise en page
+//    `.af-container` plutôt que `.container` : Bootstrap est chargé par
+//    app.js et impose ses propres largeurs à `.container`.
+// ---------------------------------------------------------------------
+.af-container {
+    max-width: $container;
+    margin: 0 auto;
+    padding-left: $container-gutter;
+    padding-right: $container-gutter;
+
+    &--narrow {
+        max-width: $container-narrow;
+    }
+}
+
+.af-section {
+    padding-top: $section-pad-top;
+    padding-bottom: $section-pad-bottom;
+}
+
+// Surtitre de section
+.af-eyebrow {
+    margin: 0 0 $space-4;
+    font-family: var(--font-display);
+    font-weight: $weight-bold;
+    font-size: $text-caption;
+    letter-spacing: $tracking-caps;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+}
+
+// Surlignage de marque — 3 à 4 occurrences maximum par page.
+.af-hl {
+    background: var(--color-accent);
+    color: var(--color-primary);
+    padding: 0 6px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+// Contenu en attente de fourniture par le client.
+.af-placeholder {
+    display: inline-block;
+    padding: 2px $space-2;
+    border: 1px dashed var(--color-accent);
+    border-radius: $space-2;
+    background: var(--color-accent-soft);
+    font-size: $text-caption;
+    color: var(--color-primary);
+}
+
+// Signature « l'onde qui se régularise » : le tracé est calculé par le
+// contrôleur Stimulus `signal`, la mise en page est ici.
+.af-signal {
+    display: block;
+    width: 100%;
+    overflow: visible;
+}
+
+// Séparateur de section : le signal n'apparaît qu'aux frontières.
+.af-signal-top {
+    max-width: $container;
+    margin: 0 auto clamp(40px, 6vw, 64px);
+    padding: 0 $container-gutter;
+}
+
+// Révélation discrète au scroll (contrôleur Stimulus `reveal`).
+// Le contenu est visible par défaut : c'est le contrôleur qui « arme »
+// l'animation en ajoutant `is-armed`. Sans JavaScript, rien n'est caché.
+.af-reveal.is-armed {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity $transition-base, transform $transition-base;
+
+    &.is-in {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    .af-reveal.is-armed {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
+// ---------------------------------------------------------------------
+// 5. Composants du design system
+// ---------------------------------------------------------------------
+.af-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    min-height: 44px;
+    padding: $space-3 22px;
+    border: 1px solid transparent;
+    border-radius: $radius-pill;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: $weight-semibold;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background $transition-fast, box-shadow $transition-fast;
+
+    &[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    // Tailles
+    &--sm {
+        padding: $space-2 $space-4;
+        font-size: 13px;
+    }
+
+    &--lg {
+        padding: 14px 28px;
+        font-size: 15px;
+    }
+
+    // Variantes
+    &--primary {
+        background: var(--color-cta);
+        color: var(--text-on-cta);
+
+        &:hover {
+            background: var(--color-cta-hover);
+            color: var(--text-on-cta);
+        }
+
+        &:active {
+            background: var(--color-cta-active);
+        }
+    }
+
+    &--secondary {
+        background: transparent;
+        border-color: var(--color-border-strong);
+        color: var(--color-primary);
+
+        &:hover {
+            background: var(--color-primary-soft);
+            color: var(--color-primary);
+        }
+    }
+
+    &--dark {
+        background: var(--color-primary);
+        color: var(--text-on-dark);
+
+        &:hover {
+            background: var(--color-secondary);
+            color: var(--text-on-dark);
+        }
+    }
+
+    &--ghost {
+        background: transparent;
+        color: var(--link);
+    }
+}
+
+.af-card {
+    padding: $space-5;
+    border: 1px solid var(--color-border);
+    border-radius: $radius-md;
+    background: var(--surface-card);
+    box-shadow: var(--shadow-card);
+    transition: box-shadow $transition-base, border-color $transition-base;
+
+    &--interactive {
+        cursor: pointer;
+
+        &:hover {
+            border-color: var(--color-cta);
+            box-shadow: var(--shadow-raised);
         }
     }
 }
 
-// Style pour le conteneur du bouton radio
-.btn-radio-container {
-    display: inline-block;
+.af-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: $weight-semibold;
+    color: var(--color-primary);
 
-    input[type="radio"] {
+    &__required {
+        color: var(--color-secondary);
+    }
+
+    // Message d'aide ou d'erreur affiché sous le champ.
+    &__hint {
+        font-family: var(--font-body);
+        font-size: 12px;
+        font-weight: $weight-regular;
+        color: var(--text-muted);
+
+        // Tant qu'il n'y a rien à dire, le champ ne réserve pas d'espace.
+        &:empty {
+            display: none;
+        }
+    }
+}
+
+.af-input {
+    width: 100%;
+    min-height: 44px;
+    box-sizing: border-box;
+    padding: 11px 14px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: $radius-sm;
+    background: var(--color-white);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: $weight-regular;
+    color: var(--text-body);
+    transition: box-shadow $transition-fast, border-color $transition-fast;
+
+    &:focus {
+        outline: none;
+        border-color: var(--color-cta);
+        box-shadow: var(--focus-ring);
+    }
+
+    &--multiline {
+        min-height: 110px;
+        resize: vertical;
+    }
+}
+
+// ---------------------------------------------------------------------
+// 6. En-tête et pied de page
+// ---------------------------------------------------------------------
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--surface-dark);
+
+    &__inner {
+        display: flex;
+        align-items: center;
+        gap: $space-5;
+        height: 72px;
+    }
+
+    &__logo-link {
+        display: flex;
+        align-items: center;
+        flex: none;
+    }
+
+    // Les attributs width/height du <img> réservent la place (évite le
+    // saut de mise en page) : `width: auto` laisse la hauteur piloter.
+    &__logo {
+        display: block;
+        width: auto;
+        height: 44px;
+    }
+
+    &__nav {
+        display: flex;
+        gap: $space-5;
+        margin-left: auto;
+
+        a {
+            padding: $space-2 0;
+            color: var(--text-on-dark);
+            font-family: var(--font-body);
+            font-size: $text-caption;
+            font-weight: $weight-semibold;
+            text-decoration: none;
+
+            &:hover {
+                color: var(--color-cta);
+            }
+        }
+    }
+
+    &__tel {
+        color: var(--color-cta);
+        font-family: var(--font-body);
+        font-size: 0.9375rem;
+        font-weight: $weight-bold;
+        text-decoration: none;
+        white-space: nowrap;
+
+        &:hover {
+            color: var(--color-white);
+        }
+    }
+
+    &__burger {
         display: none;
+        padding: 10px;
+        border: none;
+        border-radius: $space-2;
+        background: none;
+        color: var(--text-on-dark);
+        cursor: pointer;
+    }
+}
 
-        &:checked, &:hover {
+.site-footer {
+    padding: $space-7 0;
+    border-top: 1px solid rgba(245, 251, 249, 0.18);
+    background: var(--surface-dark);
+    color: var(--text-on-dark);
 
-            & + .btn-radio {
+    p {
+        margin: 0;
+        font-size: $text-caption;
+        line-height: 1.8;
+    }
 
-                &--primary {
-                    background-color: $primary-color;
-                    color: #fff;
-                }
+    a {
+        color: var(--text-on-dark);
 
+        &:hover {
+            color: var(--color-cta);
+        }
+    }
+
+    .af-placeholder {
+        background: rgba(243, 205, 116, 0.15);
+        color: var(--text-on-dark);
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr 1fr 1fr;
+        gap: $space-6;
+    }
+
+    &__logo {
+        display: block;
+        width: auto;
+        height: 44px;
+        margin-bottom: $space-4;
+    }
+
+    &__title {
+        margin-bottom: $space-1;
+        font-family: var(--font-display);
+        font-weight: $weight-bold;
+    }
+
+    &__qualiopi {
+        display: grid;
+        gap: $space-3;
+        margin-top: $space-4;
+    }
+
+    &__qualiopi-logos {
+        display: block;
+        width: 100%;
+        max-width: 220px;
+        height: auto;
+        padding: $space-2 $space-3;
+        border-radius: $space-2;
+        background: var(--color-white);
+    }
+
+    &__qualiopi-text {
+        display: grid;
+        gap: $space-2;
+        font-size: $text-caption;
+        line-height: 1.6;
+    }
+}
+
+@media (max-width: $bp-md) {
+    .site-header {
+        &__inner {
+            gap: $space-3;
+        }
+
+        &__nav {
+            display: none;
+            position: absolute;
+            top: 72px;
+            left: 0;
+            right: 0;
+            flex-direction: column;
+            gap: 0;
+            padding: $space-2 $container-gutter $space-4;
+            border-top: 1px solid rgba(245, 251, 249, 0.1);
+            background: var(--surface-dark);
+
+            &.is-open {
+                display: flex;
+            }
+
+            a {
+                padding: 14px 0;
+                border-bottom: 1px solid rgba(245, 251, 249, 0.1);
             }
         }
 
-    }
-
-    .btn-radio {
-
-        cursor: pointer;
-        padding: 10px 20px;
-        border-radius: 4px;
-        transition: background-color 0.3s ease;
-
-        &--primary {
-            border: 1px solid $primary-color;
+        &__tel {
+            margin-left: auto;
         }
 
+        &__burger {
+            display: block;
+        }
+
+        &__cta {
+            display: none;
+        }
     }
 
-}
-
-a {
-    text-decoration: none;
-}
-
-/* Menu */
-.site-main-menu {
-    & a.active {
-        color: #20AD96;
+    .site-footer__grid {
+        grid-template-columns: 1fr;
     }
-}
-
-.footer-section {
-    background-color: rgb(23, 22, 33);
 }

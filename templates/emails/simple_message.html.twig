@@ -1,0 +1,17 @@
+{% extends 'emails/_layout.html.twig' %}
+
+{# Message générique avec bouton d'action facultatif, utilisé par MailService. #}
+{% block contenu %}
+
+    <div style="margin:0 0 24px;">{{ message|raw }}</div>
+
+    {% if boutonUrl is defined and boutonText is defined %}
+        <p style="margin:0;">
+            <a href="{{ boutonUrl }}"
+               style="display:inline-block;padding:12px 22px;border-radius:999px;background:#5DCAD1;color:#0D3A46;font-weight:bold;text-decoration:none;">
+                {{ boutonText }}
+            </a>
+        </p>
+    {% endif %}
+
+{% endblock %}

@@ -1,8 +1,110 @@
-$primary-color: #20AD96;
-$secondary-color: #7e9f7d;
-$tertiary-color: #96bcaa;
-$quaternary-color: #b5a583;
-$quinary-color: #3F3A64;
+// =====================================================================
+// Charte Algorythme Formation — jetons de design
+// Source : maquette standalone (design system AlgorythmeFormation).
+// Ces variables Sass alimentent les custom properties CSS déclarées
+// dans app.scss (:root). Utiliser les var(--…) dans les feuilles de
+// page ; les variables Sass ci-dessous servent aux calculs et aux
+// boucles de génération.
+// =====================================================================
 
+// ---------------------------------------------------------------------
+// Couleurs de la charte
+// ---------------------------------------------------------------------
+$color-primary: #0D3A46; // logo, titres, éléments clés, fonds sombres
+$color-secondary: #2F5972; // sous-titres, blocs, sections
+$color-cta: #5DCAD1; // boutons CTA, liens, highlights
+$color-accent: #F3CD74; // pictos, séparateurs, UI
+$color-page: #F5FBF9; // fond de page
+$color-white: #FFFFFF;
 
-$lightGray: #ededed;
+// Dérivés (états, bordures)
+$color-cta-hover: #4CB9C0;
+$color-cta-active: #3FA9B0;
+$color-accent-soft: #FAE8BC;
+$color-cta-soft: #DDF3F4;
+$color-primary-soft: #E2ECEA;
+$color-border: #D5E4E1;
+$color-border-strong: #B9CFCB;
+
+// Sémantiques
+$text-body: $color-primary;
+$text-muted: $color-secondary;
+$text-on-dark: $color-page;
+// Règle de contraste : sur #5DCAD1 et #F3CD74, le texte est toujours #0D3A46.
+$text-on-cta: $color-primary;
+$text-on-accent: $color-primary;
+$link: #177078; // teal foncé AA sur fond clair
+$link-on-dark: $color-cta;
+
+// ---------------------------------------------------------------------
+// Typographie
+// ---------------------------------------------------------------------
+$font-display: "DM Sans", system-ui, sans-serif; // titres et sous-titres
+$font-body: "Open Sans", system-ui, sans-serif; // corps de texte
+
+$text-display: clamp(2rem, 5vw, 3.25rem);
+$text-h2: clamp(1.5rem, 3.5vw, 2.25rem);
+$text-h3: 1.25rem;
+$text-h4: 1.125rem;
+$text-body-size: 1.0625rem; // 17px
+$text-small: 0.9375rem;
+$text-caption: 0.875rem;
+
+$leading-tight: 1.15;
+$leading-heading: 1.25;
+$leading-body: 1.6;
+
+$weight-regular: 400;
+$weight-medium: 500;
+$weight-semibold: 600;
+$weight-bold: 700;
+$weight-black: 800;
+
+$tracking-caps: 0.2em; // surtitres en capitales
+
+// Sous-ensembles Unicode des woff2 auto-hébergés (assets/fonts/).
+$unicode-latin: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+$unicode-latin-ext: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+    U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF,
+    U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+
+// ---------------------------------------------------------------------
+// Espacements, rayons, gabarit
+// ---------------------------------------------------------------------
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 12px;
+$space-4: 16px;
+$space-5: 24px;
+$space-6: 32px;
+$space-7: 48px;
+$space-8: 64px;
+$space-9: 96px;
+
+$radius-sm: 6px;
+$radius-md: 10px;
+$radius-lg: 16px;
+$radius-pill: 999px;
+
+$container: 1120px;
+$container-narrow: 780px;
+$container-gutter: 24px;
+$section-pad-top: clamp(40px, 6vw, 56px);
+$section-pad-bottom: clamp(56px, 9vw, 96px);
+
+// ---------------------------------------------------------------------
+// Ombres, focus, transitions
+// ---------------------------------------------------------------------
+$shadow-card: 0 1px 3px rgba(13, 58, 70, 0.08), 0 4px 16px rgba(13, 58, 70, 0.06);
+$shadow-raised: 0 6px 24px rgba(13, 58, 70, 0.12);
+$focus-ring: 0 0 0 3px rgba(93, 202, 209, 0.5);
+$transition-fast: 120ms ease;
+$transition-base: 200ms ease;
+
+// ---------------------------------------------------------------------
+// Points de rupture
+// ---------------------------------------------------------------------
+$bp-sm: 640px;
+$bp-md: 860px;

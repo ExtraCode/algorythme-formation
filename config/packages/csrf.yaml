@@ -9,3 +9,5 @@ framework:
             - submit
             - authenticate
             - logout
+            # Demande de rappel du quiz de cadrage (page d'accueil)
+            - rappel

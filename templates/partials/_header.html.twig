@@ -1,0 +1,36 @@
+<header class="site-header" data-controller="menu">
+    <div class="af-container site-header__inner">
+
+        <a href="{{ path('home') }}" class="site-header__logo-link"
+           aria-label="{{ APP_NOM_OF }}, retour à l'accueil">
+            <img src="{{ asset('images/logo-algorythme-formation-blanc.png') }}"
+                 alt="{{ APP_NOM_OF }}" class="site-header__logo" width="649" height="187">
+        </a>
+
+        <nav class="site-header__nav" data-menu-target="nav" aria-label="Navigation principale">
+            <a href="{{ path('home') }}#piliers" data-action="menu#close">Nos domaines d'expertise</a>
+            <a href="{{ path('home') }}#quiz" data-action="menu#close">Cadrer mon besoin</a>
+            <a href="{{ path('home') }}#interlocuteurs" data-action="menu#close">Vos interlocuteurs</a>
+        </nav>
+
+        <a href="tel:0554542484" class="site-header__tel">05 54 54 24 84</a>
+
+        <a href="{{ path('home') }}#cta-final"
+           class="af-btn af-btn--primary af-btn--sm site-header__cta">
+            Réserver un appel de cadrage
+        </a>
+
+        <button type="button" class="site-header__burger"
+                data-menu-target="burger"
+                data-action="menu#toggle"
+                aria-expanded="false" aria-label="Ouvrir le menu">
+            <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+                <path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" data-menu-target="iconOpen"/>
+                <path d="M4 4l14 14M18 4L4 18" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" data-menu-target="iconClose" hidden/>
+            </svg>
+        </button>
+
+    </div>
+</header>

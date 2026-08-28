@@ -1,0 +1,404 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ APP_NOM_OF }} - Mettez vos équipes au rythme de la tech{% endblock %}
+
+{% block meta_description %}
+    Organisme de formation tech pour les entreprises : intelligence artificielle, cybersécurité,
+    data, développement et systèmes et réseaux. Formations sur mesure, en présentiel ou en classe
+    virtuelle, animées par des praticiens en activité.
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/pages/accueil.scss') }}">
+{% endblock %}
+
+{% block body %}
+
+    {% set piliers = [
+        { slug: 'ia', nom: "Intelligence artificielle", description: "Cadrer les usages, rédiger une charte, produire avec les bons outils." },
+        { slug: 'cybersecurite', nom: "Cybersécurité", description: "Identifier les risques réels et adopter les bons réflexes au quotidien." },
+        { slug: 'data', nom: "Data", description: "Structurer les données de l'entreprise et les exploiter pour décider." },
+        { slug: 'developpement', nom: "Développement web, logiciel et mobile", description: "Monter en compétence sur les langages et les pratiques que vos équipes utilisent déjà." },
+        { slug: 'systemes-reseaux', nom: "Systèmes et réseaux", description: "Administrer et sécuriser l'infrastructure qui fait tourner l'entreprise." }
+    ] %}
+
+    {% set etapes = [
+        { titre: "Cadrage du besoin", description: "30 minutes pour poser vos objectifs, vos outils et vos contraintes réelles." },
+        { titre: "Écriture du programme", description: "Le programme est rédigé après le cadrage, à partir de ce que vos équipes doivent savoir faire." },
+        { titre: "Animation par un praticien", description: "Un formateur en activité, qui fait encore aujourd'hui ce qu'il transmet. Votre DSI peut échanger avec lui avant la formation." },
+        { titre: "Bilan partagé", description: "Pour chaque session, vous recevez la progression mesurée avant et après la formation.<br>Votre interlocuteur le restitue avec vous et identifie les suites utiles." }
+    ] %}
+
+    {# `questions` est fourni par MainController : le serveur valide les réponses reçues. #}
+
+    <div class="accueil">
+
+        {# ---------------------------------------------------------- Hero #}
+        <section id="hero" class="af-section hero">
+            <div class="af-container">
+                <p class="af-eyebrow hero__eyebrow">
+                    Formation professionnelle · Intelligence artificielle, cybersécurité, data
+                </p>
+                <h1>
+                    L'IA est déjà dans vos équipes.<br>
+                    Nous en faisons une
+                    <mark class="af-hl">compétence maîtrisée</mark>
+                    .
+                </h1>
+                <p class="hero__lead">
+                    Nous formons vos collaborateurs à des usages structurés, sécurisés et adaptés à
+                    votre organisation, dans vos locaux ou en classe virtuelle.<br>
+                    Quelques questions suffisent pour identifier un point de départ.
+                </p>
+                <div class="hero__actions">
+                    <a href="#quiz" class="af-btn af-btn--primary af-btn--lg">Faire le point</a>
+                </div>
+            </div>
+        </section>
+
+        {# ------------------------------------------------ Notre conviction #}
+        <section class="af-section dark-band af-reveal" data-controller="reveal">
+            <div class="af-signal-top"
+                 data-controller="signal"
+                 data-signal-disorder-value="1"
+                 data-signal-seed-value="11"
+                 data-signal-height-value="28"></div>
+
+            <div id="probleme" class="af-container af-container--narrow">
+                <p class="af-eyebrow">Notre conviction</p>
+                <h2>Des compétences construites avec vos outils, dans votre organisation</h2>
+                <p class="conviction-xl">
+                    La transformation digitale de vos équipes ne dépend pas des outils que vous
+                    adoptez. Elle dépend de ce que vos collaborateurs savent réellement en faire.
+                    Ce savoir-faire ne s'improvise pas. Il se forme.
+                </p>
+                <p class="conviction-xl">
+                    Nous formons vos équipes à ce qu'elles vont faire lundi matin. Chaque programme
+                    part de
+                    <mark class="af-hl">vos objectifs</mark>
+                    et se mesure sur des gestes
+                    concrets.
+                </p>
+                <blockquote class="pull">La vraie compétence tech : savoir quoi en faire.</blockquote>
+            </div>
+        </section>
+
+        {# ------------------------------------------------------ Les 5 piliers #}
+        <section class="af-section af-reveal" data-controller="reveal">
+            <div class="af-signal-top"
+                 data-controller="signal"
+                 data-signal-disorder-value="0.72"
+                 data-signal-seed-value="21"
+                 data-signal-height-value="28"></div>
+
+            <div id="piliers" class="af-container">
+                <p class="af-eyebrow">Nos domaines d'expertise</p>
+                <h2>5 domaines de formation</h2>
+                <p class="section-intro">
+                    En présentiel ou en classe virtuelle. Le contenu exact est écrit après le
+                    cadrage, à partir de vos objectifs et de vos outils.
+                </p>
+
+                <div class="pillar-grid">
+                    {# Les pages de domaine arrivent plus tard : les cartes sont
+                       purement informatives pour l'instant. #}
+                    {% for pilier in piliers %}
+                        <div class="af-card pillar-card">
+                            <span class="pillar-card__tick" aria-hidden="true"></span>
+                            <h3>{{ pilier.nom }}</h3>
+                            <p>{{ pilier.description }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        {# ------------------------------------------------- Quiz de cadrage #}
+        <section class="af-section quiz-section af-reveal" data-controller="reveal">
+            <div class="af-signal-top"
+                 data-controller="signal"
+                 data-signal-disorder-value="0.5"
+                 data-signal-seed-value="31"
+                 data-signal-height-value="28"></div>
+
+            <div id="quiz" class="af-container af-container--narrow">
+                <p class="af-eyebrow">Avant l'appel</p>
+                <h2>Votre point de départ, en 4 questions</h2>
+                <p class="section-intro">
+                    Répondez à 4 questions et découvrez ce que nous cadrerons ensemble pour vos
+                    équipes. Deux minutes suffisent.
+                </p>
+
+                <div class="quiz-card"
+                     data-controller="quiz"
+                     role="group"
+                     aria-label="Cadrez votre besoin en quatre questions">
+
+                    <div data-quiz-target="signal"
+                         data-controller="signal"
+                         data-signal-disorder-value="1"
+                         data-signal-seed-value="3"
+                         data-signal-height-value="22"></div>
+
+                    {% for question in questions %}
+                        <div class="quiz__step" data-quiz-target="step" hidden>
+                            <p class="quiz__progress">
+                                Question {{ loop.index }} sur {{ questions|length }}
+                            </p>
+                            <h3 class="quiz__question" tabindex="-1">{{ question.question }}</h3>
+
+                            <div class="quiz__options">
+                                {% for option in question.options %}
+                                    <button type="button" class="quiz__option"
+                                            data-action="quiz#pick"
+                                            data-quiz-key-param="{{ question.id }}"
+                                            data-quiz-value-param="{{ option }}">
+                                        {{ option }}
+                                    </button>
+                                {% endfor %}
+                            </div>
+
+                            <button type="button" class="quiz__back"
+                                    data-quiz-target="back"
+                                    data-action="quiz#back" hidden>
+                                Question précédente
+                            </button>
+                        </div>
+                    {% endfor %}
+
+                    <div class="quiz__step" data-quiz-target="recap" hidden>
+                        <p class="quiz__progress">Votre besoin, en quatre réponses</p>
+                        <h3 class="quiz__question" tabindex="-1">Voici ce qu'on cadrera ensemble</h3>
+
+                        <dl class="quiz__recap">
+                            {% for question in questions %}
+                                <div class="quiz__recap-row">
+                                    <dt>{{ question.libelle }}</dt>
+                                    <dd data-quiz-target="answer"
+                                        data-quiz-answer="{{ question.id }}"></dd>
+                                </div>
+                            {% endfor %}
+                        </dl>
+
+                        <p class="quiz__note">
+                            L'appel de cadrage part de ces réponses. 30 minutes, avec le même
+                            interlocuteur du premier échange au bilan de formation.<br>
+                            En complétant ce formulaire, vous serez recontacté pour mieux comprendre
+                            votre besoin.
+                        </p>
+
+                        <form class="quiz__form" method="post" novalidate
+                              action="{{ path('app_demande_rappel') }}"
+                              data-quiz-target="form"
+                              data-action="quiz#submit">
+
+                            {# Jeton CSRF sans session : le contrôleur Stimulus
+                               csrf-protection le remplace et pose le cookie. #}
+                            <input type="hidden" name="_csrf_token"
+                                   data-controller="csrf-protection"
+                                   value="{{ csrf_token('rappel') }}">
+
+                            {# Les réponses au quiz, renseignées par le contrôleur. #}
+                            {% for question in questions %}
+                                <input type="hidden" name="{{ question.id }}"
+                                       data-quiz-target="reponse"
+                                       data-quiz-answer="{{ question.id }}">
+                            {% endfor %}
+
+                            <div class="quiz__form-grid">
+                                <label class="af-field">
+                                    <span>Nom<span class="af-field__required"> *</span></span>
+                                    <input class="af-input" type="text" name="nom"
+                                           autocomplete="name" required>
+                                    <span class="af-field__hint" data-quiz-hint="nom"></span>
+                                </label>
+                                <label class="af-field">
+                                    <span>Poste<span class="af-field__required"> *</span></span>
+                                    <input class="af-input" type="text" name="poste"
+                                           autocomplete="organization-title" required>
+                                    <span class="af-field__hint" data-quiz-hint="poste"></span>
+                                </label>
+                                <label class="af-field">
+                                    <span>Email<span class="af-field__required"> *</span></span>
+                                    <input class="af-input" type="email" name="email"
+                                           autocomplete="email" required>
+                                    <span class="af-field__hint" data-quiz-hint="email"></span>
+                                </label>
+                                <label class="af-field">
+                                    <span>Téléphone<span class="af-field__required"> *</span></span>
+                                    <input class="af-input" type="tel" name="tel"
+                                           autocomplete="tel" required>
+                                    <span class="af-field__hint" data-quiz-hint="tel"></span>
+                                </label>
+                            </div>
+
+                            <button type="submit" class="af-btn af-btn--primary">
+                                Être rappelé pour un appel de cadrage de 30 minutes
+                            </button>
+                        </form>
+
+                        {# Message de retour du serveur : confirmation ou panne d'envoi. #}
+                        <p class="quiz__note quiz__sent" role="status" tabindex="-1"
+                           data-quiz-target="sent" hidden></p>
+
+                        <button type="button" class="quiz__back" data-action="quiz#restart">
+                            Modifier mes réponses
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {# -------------------------------------------------- Notre approche #}
+        <section class="af-section approche-band af-reveal" data-controller="reveal">
+            <div class="af-signal-top"
+                 data-controller="signal"
+                 data-signal-disorder-value="0.32"
+                 data-signal-seed-value="41"
+                 data-signal-height-value="28"></div>
+
+            <div id="approche" class="af-container">
+                <p class="af-eyebrow">Notre approche</p>
+                <h2>La compétence comme avantage compétitif</h2>
+                <p class="section-intro">
+                    Un accompagnement structuré en quatre étapes, du cadrage au bilan, conçu pour
+                    ancrer durablement les compétences dans votre organisation.
+                </p>
+
+                <div class="timeline">
+                    {% for etape in etapes %}
+                        <div class="step">
+                            <span class="step__num" aria-hidden="true">
+                                {{ '%02d'|format(loop.index) }}
+                            </span>
+                            <h3>{{ etape.titre }}</h3>
+                            <p>{{ etape.description|raw }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        {# --------------------------------------------------- Nos formateurs #}
+        <section class="af-section af-reveal" data-controller="reveal">
+            <div class="af-signal-top"
+                 data-controller="signal"
+                 data-signal-disorder-value="0.18"
+                 data-signal-seed-value="51"
+                 data-signal-height-value="28"></div>
+
+            <div id="interlocuteurs" class="af-container">
+                <p class="af-eyebrow">Nos formateurs</p>
+                <h2>Des praticiens en activité, experts de leur métier</h2>
+                <p class="section-intro">
+                    Nos formateurs sont sélectionnés sur leur maîtrise terrain et leur capacité à
+                    transmettre. Ils forment sur ce qu'ils font aujourd'hui, dans leur métier. <br>Le CV
+                    anonymisé du formateur pressenti vous est transmis avant validation du dispositif.
+                </p>
+
+                <div class="people-grid">
+
+                    <div class="af-card person-card">
+                        <h3>Warda B</h3>
+                        <p class="person-card__role">En activité · Intelligence artificielle</p>
+
+                        <p>
+                            Référente en transformation numérique via l'intelligence artificielle avec plus de 12
+                            ans d'expérience internationale.
+                            <br><br>Warda allie une expertise technique de pointe (Gouvernance, MDM, IA éthique,
+                            Architecture des plateformes de données, ETL, Data Viz) à une vision technologique
+                            centrée sur l’humain, à travers une pédagogie engagée.
+                        </p>
+                    </div>
+
+                    <div class="af-card person-card">
+                        <h3>Steven.L</h3>
+                        <p class="person-card__role">En activité · Cybersécurité</p>
+
+                        {# Proposition rédactionnelle - à valider par l'intéressé avant mise en ligne. #}
+                        <p class="af-placeholder">
+                            Dix ans passés à défendre des systèmes en production : audits, tests
+                            d'intrusion, et gestion de crise quand l'incident est déjà là.
+                            <br><br>Durcissement des architectures, ISO 27001, supervision SOC : Steven
+                            enseigne ce qu'il pratique, avec un principe simple - la sécurité d'une
+                            entreprise tient d'abord aux réflexes quotidiens de ses équipes.
+                        </p>
+                    </div>
+
+                    <div class="af-card person-card">
+                        <h3>Damien P</h3>
+                        <p class="person-card__role">En activité · Data Scientist</p>
+
+                        {# Proposition rédactionnelle - à valider par l'intéressé avant mise en ligne. #}
+                        <p class="af-placeholder">
+                            Data scientist en poste depuis neuf ans, Damien construit des modèles qui
+                            finissent en production et servent des décisions réelles.
+                            <br><br>Python, modélisation statistique, MLOps, industrialisation : il
+                            transmet la chaîne complète, de la donnée brute au modèle qui tourne - et
+                            ce qu'il faut vérifier avant d'y accorder sa confiance.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        {# ------------------------------------- Dispositifs de financement #}
+        <section class="af-section af-reveal" data-controller="reveal">
+            <div class="af-signal-top"
+                 data-controller="signal"
+                 data-signal-disorder-value="0.08"
+                 data-signal-seed-value="61"
+                 data-signal-height-value="28"></div>
+
+            <div id="modalites" class="af-container af-container--narrow">
+                <p class="af-eyebrow">Dispositifs de financement</p>
+                <h2>Nous montons votre dossier de financement ensemble</h2>
+                <p>
+                    {{ APP_NOM_OF }} est certifié Qualiopi au titre de la catégorie d'action
+                    « Actions de formation ». Nos formations sont à ce titre finançables par les
+                    OPCO, dans les conditions propres à votre branche et à votre entreprise.
+                </p>
+                <p>
+                    Nous préparons les pièces du dossier avec vous, du premier échange au bilan de
+                    fin de session. Vous gardez le même interlocuteur sur toute la durée.
+                </p>
+                <p class="small-note">
+                    Les modalités détaillées (prérequis, délais d'accès, tarifs, accessibilité,
+                    évaluation des acquis) figurent dans chaque programme de formation.<br><br>
+                    Accessibilité aux personnes en situation de handicap :<br>
+                    référent Mathieu Piron-Lafleur,
+                    <a href="mailto:contact@algorythme-formation.fr">contact@algorythme-formation.fr</a>
+                </p>
+            </div>
+        </section>
+
+        {# ----------------------------------------------------- CTA final #}
+        <section id="cta-final" class="cta-final">
+            <div class="af-container af-container--narrow cta-final__inner">
+                <div class="cta-final__signal"
+                     data-controller="signal"
+                     data-signal-disorder-value="0"
+                     data-signal-seed-value="11"
+                     data-signal-height-value="30"></div>
+
+                <h2>Mettez vos équipes au rythme de la tech.</h2>
+                <p>
+                    Un appel de trente minutes pour poser votre besoin et repartir avec les
+                    prochaines étapes. La personne que vous aurez au téléphone est celle qui vous
+                    suivra jusqu'au bilan.
+                </p>
+                <a href="#quiz" class="af-btn af-btn--primary af-btn--lg">
+                    Réserver un appel de cadrage de 30 minutes
+                </a>
+                <p class="cta-final__contact">
+                    <a href="tel:0554542484">05 54 54 24 84</a> ·
+                    <a href="mailto:contact@algorythme-formation.fr">contact@algorythme-formation.fr</a>
+                </p>
+            </div>
+        </section>
+
+    </div>
+
+{% endblock %}

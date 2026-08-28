@@ -1,0 +1,47 @@
+{% extends 'emails/_layout.html.twig' %}
+
+{% block contenu %}
+
+    <p style="margin:0 0 24px;">
+        Une demande de rappel vient d'être envoyée depuis le quiz de cadrage de la page d'accueil.
+    </p>
+
+    <h2 style="margin:0 0 12px;font-size:16px;color:#0D3A46;">Contact</h2>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;margin:0 0 24px;">
+        <tr>
+            <td style="padding:8px 0;border-bottom:1px solid #D5E4E1;color:#2F5972;">Nom</td>
+            <td style="padding:8px 0;border-bottom:1px solid #D5E4E1;font-weight:bold;">{{ contact.nom }}</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 0;border-bottom:1px solid #D5E4E1;color:#2F5972;">Poste</td>
+            <td style="padding:8px 0;border-bottom:1px solid #D5E4E1;font-weight:bold;">{{ contact.poste }}</td>
+        </tr>
+        <tr>
+            <td style="padding:8px 0;border-bottom:1px solid #D5E4E1;color:#2F5972;">Email</td>
+            <td style="padding:8px 0;border-bottom:1px solid #D5E4E1;font-weight:bold;">
+                <a href="mailto:{{ contact.email }}" style="color:#177078;">{{ contact.email }}</a>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:8px 0;border-bottom:1px solid #D5E4E1;color:#2F5972;">Téléphone</td>
+            <td style="padding:8px 0;border-bottom:1px solid #D5E4E1;font-weight:bold;">
+                <a href="tel:{{ contact.tel|replace({' ': '', '.': '', '-': ''}) }}" style="color:#177078;">{{ contact.tel }}</a>
+            </td>
+        </tr>
+    </table>
+
+    <h2 style="margin:0 0 12px;font-size:16px;color:#0D3A46;">Réponses au quiz de cadrage</h2>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+        {% for libelle, reponse in reponses %}
+            <tr>
+                <td style="padding:8px 0;border-bottom:1px solid #D5E4E1;color:#2F5972;">{{ libelle }}</td>
+                <td style="padding:8px 0;border-bottom:1px solid #D5E4E1;font-weight:bold;">{{ reponse }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td style="padding:8px 0;color:#2F5972;">Le quiz n'a pas été complété.</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}
