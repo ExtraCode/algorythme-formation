@@ -54,12 +54,8 @@
                         <input type="hidden" name="_csrf_token" value="{{ csrf_token('orientation') }}">
 
                         <label class="af-field" for="besoin">
-                            <span class="hero__besoin-titre">Décrivez votre besoin, <mark class="af-hl">notre IA maison</mark> cherche dans notre catalogue</span>
-                            <span class="af-field__hint">
-                            Votre métier, ce que vos équipes savent déjà faire, ce qu'elles doivent
-                            savoir faire, vos outils, votre échéance. Écrivez comme vous le diriez
-                            au téléphone.
-                        </span>
+                            <span class="hero__besoin-titre">Décrivez votre besoin, <mark
+                                    class="af-hl">notre IA maison</mark> cherche dans notre catalogue.</span>
                             <textarea class="af-input af-input--multiline" id="besoin" name="besoin"
                                       rows="4" maxlength="2000" required
                                       placeholder="Exemple : je dirige une PME industrielle de 60 personnes. Mes équipes administratives utilisent déjà ChatGPT sans cadre, et je veux structurer ces usages avant d'aller plus loin.">{{ besoinPrecedent }}</textarea>
