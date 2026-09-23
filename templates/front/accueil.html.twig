@@ -50,25 +50,25 @@
                    catalogue SmartOF (OrientationController). La zone disparaît
                    quand le quota horaire d'analyses est épuisé. #}
                 {% if orientationDisponible %}
-                <form class="hero__besoin" method="post" action="{{ path('app_orientation') }}">
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('orientation') }}">
+                    <form class="hero__besoin" method="post" action="{{ path('app_orientation') }}">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('orientation') }}">
 
-                    <label class="af-field" for="besoin">
-                        <span class="hero__besoin-titre">Décrivez votre besoin, nous cherchons dans notre catalogue</span>
-                        <span class="af-field__hint">
+                        <label class="af-field" for="besoin">
+                            <span class="hero__besoin-titre">Décrivez votre besoin, <mark class="af-hl">notre IA maison</mark> cherche dans notre catalogue</span>
+                            <span class="af-field__hint">
                             Votre métier, ce que vos équipes savent déjà faire, ce qu'elles doivent
                             savoir faire, vos outils, votre échéance. Écrivez comme vous le diriez
                             au téléphone.
                         </span>
-                        <textarea class="af-input af-input--multiline" id="besoin" name="besoin"
-                                  rows="4" maxlength="2000" required
-                                  placeholder="Exemple : je dirige une PME industrielle de 60 personnes. Mes équipes administratives utilisent déjà ChatGPT sans cadre, et je veux structurer ces usages avant d'aller plus loin.">{{ besoinPrecedent }}</textarea>
-                    </label>
+                            <textarea class="af-input af-input--multiline" id="besoin" name="besoin"
+                                      rows="4" maxlength="2000" required
+                                      placeholder="Exemple : je dirige une PME industrielle de 60 personnes. Mes équipes administratives utilisent déjà ChatGPT sans cadre, et je veux structurer ces usages avant d'aller plus loin.">{{ besoinPrecedent }}</textarea>
+                        </label>
 
-                    <button type="submit" class="af-btn af-btn--dark af-btn--lg">
-                        Voir les formations qui correspondent
-                    </button>
-                </form>
+                        <button type="submit" class="af-btn af-btn--dark af-btn--lg">
+                            Voir les formations qui correspondent
+                        </button>
+                    </form>
                 {% endif %}
             </div>
         </section>

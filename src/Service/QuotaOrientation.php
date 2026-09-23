@@ -54,8 +54,8 @@ class QuotaOrientation
         }
 
         if (!$this->visiteurLimiter->create($this->identifiantVisiteur())->consume()->isAccepted()) {
-            return 'Vous avez lancé plusieurs analyses coup sur coup. Laissez passer un moment, '
-                . 'ou parlons-en de vive voix : un entretien de trente minutes ira plus vite.';
+            return 'Vous avez lancé plusieurs analyses coup sur coup. Laissez passer un moment pour réessayer, '
+                . 'ou parlons-en de vive voix pour que nous puissions vous orienter au mieux :)';
         }
 
         return null;
