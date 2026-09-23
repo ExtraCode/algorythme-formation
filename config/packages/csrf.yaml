@@ -11,3 +11,5 @@ framework:
             - logout
             # Demande de rappel du quiz de cadrage (page d'accueil)
             - rappel
+            # Description libre du besoin (page d'accueil → orientation)
+            - orientation

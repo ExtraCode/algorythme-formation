@@ -5,6 +5,14 @@ framework:
     # Note that the session will be started ONLY if you read or write from it.
     session: true
 
+    # Derrière un reverse proxy (hébergement mutualisé, Cloudflare, load
+    # balancer…), l'adresse vue par PHP est celle du proxy, pas celle du
+    # visiteur : la limitation de débit compterait alors tout le monde
+    # ensemble. Renseigner TRUSTED_PROXIES au déploiement suffit à corriger
+    # cela ; tant que la variable est vide, rien ne change.
+    trusted_proxies: '%env(default::TRUSTED_PROXIES)%'
+    trusted_headers: [ 'x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port', 'x-forwarded-prefix' ]
+
     #esi: true
     #fragments: true
 

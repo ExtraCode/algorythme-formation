@@ -1,0 +1,65 @@
+{# Carte d'une formation, telle qu'elle apparaît dans le catalogue et dans
+   les résultats d'orientation.
+
+   - `formation` : un résumé de CatalogueFormations.
+   - `raison`    : sur une page de résultats, la phrase qui relie la formation
+                   au besoin exprimé. Elle prend la place de l'accroche.
+   - `filtrable` : seul le catalogue est filtré ; ailleurs, les attributs du
+                   contrôleur n'auraient rien à piloter. #}
+
+{% set presentation = raison|default('') ?: formation.accroche %}
+
+<li class="cat-carte"
+    {% if filtrable|default(false) %}
+        data-catalogue-target="carte"
+        data-domaine="{{ formation.domaine ? formation.domaine.slug : '' }}"
+    {% endif %}>
+
+    {% if formation.domaine %}
+        <span class="cat-carte__pilier">{{ formation.domaine.nom }}</span>
+    {% endif %}
+
+    <h3 class="cat-carte__titre">{{ formation.nom }}</h3>
+
+    {% if presentation %}
+        <p class="cat-carte__presentation">{{ presentation }}</p>
+    {% endif %}
+
+    {{ include('partials/_notation_etoiles.html.twig', {
+        note: formation.note,
+        nbFormes: formation.nbFormes,
+        classe: 'cat-carte__note',
+    }) }}
+
+    {# Pas de modalité ici : elle vaut « présentiel ou distanciel » pour
+       toutes nos formations. Le détail propre à la formation est sur sa fiche. #}
+    <dl class="cat-carte__meta">
+        <div>
+            <dt>Durée</dt>
+            {# Les journées parlent davantage qu'un volume d'heures ;
+               le détail horaire est sur la fiche. #}
+            <dd>{{ formation.dureeJours ?: formation.duree ?: 'À définir avec vous' }}</dd>
+        </div>
+        <div>
+            <dt>Tarif</dt>
+            {# Tarif INTER de SmartOF, pour la session complète. #}
+            <dd>
+                {%- if formation.tarifSessionHT -%}
+                    À partir de
+                    <span class="cat-carte__montant">
+                        {{- formation.tarifSessionHT|number_format(0, ',', ' ') }} € HT
+                    </span>
+                {%- else -%}
+                    Sur devis
+                {%- endif -%}
+            </dd>
+        </div>
+    </dl>
+
+    <p class="cat-carte__pied">
+        <a href="{{ path('app_formation_voir', { slug: formation.slug }) }}"
+           class="af-btn af-btn--secondary af-btn--sm">
+            Voir le programme
+        </a>
+    </p>
+</li>

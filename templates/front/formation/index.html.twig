@@ -1,131 +1,164 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Les formations - {{ APP_NOM_OF }} {% endblock %}
+{% block title %}Nos formations - {{ APP_NOM_OF }}{% endblock %}
+
+{% block meta_description %}
+    Catalogue des actions de formation intra-entreprise d'{{ APP_NOM_OF }} : cybersécurité,
+    intelligence artificielle, données, développement, systèmes et réseaux. Programmes de
+    référence déclinés après l'analyse du besoin.
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/pages/formations.scss') }}">
+{% endblock %}
 
 {% block body %}
-    <!-- Les formations -->
-    <section class="learn-press-profile-section section section-padding">
-        <div class="container">
 
-            <h1 class="text-center">L'ensemble de nos formations,<br>dédiées aux professionnels.</h1>
+    {# `domaines` et `formations` viennent de SmartOF (FormationController). #}
 
-            <section class="mt-5">
+    <div class="catalogue">
 
-                <div class="learn-press-profile-nav">
-                    <ul class="nav">
-                        {% for categorie, sousCategories  in formationsParCategorie %}
+        <nav class="cat-crumbs af-container" aria-label="Fil d'ariane">
+            <ol>
+                <li><a href="{{ path('home') }}">Accueil</a></li>
+                <li aria-current="page">Nos formations</li>
+            </ol>
+        </nav>
 
-                            <li>
-                                <a {{ loop.first ? 'class="active"' : '' }}
-                                    data-bs-toggle="tab"
-                                    href="#categorie{{ loop.index }}">
+        <section class="cat-head af-container">
+            <h1>Nos formations</h1>
+            <p class="cat-head__lede">
+                Nos actions de formation sont conduites dans vos locaux ou en classe virtuelle.<br>
+                Chaque programme présenté ici constitue le socle commun de la formation, dont le
+                déroulé pédagogique est ensuite décliné avec vous à l'issue de l'analyse du besoin.
+            </p>
+        </section>
 
-                                    {{ categorie }}
-                                </a>
-                            </li>
+        <div class="af-container" data-controller="catalogue">
+
+            <p class="cat-print-only">
+                {{ APP_NOM_OF }} (SAS) — SIRET 101 916 674 00019 — NDA 75331851633 —
+                422 Avenue de Verdun, 33700 Mérignac — 05 54 54 24 84 —
+                contact@algorythme-formation.fr — Catalogue des actions de formation.
+            </p>
+
+            {# ------------------------------------------------------ Filtres #}
+            <form class="cat-filtres" aria-labelledby="cat-filtres-titre"
+                  data-catalogue-target="form"
+                  data-action="change->catalogue#filtrer reset->catalogue#reinitialiser">
+
+                <h2 id="cat-filtres-titre" class="cat-filtres__titre">Filtrer le catalogue</h2>
+
+                <fieldset class="cat-filtres__groupe">
+                    <legend class="cat-filtres__legende">Domaine</legend>
+                    <div class="cat-filtres__options">
+                        <label class="cat-option">
+                            <input type="radio" name="domaine" value="tout" checked>
+                            <span>Tout afficher</span>
+                        </label>
+                        {% for domaine in domaines %}
+                            <label class="cat-option">
+                                <input type="radio" name="domaine" value="{{ domaine.slug }}">
+                                <span>{{ domaine.nom }}</span>
+                            </label>
                         {% endfor %}
-                    </ul>
-                </div>
-
-            </section>
-
-            {# Catégorie de la formation #}
-            <div class="tab-content">
-                {% for categorie, sousCategories in formationsParCategorie %}
-
-                    <div id="categorie{{ loop.index }}"
-                         class="tab-pane fade {{ loop.first ? 'active show' : '' }}">
-
-                        {# Sous-catégories #}
-                        <ul class="lp-tab-menu nav">
-                            {% for sousCategorie, formations in sousCategories %}
-                                {% set tabId = 'souscategorie-' ~ loop.parent.loop.index ~ '-' ~ loop.index %}
-
-                                <li>
-                                    <a class="{{ loop.first ? 'active' : '' }}"
-                                       data-bs-toggle="tab"
-                                       href="#{{ tabId }}"
-                                       aria-selected="{{ loop.first ? 'true' : 'false' }}"
-                                       role="tab">
-                                        {{ sousCategorie }}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-
-                        {# Formations par sous-catégorie #}
-                        <div class="tab-content">
-                            {% for sousCategorie, formations in sousCategories %}
-                                {% set tabId = 'souscategorie-' ~ loop.parent.loop.index ~ '-' ~ loop.index %}
-
-                                <div id="{{ tabId }}"
-                                     class="tab-pane fade {{ loop.first ? 'active show' : '' }}"
-                                     role="tabpanel">
-
-                                    <table class="lp-list-table table">
-                                        <thead>
-                                        <tr>
-                                            <th>Formation</th>
-                                            <th>Durée</th>
-                                            {#                                            <th>Niveau</th> #}
-                                            <th>Prix</th>
-                                            {#                                            <th>Note moyenne</th> #}
-                                            <th>Action</th>
-                                        </tr>
-                                        </thead>
-
-                                        <tbody>
-                                        {% for produitFormation in formations %}
-                                            <tr>
-                                                <td>
-                                                    {{ produitFormation.meta.nom }}
-                                                </td>
-
-                                                <td>
-                                                    {% set duree = produitFormation.description.dureeDeLaFormation ?? null %}
-                                                    {% if duree %}
-                                                        {{ duree }} heures
-                                                    {% endif %}
-                                                </td>
-
-                                                {#                                                <td> #}
-                                                {#                                                    {{ produitFormation.custom_fields.custom_field_7 ?? '-' }} #}
-                                                {#                                                </td> #}
-
-                                                <td>
-                                                    {% set prixHT = produitFormation.presetTarification.tarifs[0].budget[0].prixUnitaireHT ?? null %}
-                                                    {% if prixHT %}
-                                                        {{ prixHT|number_format(0, ',', ' ') }}€ HT
-                                                    {% endif %}
-                                                </td>
-
-                                                {#                                                <td> #}
-                                                {#                                                    {% set note = produitFormation.custom_fields.custom_field_5|default(0) * 1 %} #}
-                                                {#                                                    {% if note %} #}
-                                                {#                                                        {{ note|number_format(1, ',', ' ') }}/5 #}
-                                                {#                                                    {% endif %} #}
-                                                {#                                                </td> #}
-
-                                                <td>
-                                                    <a href="{{ path('app_formation_voir', {'formationId': produitFormation.produitFormationUid, 'slug': produitFormation.slug}) }}"
-                                                       class="btn btn-primary btn-v-sm">
-                                                        Voir la formation
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                        </tbody>
-                                    </table>
-
-                                </div>
-                            {% endfor %}
-                        </div>
-
                     </div>
+                </fieldset>
 
+                <div class="cat-filtres__pied">
+                    <p class="cat-compteur" role="status" aria-live="polite"
+                       data-catalogue-target="compteur">
+                        {{ formations|length }} action{{ formations|length > 1 ? 's' }} de formation
+                        affichée{{ formations|length > 1 ? 's' }}.
+                    </p>
+                    <button type="reset" class="af-btn af-btn--secondary af-btn--sm">
+                        Réinitialiser les filtres
+                    </button>
+                </div>
+            </form>
+
+            {# ------------------------------------------------------- Cartes #}
+            <h2 class="cat-grille__titre">Les programmes</h2>
+
+            <ul class="cat-grille">
+                {% for formation in formations %}
+                    {{ include('front/formation/_carte.html.twig', {
+                        formation: formation,
+                        filtrable: true,
+                    }) }}
                 {% endfor %}
-            </div>
+            </ul>
 
+            <p class="cat-vide" data-catalogue-target="vide" {{ formations is empty ? '' : 'hidden' }}>
+                Aucune action de formation du catalogue ne correspond aux critères retenus.
+                Vous pouvez élargir la sélection ou nous exposer votre besoin directement :
+                une action de formation est alors construite à partir de votre cahier des charges.
+            </p>
+
+            {# ------------------------------------------- Socle et déclinaison #}
+            <section class="cat-declinaison">
+                <h2>Le catalogue constitue un point de départ</h2>
+                <p>
+                    Les programmes présentés ci-dessus sont des <strong>programmes de référence</strong>.
+                    <br>Ils
+                    décrivent les <strong>objectifs pédagogiques, les prérequis, la durée et les modalités
+                        d'évaluation des </strong> sur lesquels nous nous engageons.
+                </p>
+                <p>Le déroulé
+                    pédagogique, lui, est arrêté après l'<strong>analyse du besoin</strong> et la lecture de votre
+                    <strong>cahier des charges</strong>, puis annexé à la convention de formation.
+                </p>
+                <div class="cat-declinaison__split">
+                    <div>
+                        <h3>Le socle commun</h3>
+                        <ul>
+                            <li>Les objectifs pédagogiques</li>
+                            <li>La durée et le découpage horaire</li>
+                            <li>Les prérequis</li>
+                            <li>Les modalités d'évaluation des acquis</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Votre déclinaison</h3>
+                        <ul>
+                            <li>Les travaux pratiques et les jeux de données</li>
+                            <li>L'environnement technique et les outils utilisés</li>
+                            <li>L'ordre et la pondération des séquences</li>
+                            <li>Les exemples tirés de vos projets</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="cat-declinaison__note mt-2">
+                    Lorsque le besoin exprimé ne correspond à aucun programme du catalogue, une
+                    <strong>action de formation</strong> est écrite <strong>pour votre entreprise</strong> selon la même
+                    méthode.
+                    <br>La <strong>prise en charge par un OPCO</strong> reste possible dans les deux cas, et nous
+                    <strong>constituons le dossier</strong> avec vous.
+                </p>
+            </section>
         </div>
-    </section>
+
+        {# ------------------------------------------------------- Contact #}
+        <section class="cat-contact" id="contact">
+            <div class="af-container cat-contact__in">
+                <h2>Exposer votre besoin</h2>
+                <p>
+                    Un entretien de trente minutes permet de préciser le périmètre, de vérifier le
+                    niveau des participants et d'estimer la durée nécessaire. La proposition et le
+                    programme correspondant vous sont adressés sous cinq jours ouvrés.
+                </p>
+                <a href="{{ path('home') }}#quiz" class="af-btn af-btn--primary af-btn--lg">
+                    Demander une proposition
+                </a>
+                <p class="cat-contact__joindre">
+                    Vous pouvez également nous joindre par téléphone au
+                    <a href="tel:0554542484">05 54 54 24 84</a> ou par courriel à l'adresse
+                    <a href="mailto:contact@algorythme-formation.fr">contact@algorythme-formation.fr</a>.
+                </p>
+            </div>
+        </section>
+
+    </div>
+
 {% endblock %}

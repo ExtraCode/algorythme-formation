@@ -1,6 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Formation {{ formation.meta.nom }}{% endblock %}
+{% block title %}{{ formation.nom }} - {{ APP_NOM_OF }}{% endblock %}
+
+{% block meta_description %}
+    {{ formation.accroche ?: formation.nom ~ " : formation intra-entreprise " ~ formation.duree ~ ", conduite dans vos locaux ou en classe virtuelle." }}
+{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -9,432 +13,520 @@
 
 {% block body %}
 
-    <div class="page-title-section section">
+    {# `formation` vient de SmartOF (CatalogueFormations::fiche). Les textes
+       qui ne dépendent pas de la formation (socle, accessibilité, contacts)
+       sont écrits ici : SmartOF ne les porte pas. #}
 
-        <div class="container text-center">
-            <h1 class="title">{{ formation.meta.nom }}</h1>
-        </div>
+    {# Ce que SmartOF ne porte pas non plus : le nom public d'une formule de
+       session et ce qu'elle recouvre. La clé est celle du tarif SmartOF. #}
+    {% set libelles = {
+        inter: {
+            nom: 'Inter-entreprises',
+            texte: "Vos collaborateurs rejoignent une session à date fixe, aux côtés de participants venus d'autres entreprises."
+        },
+        intra: {
+            nom: 'Intra-entreprise',
+            texte: "La formation est dispensée au sein de votre entreprise et réunit vos seuls collaborateurs, dans le cadre d'une session dédiée."
+        }
+    } %}
 
-    </div>
+    {# Le choix de formule n'a de sens que si SmartOF en distingue plusieurs. #}
+    {% set formules = formation.tarifs|filter(tarif => tarif.formule is not null) %}
+    {% set choixFormule = formules|length > 1 %}
 
-    <div class="section">
-        <div class="container">
-            <div class="row">
+    <div class="fiche" data-controller="impression">
 
-                <div class="col-lg-8 col-12 order-lg-1 max-mb-50">
-                    <div class="course-details-wrapper">
+        <nav class="fo-crumbs af-container" aria-label="Fil d'ariane">
+            <ol>
+                <li><a href="{{ path('home') }}">Accueil</a></li>
+                <li><a href="{{ path('app_formation') }}">Nos formations</a></li>
+                <li aria-current="page">{{ formation.nom }}</li>
+            </ol>
+        </nav>
 
-                        {# Menu de la formation #}
-                        <div class="course-nav-tab">
-                            <ul class="nav">
-                                <li><a class="active" data-bs-toggle="tab" href="#resume">Résumé</a></li>
-                                <li><a data-bs-toggle="tab" href="#contenu">Programme</a></li>
-                                <li><a data-bs-toggle="tab" href="#modalites">Modalités</a></li>
-                                {% if(formation.avisFormations is defined) %}
-                                    <li><a data-bs-toggle="tab" href="#reviews">Appréciations</a></li>
-                                {% endif %}
-                            </ul>
-                        </div>
+        {# ------------------------------------------------------- En-tête #}
+        <section class="fo-head af-container" data-controller="formule">
+            {% if formation.domaine %}
+                <span class="fo-domaine">{{ formation.domaine.nom }}</span>
+            {% endif %}
 
-                        <div class="tab-content">
+            <h1>{{ formation.nom }}</h1>
 
-                            {# Résumé #}
-                            <div id="resume" class="tab-pane fade show active">
+            {% if formation.accroche %}
+                <p class="fo-lede">{{ formation.accroche }}</p>
+            {% endif %}
 
-                                <ul class="nice-ul-box resume d-flex flex-wrap justify-content-between">
+            {{ include('partials/_notation_etoiles.html.twig', {
+                note: formation.note,
+                nbFormes: formation.nbFormes,
+                classe: 'fo-note',
+            }) }}
 
-                                    <!-- Public de la formation Start -->
-                                    <li class="resume__bloc mt-3">
-                                        <div class="section-header">
-                                            <div class="resume__bloc__titre section-left">
-                                                <h2 class="title mb-0">Pour qui ?</h2>
-                                            </div>
-                                        </div>
-                                        {{ formation.description.publicVise | nl2br }}
-                                    </li>
-                                    <!-- Public de la formation Start -->
-
-                                    <!-- Prérequis de la formation Start -->
-                                    <li class="resume__bloc mt-3">
-                                        <div class="section-header">
-                                            <div class="resume__bloc__titre section-left">
-                                                <h2 class="title mb-0">Prérequis</h2>
-                                            </div>
-                                        </div>
-                                        {{ formation.description.preRequis | nl2br }}
-                                    </li>
-                                    <!-- Prérequis de la formation End -->
-
-                                    <!-- Objectifs de la formation Start -->
-                                    <li class="resume__bloc w-100 mt-3">
-                                        <div class="section-header">
-                                            <div class="resume__bloc__titre section-left">
-                                                <h2 class="title mb-0">Objectifs pédagogiques</h2>
-                                            </div>
-                                        </div>
-                                        {{ formation.description.objectifsDeLaFormation | nl2br }}
-                                    </li>
-                                    <!-- Objectifs de la formation End -->
-
-                                </ul>
-
-                                <!-- Description de la formation Start -->
-                                <h2 class="title mt-5">Description de la formation</h2>
-                                <p class="text-justify">{{ formation.description.contenuDeLaFormation | nl2br }}</p>
-                                <!-- Description de la formation End -->
-
-                            </div>
-
-                            {# Contenu #}
-                            <div id="contenu" class="tab-pane fade">
-                                {{ formation.description.contenuDeLaFormation | nl2br }}
-                            </div>
-
-                            {# Modalités #}
-                            <div id="modalites" class="tab-pane fade">
-
-                                {# Modalités pédagogiques #}
-                                <h2 class="title">Modalités pédagogiques</h2>
-
-                                <p>La formation s'appuie sur une pédagogie active et participative,
-                                    alternant
-                                    apports théoriques, démonstrations et mises en situation pratiques.
-                                </p>
-                                <p>Les stagiaires sont sollicités tout au long de la session par des exercices
-                                    d'application, des études de cas concrets et des temps d'échange permettant
-                                    l'ancrage progressif des connaissances. Le formateur adapte son rythme et
-                                    ses
-                                    exemples au niveau du groupe et au contexte professionnel des
-                                    participants.
-                                </p>
-                                <p>En distanciel, la formation se déroule en classe virtuelle synchrone, via
-                                    une plateforme de visioconférence permettant le partage d'écran, le travail
-                                    en
-                                    sous-groupes et l'interaction continue avec le formateur.
-                                </p>
-                                <p>En présentiel, les exercices peuvent être réalisés individuellement ou en
-                                    petits groupes selon les objectifs pédagogiques de chaque séquence.
-                                </p>
-
-                                {# MOYENS ET SUPPORTS PÉDAGOGIQUES #}
-                                <h2 class="title">Moyens et supports pédagogiques</h2>
-                                <p>Chaque stagiaire dispose d'un support de cours numérique reprenant l'ensemble des
-                                    contenus abordés, complété par les exercices pratiques et les ressources
-                                    complémentaires utilisées pendant la session. Ce support est transmis à l'issue de
-                                    la formation et reste accessible au stagiaire pour consultation ultérieure.
-                                </p>
-                                <p>En présentiel, une salle équipée d'un vidéoprojecteur, d’ordinateurs et d'une
-                                    connexion
-                                    internet est mise à disposition.
-                                </p>
-                                <p>En distanciel, la formation s'appuie sur une plateforme de classe virtuelle (lien
-                                    d'accès transmis avec la convocation), accessible depuis un ordinateur muni d'un
-                                    micro,
-                                    d'une caméra et d'une connexion internet stable. Les exercices et études de cas sont
-                                    partagés en temps réel via la plateforme.
-                                    L'ensemble des supports pédagogiques est conçu par le formateur ou par Algorythme
-                                    Formation et reste leur propriété exclusive.
-                                </p>
-
-                                {# Modalités d'évaluation et de suivi #}
-                                <h2 class="title">Modalités d'évaluation et de suivi</h2>
-                                <p>L'atteinte des objectifs est mesurée par une auto-évaluation de l'apprenant, réalisée
-                                    en entrée et en sortie de formation. Pour chaque objectif pédagogique, l'apprenant
-                                    évalue son niveau de maîtrise sur une échelle de 0 à 10. L'écart entrée / sortie
-                                    matérialise la progression et l'atteinte des objectifs.
-                                </p>
-                                <p>
-                                    À l'issue de la session, une synthèse (niveaux avant / après et commentaire du
-                                    formateur) est transmise au commanditaire.
-                                </p>
-                                <p>
-                                    Le suivi administratif est assuré par la signature d'une feuille de présence à
-                                    chaque demi-journée. Un certificat de réalisation est remis à l'apprenant ayant
-                                    suivi l'intégralité de la formation.
-                                </p>
-                                <p>
-                                    Un questionnaire de satisfaction à chaud, distinct, recueille le ressenti de
-                                    l'apprenant (et non les acquis).
-                                </p>
-
-                                {# Modalités et délais d'accès #}
-                                <h2 class="title">Modalités et délais d'accès</h2>
-                                <p>
-                                    L'inscription se fait par contact direct avec Algorythme Formation (téléphone, email
-                                    ou formulaire en ligne). Un échange préalable est organisé pour vérifier
-                                    l'adéquation entre les objectifs de la formation, les prérequis et le profil du
-                                    candidat. Un devis et un programme détaillé sont ensuite transmis. Une fois le devis
-                                    accepté, une convention de formation (ou un contrat de formation pour les
-                                    particuliers) est signée entre les parties.
-                                </p>
-                                <p>Accès au lieu de formation : les modalités précises d'accès sont communiquées à
-                                    chaque stagiaire au plus tard 10 jours ouvrés avant le début de la formation, par
-                                    l'envoi d'une convocation détaillée. Pour les formations en présentiel, cette
-                                    convocation précise l'adresse exacte de la salle, les indications d'accès
-                                    (transports, parking) et les horaires d'arrivée. Pour les formations en distanciel,
-                                    elle contient le lien de connexion à la classe virtuelle, les identifiants d'accès
-                                    le cas échéant, ainsi que les prérequis techniques (navigateur, micro, caméra, débit
-                                    internet).
-                                </p>
-                                <p>Accessibilité aux personnes en situation de handicap : tout besoin d'adaptation doit
-                                    être signalé dès l'inscription afin d'étudier les aménagements possibles. Le
-                                    référent
-                                    handicap d'Algorythme Formation est Mathieu Piron-Lafleur
-                                    (mathieu@algorythme-formation.fr).
-                                </p>
-                                <p>Délai d'accès : le délai entre la demande d'inscription et le démarrage effectif de
-                                    la
-                                    formation est de 10 jours ouvrés minimum. Ce délai
-                                    peut être plus long si la session demandée n'est pas encore programmée ou si une
-                                    ingénierie sur mesure est nécessaire (jusqu'à 2 mois). À l'inverse, il peut être
-                                    raccourci sur accord des parties dans le cas de formations intra-entreprise
-                                    urgentes.
-                                </p>
-                                <p>Conformément à la réglementation (loi du 11 Février 2005 et Articles D.5211-1 et
-                                    suivants du code du travail), Algorythme Formation s’engage à répondre aux besoins
-                                    particuliers des stagiaires en situation de handicap en proposant des aménagements
-                                    en
-                                    termes de durée, rythme, méthodes et supports pédagogiques...).
-                                </p>
-                                <p>Le cas échéant, l’organisme de formation pourra mobiliser des compétences externes
-                                    (Centre de Ressources Formation Handicap, P.A.S AGEFIPH-FIPHFP) et les ressources AD
-                                    HOC
-                                    (ACCEA, EPATECH,..) pour la recherche de solutions permettant l’accès aux
-                                    formations.
-                                </p>
-
-                            </div>
-
-                            {#                        <!-- Notes Start --> #}
-                            {#                        {% if(formation.avisFormations is not empty) %} #}
-                            {#                            <div id="reviews" class="tab-pane fade"> #}
-                            {#                                <div class="course-reviews"> #}
-
-                            {#                                    <!-- Note moyenne Start --> #}
-                            {#                                    <div class="course-rating"> #}
-                            {#                                        <div class="course-rating-content justify-content-center"> #}
-
-                            {#                                            <div class="average-rating"> #}
-                            {#                                                <div class="rating-box"> #}
-                            {#                                                    <div class="average-value primary-color"> #}
-                            {#                                                        {{ formation.moyenneAvis }} #}
-                            {#                                                    </div> #}
-                            {#                                                    <div class="review-star"> #}
-                            {#                                                        <div class="tm-star-rating"> #}
-
-                            {#                                                            #}{#                                                            {% include '../../partials/_notation_etoiles.html.twig' with {'note': formation.moyenneAvis} %} #}
-
-                            {#                                                        </div> #}
-                            {#                                                    </div> #}
-                            {#                                                    <div class="review-amount"> #}
-                            {#                                                        ({{ formation.avisFormations|length }} notes) #}
-                            {#                                                    </div> #}
-                            {#                                                </div> #}
-                            {#                                            </div> #}
-
-                            {#                                        </div> #}
-                            {#                                    </div> #}
-                            {#                                    <!-- Note moyenne End --> #}
-
-                            {#                                    <!-- Témoignages Start --> #}
-                            {#                                    <div class="course-reviews-area"> #}
-                            {#                                        <ul class="course-reviews-list"> #}
-
-                            {#                                            {% for avis in formation.avisFormations %} #}
-
-                            {#                                                <li class="review"> #}
-                            {#                                                    <div class="review-container"> #}
-
-                            {#                                                        <div class="review-content"> #}
-                            {#                                                            <h4 class="title">{{ avis.fullName }}</h4> #}
-                            {#                                                            <div class="review-stars-rated"> #}
-                            {#                                                                {% include '../../partials/_notation_etoiles.html.twig' with {'note': avis.note} %} #}
-                            {#                                                            </div> #}
-                            {#                                                            <div class="review-text mt-3">{{ avis.resume }}</div> #}
-                            {#                                                        </div> #}
-                            {#                                                    </div> #}
-                            {#                                                </li> #}
-
-                            {#                                            {% endfor %} #}
-
-                            {#                                        </ul> #}
-                            {#                                    </div> #}
-                            {#                                    <!-- Témoignages End --> #}
-                            {#                                </div> #}
-                            {#                            </div> #}
-                            {#                        {% endif %} #}
-                            {#                        <!-- Notes End --> #}
-
-                        </div>
+            {# Ce qui ne dépend pas de la formule choisie. #}
+            <dl class="fo-meta">
+                {% if formation.duree %}
+                    <div>
+                        <dt>Durée</dt>
+                        {# Les journées parlent davantage qu'un volume d'heures :
+                           le détail horaire reste dans les modalités. #}
+                        <dd>{{ formation.dureeJours ?: formation.duree }}</dd>
                     </div>
+                {% endif %}
+                <div>
+                    <dt>Modalité</dt>
+                    {# Modalité et effectif valent pour toutes nos formations :
+                       SmartOF ne les porte pas. #}
+                    <dd>Présentiel, distanciel ou les deux</dd>
                 </div>
-                <!-- Contenu formation End -->
+                <div>
+                    <dt>Effectif</dt>
+                    <dd>De 2 à 12 participants</dd>
+                </div>
+            </dl>
 
-                <!-- Sidebar Start -->
-                <div class="col-lg-4 col-12 order-lg-2 max-mb-50" id="sticky-sidebar">
-                    <div class="sidebar-widget-wrapper pr-0">
-                        <div class="sidebar-widget">
-                            <div class="sidebar-widget-content">
-                                <div class="sidebar-entry-course-info">
-                                    <div class="course-price-tabs">
-                                        <ul class="nav nav-tabs" role="tablist">
-                                            <li class="nav-item" role="presentation">
-                                                <a class="nav-link active"
-                                                   data-bs-toggle="tab"
-                                                   href="#tarif-inter"
-                                                   role="tab"
-                                                   aria-selected="true">
-                                                    Inter
-                                                </a>
-                                            </li>
-                                            <li class="nav-item" role="presentation">
-                                                <a class="nav-link"
-                                                   data-bs-toggle="tab"
-                                                   href="#tarif-intra"
-                                                   role="tab"
-                                                   aria-selected="false">
-                                                    Intra
-                                                </a>
-                                            </li>
-                                            <li class="nav-item" role="presentation">
-                                                <a class="nav-link"
-                                                   data-bs-toggle="tab"
-                                                   href="#tarif-sur-mesure"
-                                                   role="tab"
-                                                   aria-selected="false">
-                                                    Sur mesure
-                                                </a>
-                                            </li>
-                                        </ul>
+            {# Ce qui en dépend : le tarif et ce que la formule recouvre. #}
+            {% if choixFormule %}
+                <div class="fo-choix">
+                    <fieldset class="fo-choix__champ">
+                        <legend class="fo-choix__legende">Formule de session</legend>
+                        <div class="fo-choix__options">
+                            {% for tarif in formules %}
+                                <label class="fo-choix__option">
+                                    <input type="radio" name="formule" value="{{ tarif.formule }}"
+                                           {{ loop.first ? 'checked' }}
+                                           data-action="formule#choisir">
+                                    <span>{{ libelles[tarif.formule].nom }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </fieldset>
 
-                                        <div class="tab-content">
+                    {% for tarif in formules %}
+                        <div class="fo-choix__detail"
+                             data-formule-target="panneau" data-formule="{{ tarif.formule }}"
+                             {{ loop.first ? '' : 'hidden' }}>
+                            <p class="fo-choix__prix">
+                                {{ tarif.montantHT|number_format(0, ',', ' ') }} € HT
+                                <span>la session</span>
+                            </p>
+                            <p class="fo-choix__texte">{{ libelles[tarif.formule].texte }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% elseif formation.tarifSessionHT %}
+                <div class="fo-choix">
+                    <p class="fo-choix__prix">
+                        À partir de {{ formation.tarifSessionHT|number_format(0, ',', ' ') }} € HT
+                        <span>la session</span>
+                    </p>
+                </div>
+            {% endif %}
 
-                                            {# Inter #}
-                                            <div id="tarif-inter" class="tab-pane fade mt-3 active show"
-                                                 role="tabpanel">
-                                                <div class="course-price">
-                                                    <span class="meta-label">
-                                                        <i class="meta-icon fas fa-money-bill-wave"></i>
-                                                        Tarif (HT)
-                                                    </span>
-                                                    <span class="meta-value">
-                                                        <span
-                                                            class="price">{{ formation.presetTarification.tarifs[0].budget[0].prixUnitaireHT }}€</span>
-                                                    </span>
-                                                </div>
-                                            </div>
+            <p class="fo-print-only">
+                {{ APP_NOM_OF }} (SAS) — SIRET 101 916 674 00019 — NDA 75331851633 —
+                422 Avenue de Verdun, 33700 Mérignac — 05 54 54 24 84 —
+                contact@algorythme-formation.fr
+            </p>
 
-                                            {# Intra #}
-                                            <div id="tarif-intra" class="tab-pane mt-3 fade" role="tabpanel">
-                                                <p>Formation personnalisée pour votre entreprise, organisée sur site, en
-                                                    distanciel ou dans nos locaux.</p>
-                                            </div>
+            <div class="fo-actions">
+                <a href="#proposition" class="af-btn af-btn--primary af-btn--lg">Demander une proposition</a>
+                <a href="#modalites" class="fo-ancre">Voir les modalités détaillées</a>
+            </div>
+        </section>
 
-                                            {# Sur mesure #}
-                                            <div id="tarif-sur-mesure" class="tab-pane mt-3 fade" role="tabpanel">
-                                                <p>Cette formation est proposée en format sur-mesure, adaptée aux
-                                                    besoins spécifiques de votre entreprise.</p>
-                                            </div>
-                                        </div>
+        <div class="af-container">
+
+            <div class="fo-signal-wrap"
+                 data-controller="signal"
+                 data-signal-disorder-value="1"
+                 data-signal-seed-value="17"
+                 data-signal-height-value="30"></div>
+
+            {# ---------------------------------------------------- Objectifs #}
+            {% set objectifs = formation.objectifs ?: formation.objectifsPedagogiques %}
+            {% if objectifs %}
+                <section class="fo-bloc" id="objectifs">
+                    <h2>Ce que vous saurez faire</h2>
+                    <ul class="fo-objectifs">
+                        {% for objectif in objectifs %}
+                            <li>{{ objectif }}</li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            {% endif %}
+
+            {# ------------------------------------------- Ce que ça change #}
+            {% if formation.ceQuiChange %}
+                <section class="fo-bloc" id="bascule">
+                    <h2>Ce que ça change, concrètement</h2>
+
+                    <div class="fo-signal-wrap fo-signal--bascule"
+                         data-controller="signal"
+                         data-signal-disorder-value="1"
+                         data-signal-seed-value="29"
+                         data-signal-height-value="30"></div>
+
+                    <div class="fo-paires">
+                        {% for paire in formation.ceQuiChange %}
+                            <div class="fo-paire">
+                                <p class="fo-paire__tache">{{ paire.tache }}</p>
+                                <div class="fo-paire__duo">
+                                    <div class="fo-etat fo-etat--avant">
+                                        <p class="fo-etat__label">Aujourd'hui</p>
+                                        <p>{{ paire.avant }}</p>
                                     </div>
-                                    <div class="course-meta">
-                                        <div>
-                                        <span class="meta-label">
-                                            <i class="fas fa-clock"></i>
-                                            Durée
-                                        </span>
-                                            <span
-                                                class="meta-value">{{ formation.description.dureeDeLaFormation }} heures de formation</span>
-                                        </div>
-
-                                        <div>
-                                        <span class="meta-label">
-                                            <i class="fa-solid fa-location-dot"></i>
-                                            Lieu
-                                        </span>
-                                            <span class="meta-value">Présentiel ou distanciel</span>
-                                        </div>
-
-                                        {#                                        #}{# Nombre d'apprenants #}
-                                        {#                                        {% if formation.custom_fields is defined #}
-                                        {#                                            and formation.custom_fields.custom_field_3 is defined #}
-                                        {#                                            and formation.custom_fields.custom_field_3 %} #}
-
-                                        {#                                            {% set nbApprenants = formation.custom_fields.custom_field_3 %} #}
-
-                                        {#                                            <div> #}
-                                        {#                                                <span class="meta-label"> #}
-                                        {#                                                     <i class="fa-solid fa-person"></i> #}
-                                        {#                                                    Stagiaire #}
-                                        {#                                                </span> #}
-                                        {#                                                <span class="meta-value">{{ calculNbApprenants(nbApprenants) }}<i #}
-                                        {#                                                        class="fa-solid fa-person"></i> formées en {{ "now" | date('Y') }}</span> #}
-                                        {#                                            </div> #}
-
-                                        {#                                        {% endif %} #}
-
-                                        {#                                        #}{# Nombre d'étoiles #}
-                                        {#                                        {% if formation.custom_fields is defined #}
-                                        {#                                            and formation.custom_fields.custom_field_5 is defined #}
-                                        {#                                            and formation.custom_fields.custom_field_5 %} #}
-
-                                        {#                                            {% set note = (formation.custom_fields.custom_field_5 ?? 0) + 0 %} #}
-
-                                        {#                                            {% set fullStars = note|round(0, 'floor') %} #}
-                                        {#                                            {% set hasHalfStar = (note - fullStars) >= 0.5 %} #}
-                                        {#                                            {% set emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0) %} #}
-
-                                        {#                                            <div> #}
-                                        {#                                                <span class="meta-label"> #}
-                                        {#                                                     <i class="fa-solid fa-heart"></i> #}
-                                        {#                                                    Avis #}
-                                        {#                                                </span> #}
-                                        {#                                                <div class="meta-value"> #}
-
-                                        {#                                                    <div class="stars"> #}
-                                        {#                                                        #}{# étoiles pleines #}
-                                        {#                                                        {% for i in 1..fullStars %} #}
-                                        {#                                                            <i class="fa-solid fa-star"></i> #}
-                                        {#                                                        {% endfor %} #}
-
-                                        {#                                                        #}{# demi étoile #}
-                                        {#                                                        {% if hasHalfStar %} #}
-                                        {#                                                            <i class="fa-solid fa-star-half-stroke"></i> #}
-                                        {#                                                        {% endif %} #}
-
-                                        {#                                                        #}{# étoiles vides (sécurisé) #}
-                                        {#                                                        {% if emptyStars > 0 %} #}
-                                        {#                                                            {% for i in 1..emptyStars %} #}
-                                        {#                                                                <i class="fa-regular fa-star"></i> #}
-                                        {#                                                            {% endfor %} #}
-                                        {#                                                        {% endif %} #}
-
-                                        {#                                                        <span>{{ note|number_format(1, '.', '') }}/5</span> #}
-                                        {#                                                    </div> #}
-
-                                        {#                                                </div> #}
-                                        {#                                            </div> #}
-
-
-                                        {#                                        {% endif %} #}
-
-                                        <div class="lp-course-buttons">
-                                            <a class="btn btn-primary btn-hover-secondary btn-width-100"
-                                               href="{{ path('app_contact') }}">
-                                                Inscription et devis
-                                            </a>
-                                        </div>
+                                    <span class="fo-fleche" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" width="18" height="18">
+                                            <path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor"
+                                                  stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </span>
+                                    <div class="fo-etat fo-etat--apres">
+                                        <p class="fo-etat__label">Après la formation</p>
+                                        <p>{{ paire.apres }}</p>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        {% endfor %}
                     </div>
-                    <!-- Sidebar End -->
+                </section>
+            {% endif %}
 
+            {# ------------------------------------------------------ Déroulé #}
+            {% if formation.deroule %}
+                <section class="fo-bloc" id="contenu">
+                    <h2>Le déroulé</h2>
+
+                    {% for journee in formation.deroule %}
+                        {% if journee.titre %}
+                            {# Déroulé découpé en journées : une journée par accordéon. #}
+                            <details class="fo-jour" {{ loop.first ? 'open' }}>
+                                <summary>
+                                    {{ journee.titre }}
+                                    {% if journee.duree %}
+                                        <span class="fo-jour-duree">{{ journee.duree }}</span>
+                                    {% endif %}
+                                </summary>
+                                <div class="fo-demi">
+                                    {% for sequence in journee.sequences %}
+                                        <div>
+                                            <h3>
+                                                {% if sequence.duree %}<span>{{ sequence.duree }}</span>{% endif %}
+                                                {{ sequence.titre }}
+                                            </h3>
+                                            {% if sequence.points %}
+                                                <ul>
+                                                    {% for point in sequence.points %}
+                                                        <li>{{ point }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </details>
+                        {% else %}
+                            {# Déroulé saisi sans journées : une séquence par accordéon. #}
+                            {% for sequence in journee.sequences %}
+                                <details class="fo-jour" {{ loop.first ? 'open' }}>
+                                    <summary>
+                                        {{ sequence.titre }}
+                                        {% if sequence.duree %}
+                                            <span class="fo-jour-duree">{{ sequence.duree }}</span>
+                                        {% endif %}
+                                    </summary>
+                                    {% if sequence.points %}
+                                        <div class="fo-demi fo-demi--simple">
+                                            <div>
+                                                <ul>
+                                                    {% for point in sequence.points %}
+                                                        <li>{{ point }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </details>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </section>
+            {% endif %}
+
+            {# -------------------------------------------- Socle / déclinaison #}
+            <section class="fo-bloc" id="socle">
+                <h2>Programme de référence, adapté à votre cahier des charges</h2>
+                <div class="fo-socle">
+                    <div class="fo-socle__carte fo-socle__carte--socle">
+                        <h3>Le socle commun</h3>
+                        <ul>
+                            <li>Les objectifs pédagogiques</li>
+                            <li>La durée et le découpage horaire</li>
+                            <li>Les prérequis</li>
+                            <li>Les modalités d'évaluation des acquis</li>
+                        </ul>
+                    </div>
+                    <div class="fo-socle__carte fo-socle__carte--vous">
+                        <h3>Votre déclinaison</h3>
+                        <ul>
+                            <li>Les travaux pratiques et les jeux de données</li>
+                            <li>L'environnement technique et les outils utilisés</li>
+                            <li>L'ordre et la pondération des séquences</li>
+                            <li>Les exemples tirés de vos projets</li>
+                        </ul>
+                    </div>
                 </div>
+                <p class="fo-socle__note">
+                    Le programme définitif est annexé à la convention de formation et constitue
+                    le seul document contractuel de référence.
+                </p>
+            </section>
+
+            {# ------------------------------------------------- Questions #}
+            {# Questions communes à toutes les formations : elles portent sur
+               notre façon de travailler, pas sur un programme en particulier.
+               SmartOF ne les porte pas, elles sont écrites ici. #}
+            <section class="fo-bloc" id="questions">
+                <h2>Questions fréquentes</h2>
+
+                <div class="fo-faq">
+                    <details>
+                        <summary>Nos collaborateurs n'ont pas tous le même niveau.</summary>
+                        <p>
+                            Un test de positionnement est adressé à chaque participant avant l'entrée
+                            en formation et le déroulé est ajusté aux niveaux réellement présents.
+                            Si l'écart est trop important pour une même session, nous vous le
+                            signalons avant l'établissement de la convention.
+                        </p>
+                    </details>
+
+                    <details>
+                        <summary>La formation peut-elle porter sur nos propres outils et projets ?</summary>
+                        <p>
+                            Oui. Les travaux pratiques portent sur votre environnement technique et
+                            sur des cas tirés de vos projets. Les objectifs et la durée, eux, restent
+                            ceux du programme de référence.
+                        </p>
+                    </details>
+
+                    <details>
+                        <summary>Cette formation est-elle finançable par notre OPCO ?</summary>
+                        <p>
+                            Oui, dans les conditions propres à votre branche. {{ APP_NOM_OF }} est
+                            certifié Qualiopi au titre de la catégorie d'action « Actions de
+                            formation ». Nous constituons les pièces du dossier avec vous.
+                        </p>
+                    </details>
+
+                    <details>
+                        <summary>La formation peut-elle se tenir à distance ?</summary>
+                        <p>
+                            Oui. Nos formations sont conduites dans vos locaux ou en classe virtuelle,
+                            avec partage d'écran et travaux pratiques encadrés. Le choix se fait au
+                            moment du cadrage, en fonction de la répartition de vos équipes.
+                        </p>
+                    </details>
+
+                    <details>
+                        <summary>Sous quel délai une session peut-elle démarrer ?</summary>
+                        <p>
+                            Comptez 5 jours ouvrés pour recevoir la proposition et le programme
+                            adaptés, puis 4 à 8 semaines avant l'entrée en formation. Un dossier
+                            OPCO demande 3 semaines supplémentaires au minimum.
+                        </p>
+                    </details>
+
+                    <details>
+                        <summary>Un de nos participants est en situation de handicap.</summary>
+                        <p>
+                            Signalez-le au moment du cadrage : les modalités, les supports et le
+                            rythme sont adaptés au cas par cas. Notre référent handicap,
+                            Mathieu Piron-Lafleur, étudie chaque situation avec vous
+                            (<a href="mailto:contact@algorythme-formation.fr">contact@algorythme-formation.fr</a>).
+                        </p>
+                    </details>
+                </div>
+            </section>
+
+        </div>
+
+        {# ----------------------------------------------------- Modalités #}
+        <div class="fo-modalites">
+            <div class="af-container">
+                <section class="fo-bloc" id="modalites">
+                    <h2>Modalités et informations pratiques</h2>
+
+                    <dl class="fo-fiche">
+
+                        {% if formation.publicVise %}
+                            <div>
+                                <dt>Public visé</dt>
+                                <dd>{{ include('front/formation/_liste.html.twig', { items: formation.publicVise }) }}</dd>
+                            </div>
+                        {% endif %}
+
+                        {% if formation.preRequis %}
+                            <div>
+                                <dt>Prérequis</dt>
+                                <dd>{{ include('front/formation/_liste.html.twig', { items: formation.preRequis }) }}</dd>
+                            </div>
+                        {% endif %}
+
+                        {% if formation.duree %}
+                            <div>
+                                <dt>Durée et organisation</dt>
+                                <dd>
+                                    {{- formation.duree }}, en présentiel, en distanciel ou les deux.
+                                    De 2 à 12 participants, dans vos locaux ou en classe virtuelle.
+                                </dd>
+                            </div>
+                        {% endif %}
+
+                        {% if formation.methodes %}
+                            <div>
+                                <dt>Méthodes mobilisées</dt>
+                                <dd>{{ include('front/formation/_liste.html.twig', { items: formation.methodes }) }}</dd>
+                            </div>
+                        {% endif %}
+
+                        {% if formation.moyens %}
+                            <div>
+                                <dt>Moyens et supports</dt>
+                                <dd>{{ include('front/formation/_liste.html.twig', { items: formation.moyens }) }}</dd>
+                            </div>
+                        {% endif %}
+
+                        {% if formation.profilFormateurs %}
+                            <div>
+                                <dt>Profil des formateurs</dt>
+                                <dd>{{ include('front/formation/_liste.html.twig', { items: formation.profilFormateurs }) }}</dd>
+                            </div>
+                        {% endif %}
+
+                        <div>
+                            <dt>Évaluation et suivi</dt>
+                            <dd>
+                                {% if formation.evaluation %}
+                                    {{ include('front/formation/_liste.html.twig', { items: formation.evaluation }) }}
+                                {% else %}
+                                    {# Processus commun à toutes nos actions de formation. #}
+                                    <ul>
+                                        <li>À l'entrée : analyse du besoin, test de positionnement, auto-évaluation</li>
+                                        <li>En cours : exercice validé à chaque séquence, point d'étape à mi-parcours
+                                        </li>
+                                        <li>En fin : mise en situation, auto-évaluation de sortie, certificat de
+                                            réalisation
+                                        </li>
+                                        <li>À distance : satisfaction à chaud, questionnaire à froid à 90 jours, bilan
+                                            au commanditaire
+                                        </li>
+                                    </ul>
+                                {% endif %}
+                            </dd>
+                        </div>
+
+                        <div>
+                            <dt>Modalités et délais d'accès</dt>
+                            <dd>
+                                {% if formation.acces %}
+                                    {{ include('front/formation/_liste.html.twig', { items: formation.acces }) }}
+                                {% else %}
+                                    Prise de contact, puis entretien d'analyse du besoin de 30 minutes.
+                                    <br>Proposition et programme adaptés sous 5 jours ouvrés.
+                                    <br>Entrée en
+                                    formation sous 4 à 8 semaines après signature de la convention,
+                                    et 3 semaines supplémentaires minimum en cas de dossier OPCO.
+                                {% endif %}
+                            </dd>
+                        </div>
+
+                        {% if formation.tarifs %}
+                            <div class="fo-fiche__large">
+                                <dt>Tarif</dt>
+                                <dd>
+                                    {# Une carte par formule de session. `formule` vient de
+                                       l'intitulé du tarif SmartOF (INTER / INTRA) ; les textes
+                                       qui l'expliquent sont écrits ici. #}
+                                    <ul class="fo-formules">
+                                        {% for tarif in formation.tarifs %}
+                                            <li class="fo-formule">
+                                                <p class="fo-formule__nom">
+                                                    {{ libelles[tarif.formule].nom|default(tarif.intitule ?: 'Session dédiée') }}
+                                                </p>
+                                                <p class="fo-formule__prix">
+                                                    {{ tarif.montantHT|number_format(0, ',', ' ') }} € HT
+                                                    <span>la session</span>
+                                                </p>
+                                                <p class="fo-formule__texte">
+                                                    {{ libelles[tarif.formule].texte|default('Session dédiée à votre entreprise, dans vos locaux ou en classe virtuelle.') }}
+                                                </p>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                    <p class="fo-formules__note">
+                                        Acompte de 50 % à la signature, solde à 30 jours. Frais de déplacement
+                                        en sus hors Gironde. Action de formation finançable par votre OPCO.
+                                    </p>
+                                </dd>
+                            </div>
+                        {% endif %}
+
+                        <div>
+                            <dt>Accessibilité et handicap</dt>
+                            <dd>
+                                Nos actions de formation sont ouvertes aux personnes en situation de
+                                handicap, avec une adaptation au cas par cas des modalités, des supports
+                                et du rythme.
+                                <br>Référent handicap : Mathieu Piron-Lafleur,
+                                <a href="mailto:contact@algorythme-formation.fr">contact@algorythme-formation.fr</a>.
+                            </dd>
+                        </div>
+
+                        <div>
+                            <dt>Contacts</dt>
+                            <dd>
+                                {{ APP_NOM_OF }},<br>
+                                <a href="tel:0554542484">05 54 54 24 84</a><br>
+                                <a href="mailto:contact@algorythme-formation.fr">contact@algorythme-formation.fr</a><br><br>
+                                Référent pédagogique : Alan Piron-Lafleur. Référent qualité : Mayana Elbaz.
+                            </dd>
+                        </div>
+
+                    </dl>
+
+                    {% if formation.misAJourLe %}
+                        <p class="fo-maj">Programme mis à jour le {{ formation.misAJourLe|date('d/m/Y') }}.</p>
+                    {% endif %}
+                </section>
             </div>
         </div>
-        <!-- Formation End -->
-    </div>
-{% endblock %}
 
+        {# ----------------------------------------------------------- CTA #}
+        <section class="fo-cta" id="proposition">
+            <div class="af-container fo-cta-in">
+                <div class="fo-signal-wrap fo-signal--cta"
+                     data-controller="signal"
+                     data-signal-disorder-value="0"
+                     data-signal-seed-value="17"
+                     data-signal-height-value="28"></div>
+                <h2>Organiser cette formation dans votre entreprise</h2>
+                <p>Trente minutes pour préciser votre besoin.</p>
+                <a href="{{ path('home') }}#quiz" class="af-btn af-btn--primary af-btn--lg">
+                    Demander une proposition
+                </a>
+                <p class="fo-cta-joindre mt-3">
+                    <a href="tel:0554542484">05 54 54 24 84</a><br>
+                    <a href="mailto:contact@algorythme-formation.fr">contact@algorythme-formation.fr</a>
+                </p>
+            </div>
+        </section>
+
+        {# Barre d'action fixe, affichée en mobile uniquement. #}
+        <div class="fo-sticky">
+            <a href="tel:0554542484" class="af-btn af-btn--secondary">Appeler</a>
+            <a href="#proposition" class="af-btn af-btn--primary">Demander une proposition</a>
+        </div>
+
+    </div>
+
+{% endblock %}

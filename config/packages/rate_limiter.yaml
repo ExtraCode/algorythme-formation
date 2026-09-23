@@ -1,0 +1,17 @@
+# Limitation de débit de l'orientation (page d'accueil → API Claude).
+#
+# Deux garde-fous complémentaires :
+#  - par visiteur, pour qu'une même personne ne monopolise pas le service ;
+#  - global, qui plafonne la dépense quoi qu'il arrive. C'est celui-ci qui
+#    protège vraiment la facture : l'adresse IP, elle, se change.
+framework:
+    rate_limiter:
+        orientation_visiteur:
+            policy: 'sliding_window'
+            limit: 5
+            interval: '1 hour'
+
+        orientation_globale:
+            policy: 'sliding_window'
+            limit: 30
+            interval: '1 hour'

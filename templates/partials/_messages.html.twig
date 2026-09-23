@@ -1,0 +1,35 @@
+{# Messages portés d'une page à l'autre après une redirection.
+
+   Le seul émis aujourd'hui vient de l'orientation : le visiteur a décrit un
+   besoin auquel aucun programme ne répond, et atterrit sur le catalogue.
+
+   Le bandeau suit le défilement : le lien de reformulation reste à portée
+   pendant qu'on parcourt le catalogue. Le paramètre `reformuler` indique à
+   la page d'accueil de remettre le besoin dans le champ. #}
+
+{% for besoin in app.flashes('orientation_sans_resultat') %}
+    <div class="af-flash-zone" data-controller="message">
+        <div class="af-container">
+            <div class="af-flash" role="status">
+                <p class="af-flash__texte">
+                    Nos programmes de référence ne couvrent pas ce que vous décrivez.<br>
+                    Vous pouvez parcourir le catalogue complet pour vous faire une idée de nos domaines.
+                </p>
+
+                <a href="{{ path('home', { reformuler: 1 }) }}#besoin"
+                   class="af-btn af-btn--secondary af-btn--sm">
+                    Reformuler mon besoin
+                </a>
+
+                <button type="button" class="af-flash__fermer"
+                        data-action="message#fermer"
+                        aria-label="Fermer ce message">
+                    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2"
+                              stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+{% endfor %}

@@ -4,3 +4,6 @@ symfonycasts_sass:
         - 'assets/styles/app.scss'
         # Une feuille par page, chargée dans le block `stylesheets` du template.
         - 'assets/styles/pages/accueil.scss'
+        - 'assets/styles/pages/formations.scss'
+        - 'assets/styles/pages/formation.scss'
+        - 'assets/styles/pages/orientation.scss'

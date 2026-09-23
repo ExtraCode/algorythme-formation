@@ -8,7 +8,7 @@ when@dev:
             main:
                 type: stream
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
-                level: critical
+                level: error
                 channels: [ "!event" ]
             # uncomment to get logging in your browser
             # you may have to allow bigger header sizes in your Web server configuration
@@ -43,7 +43,7 @@ when@prod:
             main:
                 type: stream
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
-                level: critical
+                level: error
                 channels: [ "!event" ]
                 buffer_size: 50 # How many messages should be saved? Prevent memory leaks
             console:

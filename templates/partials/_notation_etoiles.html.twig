@@ -1,24 +1,22 @@
-{% set fullStars = note | round(0, 'floor') %}
-
-{# Les étoiles pleines #}
-{% for i in 1..fullStars %}
-    <span class="fas fa-star star-primary-color"></span>
-{% endfor %}
-
-{# Les demis étoiles #}
-{% if note != fullStars %}
-
-    {% if (note - fullStars) == 0.5 %}
-        <span class="fas fa-star-half-alt star-primary-color"></span>
-    {% endif %}
-
-    {% if (note - fullStars) > 0.5 %}
-        <span class="fas fa-star star-primary-color"></span>
-    {% endif %}
-
+{# Note de satisfaction et nombre de personnes formées (SmartOF).
+   `note` (sur 5) et `nbFormes` valent null quand ils ne sont pas saisis :
+   la partie correspondante n'est alors pas affichée.
+   Les étoiles se remplissent au prorata de la note : 4,7 → 94 %. #}
+{% if note or nbFormes %}
+    <p class="af-note {{ classe|default('') }}">
+        {% if note %}
+            <span class="af-note__ligne">
+                <span class="af-note__etoiles" role="img"
+                      aria-label="Note de satisfaction : {{ note|number_format(1, ',') }} sur 5"
+                      style="--remplissage: {{ (note / 5 * 100)|round(1) }}%"></span>
+                <span class="af-note__valeur" aria-hidden="true">{{ note|number_format(1, ',') }}/5</span>
+            </span>
+        {% endif %}
+        {% if nbFormes %}
+            <span class="af-note__formes">
+                {% set pluriel = nbFormes > 1 ? 's' : '' %}
+                <strong>{{ nbFormes|number_format(0, ',', ' ') }}</strong> professionnel{{ pluriel }} déjà formé{{ pluriel }}
+            </span>
+        {% endif %}
+    </p>
 {% endif %}
-
-{# Les étoiles vides #}
-{% for i in range(1, (5 - note) | round(0, 'floor')) %}
-    <span class="far fa-star star-primary-color"></span>
-{% endfor %}

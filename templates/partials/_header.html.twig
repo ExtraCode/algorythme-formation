@@ -8,9 +8,10 @@
         </a>
 
         <nav class="site-header__nav" data-menu-target="nav" aria-label="Navigation principale">
+            <a href="{{ path('app_formation') }}" data-action="menu#close"
+               {{ app.current_route starts with 'app_formation' ? 'aria-current="page"' }}>Nos formations</a>
             <a href="{{ path('home') }}#piliers" data-action="menu#close">Nos domaines d'expertise</a>
             <a href="{{ path('home') }}#quiz" data-action="menu#close">Cadrer mon besoin</a>
-            <a href="{{ path('home') }}#interlocuteurs" data-action="menu#close">Vos interlocuteurs</a>
         </nav>
 
         <a href="tel:0554542484" class="site-header__tel">05 54 54 24 84</a>

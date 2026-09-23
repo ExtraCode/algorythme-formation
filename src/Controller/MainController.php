@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use AllowDynamicProperties;
 use App\Service\MailService;
+use App\Service\QuotaOrientation;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -72,10 +73,21 @@ class MainController extends AbstractController
     ];
 
     #[Route('/main', name: 'app_main')]
-    public function index(): Response
+    public function index(Request $request, QuotaOrientation $quota): Response
     {
         return $this->render('front/accueil.html.twig', [
             'questions' => self::QUESTIONS_CADRAGE,
+            // Quand le quota horaire d'analyses est épuisé, le champ de
+            // besoin n'est pas affiché : mieux vaut ne rien proposer que
+            // de faire saisir un texte pour le refuser ensuite.
+            'orientationDisponible' => $quota->disponible(),
+            // Le besoin n'est remis dans le champ que si le visiteur arrive
+            // par « Reformuler mon besoin » : ailleurs, le formulaire doit
+            // être vierge. Le texte lui-même reste en session, jamais dans
+            // l'URL.
+            'besoinPrecedent' => $request->query->has('reformuler')
+                ? (string)$request->getSession()->get(OrientationController::CLE_BESOIN, '')
+                : '',
         ]);
     }
 

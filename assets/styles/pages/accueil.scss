@@ -48,6 +48,33 @@
             flex-wrap: wrap;
             margin-bottom: $space-4;
         }
+
+        // Orientation libre : le visiteur décrit son besoin plutôt que de
+        // répondre au questionnaire. Même largeur que le texte du hero.
+        &__besoin {
+            display: grid;
+            justify-items: start;
+            gap: $space-4;
+            max-width: 62ch;
+            margin-top: $space-6;
+            padding-top: $space-6;
+            border-top: 1px solid var(--color-border);
+
+            .af-field {
+                width: 100%;
+            }
+
+            .af-input--multiline {
+                min-height: 128px;
+            }
+        }
+
+        &__besoin-titre {
+            font-family: var(--font-display);
+            font-size: $text-h4;
+            font-weight: $weight-bold;
+            color: var(--color-primary);
+        }
     }
 
     // -----------------------------------------------------------------
@@ -70,6 +97,11 @@
             border-left-color: var(--color-accent);
             color: var(--color-cta);
         }
+    }
+
+    // L'appel à l'action ferme la section : il suit la phrase qui la résume.
+    .conviction-actions {
+        margin-top: $space-6;
     }
 
     .conviction-xl {

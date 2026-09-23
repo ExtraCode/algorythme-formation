@@ -1,0 +1,421 @@
+@use "../variables" as *;
+
+// =====================================================================
+// Catalogue des formations — Algorythme Formation
+// Sections dans l'ordre du gabarit :
+//   fil d'ariane → en-tête → filtres → grille de cartes →
+//   socle et déclinaison → contact
+// Les jetons, l'en-tête, le pied de page et les composants communs
+// (.af-btn, .af-container…) sont dans app.scss.
+// =====================================================================
+
+.catalogue {
+
+    // -----------------------------------------------------------------
+    // Fil d'ariane
+    // -----------------------------------------------------------------
+    .cat-crumbs {
+        padding-top: 20px;
+        font-size: 0.8125rem;
+        color: var(--text-muted);
+
+        ol {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        li:not(:last-child)::after {
+            content: "/";
+            margin-left: 6px;
+            color: var(--color-border-strong);
+        }
+
+        a {
+            color: var(--text-muted);
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // En-tête de page
+    // -----------------------------------------------------------------
+    .cat-head {
+        padding-top: $space-5;
+        padding-bottom: 36px;
+
+        h1 {
+            margin-bottom: 0;
+        }
+
+        &__lede {
+            margin: 20px 0 0;
+            font-size: 1.0625rem;
+            color: var(--text-muted);
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Barre de filtres
+    // -----------------------------------------------------------------
+    .cat-filtres {
+        padding: 20px 22px 18px;
+        border: 1px solid var(--color-border);
+        border-radius: 14px;
+        background: var(--color-white);
+
+        &__titre,
+        &__legende {
+            margin: 0 0 10px;
+            padding: 0;
+            font-family: var(--font-display);
+            font-size: 0.8125rem;
+            font-weight: $weight-bold;
+            letter-spacing: 0.03em;
+            color: var(--text-muted);
+        }
+
+        &__titre {
+            margin-bottom: $space-4;
+        }
+
+        // Sans min-width le fieldset refuse de rétrécir et la page
+        // déborde en mobile.
+        &__groupe {
+            min-width: 0;
+            margin: 0 0 18px;
+            padding: 0;
+            border: 0;
+
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+        }
+
+        &__options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: $space-2;
+        }
+
+        &__pied {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px;
+            margin-top: 20px;
+            padding-top: $space-4;
+            border-top: 1px solid var(--color-border);
+        }
+    }
+
+    // Puce radio : l'input couvre le label, le span porte le visuel.
+    .cat-option {
+        position: relative;
+
+        input {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        span {
+            display: inline-flex;
+            align-items: center;
+            min-height: 44px;
+            padding: 10px 18px;
+            border: 1px solid var(--color-border-strong);
+            border-radius: $radius-pill;
+            background: var(--color-white);
+            font-size: $text-caption;
+            font-weight: $weight-semibold;
+            color: var(--color-primary);
+            transition: background $transition-fast, border-color $transition-fast;
+        }
+
+        input:hover + span {
+            background: var(--color-primary-soft);
+        }
+
+        input:checked + span {
+            border-color: var(--color-cta);
+            background: var(--color-cta);
+            color: var(--text-on-cta);
+        }
+
+        input:focus-visible + span {
+            outline: 3px solid var(--color-primary);
+            outline-offset: 2px;
+        }
+    }
+
+    .cat-compteur {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: $text-small;
+        font-weight: $weight-bold;
+        color: var(--color-primary);
+    }
+
+    // -----------------------------------------------------------------
+    // Grille de cartes
+    // La grille et la carte elles-mêmes sont dans app.scss : la page de
+    // résultats d'orientation présente les mêmes formations.
+    // -----------------------------------------------------------------
+    .cat-grille__titre {
+        margin: 40px 0 20px;
+    }
+
+    .cat-vide {
+        margin: 28px 0 0;
+        padding: 22px;
+        border-radius: 12px;
+        background: var(--color-primary-soft);
+        font-size: $text-small;
+
+        &[hidden] {
+            display: none;
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Socle commun et déclinaison
+    // -----------------------------------------------------------------
+    .cat-declinaison {
+        margin: 56px 0 0;
+        padding: 28px 28px 24px;
+        border: 1px solid var(--color-border);
+        border-left: 4px solid var(--color-accent);
+        border-radius: 0 14px 14px 0;
+        background: var(--color-white);
+
+        h2 {
+            margin-bottom: $space-3;
+            font-size: 1.25rem;
+        }
+
+        p {
+            margin: 0 0 20px;
+            font-size: $text-small;
+        }
+
+        &__split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            overflow: hidden;
+
+            > div {
+                padding: 18px 20px;
+
+                &:first-child {
+                    border-right: 1px solid var(--color-border);
+                    background: var(--color-cta-soft);
+                }
+            }
+
+            h3 {
+                margin-bottom: 10px;
+                font-size: $text-small;
+            }
+
+            ul {
+                margin: 0;
+                padding-left: 18px;
+                font-size: $text-caption;
+                line-height: 1.8;
+            }
+        }
+
+        &__note {
+            margin: 20px 0 0;
+            font-size: $text-caption;
+            color: var(--text-muted);
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Contact
+    // -----------------------------------------------------------------
+    .cat-contact {
+        margin-top: $space-8;
+        padding: clamp(48px, 7vw, 72px) 0;
+        background: var(--surface-dark);
+        color: var(--text-on-dark);
+
+        h2 {
+            margin-bottom: $space-3;
+            color: var(--text-on-dark);
+        }
+
+        p {
+            margin: 0 auto $space-5;
+            font-size: $text-small;
+            color: var(--text-on-dark);
+            opacity: 0.92;
+        }
+
+        &__in {
+            max-width: 640px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        &__joindre {
+            margin-top: 18px;
+            font-size: $text-caption;
+
+            a {
+                color: var(--link-on-dark);
+            }
+        }
+    }
+
+    .cat-print-only {
+        display: none;
+    }
+
+    // -----------------------------------------------------------------
+    // Responsive
+    // -----------------------------------------------------------------
+    @media (max-width: 760px) {
+        .cat-filtres {
+            padding: 18px 0;
+            border-left: 0;
+            border-right: 0;
+            border-radius: 0;
+
+            &__groupe {
+                margin-bottom: $space-4;
+            }
+
+            &__titre,
+            &__legende,
+            &__pied {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            // Les puces défilent horizontalement plutôt que de s'empiler.
+            &__options {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                scroll-snap-type: x proximity;
+                padding: 2px 20px 6px;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+
+                &::-webkit-scrollbar {
+                    display: none;
+                }
+            }
+        }
+
+        .cat-option {
+            flex: none;
+            scroll-snap-align: start;
+        }
+
+        .cat-grille {
+            grid-template-columns: 1fr;
+        }
+
+        .cat-declinaison__split {
+            grid-template-columns: 1fr;
+
+            > div:first-child {
+                border-right: 0;
+                border-bottom: 1px solid var(--color-border);
+            }
+        }
+    }
+
+    @media (max-width: 420px) {
+        .cat-carte__meta {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Impression : le catalogue sort en liste
+    // -----------------------------------------------------------------
+    @media print {
+        .cat-filtres,
+        .cat-crumbs,
+        .cat-contact,
+        .cat-vide,
+        .af-btn {
+            display: none !important;
+        }
+
+        .cat-print-only {
+            display: block !important;
+            margin: 0 0 18px;
+            font-size: 10pt;
+            color: #333;
+        }
+
+        .cat-grille {
+            display: block;
+            margin: 0;
+        }
+
+        .cat-carte {
+            display: block;
+            padding: $space-3 0;
+            border: 0;
+            border-bottom: 1px solid #999;
+            border-radius: 0;
+            box-shadow: none;
+            break-inside: avoid;
+
+            &[hidden] {
+                display: block !important;
+            }
+
+            &__pilier {
+                margin-bottom: 6px;
+                padding: 0;
+                background: none;
+                font-size: 9pt;
+            }
+
+            &__meta {
+                display: block;
+                margin-bottom: 6px;
+                border: 0;
+                background: none;
+
+                > div {
+                    display: inline-block;
+                    padding: 0 $space-5 0 0;
+                    vertical-align: top;
+                }
+            }
+        }
+
+        .cat-declinaison {
+            border-color: #999;
+            break-inside: avoid;
+        }
+    }
+}
+
+@media print {
+    .site-header,
+    .site-footer {
+        display: none !important;
+    }
+
+    body {
+        background: #fff;
+        font-size: 11pt;
+    }
+}

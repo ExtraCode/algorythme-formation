@@ -1,0 +1,820 @@
+@use "../variables" as *;
+
+// =====================================================================
+// Fiche formation — Algorythme Formation
+// Sections dans l'ordre du gabarit :
+//   fil d'ariane → en-tête → objectifs → ce que ça change → déroulé → socle →
+//   modalités → CTA → barre d'action mobile
+// Le haut de page sert à décider, le bas à vérifier : la hiérarchie
+// passe par la typographie et le blanc, pas par des boîtes empilées.
+// Les jetons et les composants communs sont dans app.scss.
+// =====================================================================
+
+.fiche {
+
+    // -----------------------------------------------------------------
+    // Fil d'ariane et pastille de domaine
+    // -----------------------------------------------------------------
+    .fo-crumbs {
+        padding-top: 20px;
+        font-size: 0.8125rem;
+        color: var(--text-muted);
+
+        ol {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        li:not(:last-child)::after {
+            content: "/";
+            margin-left: 6px;
+            color: var(--color-border-strong);
+        }
+
+        a {
+            color: var(--text-muted);
+        }
+    }
+
+    .fo-domaine {
+        display: inline-block;
+        margin-bottom: 14px;
+        font-family: var(--font-display);
+        font-size: 0.8125rem;
+        font-weight: $weight-bold;
+        color: var(--color-secondary);
+    }
+
+    // -----------------------------------------------------------------
+    // En-tête
+    // -----------------------------------------------------------------
+    .fo-head {
+        padding-top: 20px;
+
+        h1 {
+            margin-bottom: 0;
+        }
+    }
+
+    .fo-lede {
+        margin: 18px 0 0;
+        max-width: 54ch;
+        font-size: 1.0625rem;
+        color: var(--text-muted);
+    }
+
+    .fo-note {
+        margin-top: 14px;
+    }
+
+    .fo-meta {
+        display: grid;
+        grid-template-columns: repeat(4, auto);
+        justify-content: start;
+        gap: 0 $space-7;
+        margin-top: 28px;
+        padding: 18px 0;
+        border-top: 1px solid var(--color-border);
+        border-bottom: 1px solid var(--color-border);
+
+        div {
+            padding: $space-1 0;
+        }
+
+        dt {
+            margin-bottom: 2px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        dd {
+            margin: 0;
+            font-family: var(--font-display);
+            font-size: $text-small;
+            font-weight: $weight-bold;
+            color: var(--color-primary);
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Choix de la formule de session (inter / intra)
+    // -----------------------------------------------------------------
+    .fo-choix {
+        margin: $space-5 0 0;
+
+        // Le fieldset ne sert qu'à grouper les boutons radio : c'est la
+        // légende qui porte le libellé, pas un cadre.
+        &__champ {
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+
+        &__legende {
+            padding: 0;
+            margin-bottom: $space-2;
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            font-weight: $weight-bold;
+            letter-spacing: 0.03em;
+            color: var(--text-muted);
+        }
+
+        &__options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: $space-2;
+        }
+
+        // L'input couvre le label, le span porte le visuel.
+        &__option {
+            position: relative;
+
+            input {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                opacity: 0;
+                cursor: pointer;
+            }
+
+            span {
+                display: inline-flex;
+                align-items: center;
+                min-height: 44px;
+                padding: 10px 18px;
+                border: 1px solid var(--color-border-strong);
+                border-radius: $radius-pill;
+                background: var(--color-white);
+                font-size: $text-caption;
+                font-weight: $weight-semibold;
+                color: var(--color-primary);
+                transition: background $transition-fast, border-color $transition-fast;
+            }
+
+            input:hover + span {
+                background: var(--color-primary-soft);
+            }
+
+            input:checked + span {
+                border-color: var(--color-cta);
+                background: var(--color-cta);
+                color: var(--text-on-cta);
+            }
+
+            input:focus-visible + span {
+                outline: 3px solid var(--color-primary);
+                outline-offset: 2px;
+            }
+        }
+
+        // Tarif et description de la formule retenue.
+        &__detail {
+            margin-top: $space-4;
+
+            &[hidden] {
+                display: none;
+            }
+        }
+
+        &__prix {
+            margin: 0;
+            font-family: var(--font-display);
+            font-size: 1.375rem;
+            font-weight: $weight-bold;
+            color: var(--color-primary);
+            white-space: nowrap;
+
+            span {
+                font-family: var(--font-body);
+                font-size: $text-caption;
+                font-weight: $weight-regular;
+                color: var(--text-muted);
+                white-space: normal;
+            }
+        }
+
+        &__texte {
+            margin: $space-2 0 0;
+            max-width: 62ch;
+            font-size: $text-caption;
+            color: var(--text-muted);
+        }
+    }
+
+    .fo-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 20px;
+        margin-top: $space-5;
+    }
+
+    .fo-ancre {
+        font-size: $text-caption;
+        color: var(--link);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    // -----------------------------------------------------------------
+    // Sections
+    // -----------------------------------------------------------------
+    .fo-bloc {
+        padding-top: clamp(40px, 6vw, 60px);
+        scroll-margin-top: 88px;
+
+        > h2 {
+            margin-bottom: 18px;
+            font-size: clamp(1.25rem, 2.4vw, 1.5rem);
+        }
+    }
+
+    // Signature de marque : l'onde dessinée par le contrôleur `signal`.
+    .fo-signal-wrap {
+        margin-top: clamp(36px, 5vw, 52px);
+    }
+
+    // -----------------------------------------------------------------
+    // Objectifs — une liste, pas six cartes
+    // -----------------------------------------------------------------
+    .fo-objectifs {
+        display: grid;
+        gap: $space-3;
+        max-width: 660px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        li {
+            position: relative;
+            padding-left: 22px;
+            font-size: $text-small;
+
+            &::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 8px;
+                width: 9px;
+                height: 9px;
+                border-radius: 2px;
+                background: var(--color-accent);
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Ce que ça change — une situation de travail, avant puis après
+    // -----------------------------------------------------------------
+    .fo-signal--bascule {
+        margin: 0 0 4px;
+    }
+
+    .fo-paires {
+        display: grid;
+        gap: 28px;
+        margin-top: 20px;
+    }
+
+    .fo-paire__tache {
+        margin: 0 0 10px;
+        font-family: var(--font-display);
+        font-weight: $weight-bold;
+        font-size: 1rem;
+        color: var(--color-primary);
+    }
+
+    .fo-paire__duo {
+        display: grid;
+        grid-template-columns: 1fr 44px 1fr;
+        align-items: stretch;
+    }
+
+    .fo-etat {
+        padding: 18px 20px;
+        border-radius: $radius-md;
+
+        p:last-child {
+            margin: 0;
+            font-size: 0.9375rem;
+        }
+
+        &__label {
+            margin: 0 0 6px;
+            font-family: var(--font-display);
+            font-weight: $weight-bold;
+            font-size: 0.6875rem;
+            letter-spacing: 0.02em;
+        }
+
+        &--avant {
+            border: 1px solid var(--color-border);
+            background: var(--color-white);
+
+            .fo-etat__label,
+            p:last-child {
+                color: var(--text-muted);
+            }
+        }
+
+        // L'état visé porte la couleur de marque : c'est lui qu'on retient.
+        &--apres {
+            background: var(--surface-dark);
+
+            .fo-etat__label {
+                color: var(--color-accent);
+            }
+
+            p:last-child {
+                color: var(--text-on-dark);
+            }
+        }
+    }
+
+    .fo-fleche {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-primary);
+
+        svg {
+            flex: none;
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Déroulé
+    // -----------------------------------------------------------------
+    .fo-jour {
+        border-bottom: 1px solid var(--color-border);
+
+        &:first-of-type {
+            border-top: 1px solid var(--color-border);
+        }
+
+        > summary {
+            position: relative;
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+            padding: $space-4 36px $space-4 0;
+            font-family: var(--font-display);
+            font-size: $text-small;
+            font-weight: $weight-bold;
+            color: var(--color-primary);
+            cursor: pointer;
+            list-style: none;
+
+            &::-webkit-details-marker {
+                display: none;
+            }
+
+            &::after {
+                content: "+";
+                position: absolute;
+                right: $space-1;
+                top: 14px;
+                font-size: 1.25rem;
+                font-weight: $weight-regular;
+                color: var(--text-muted);
+            }
+
+            &:hover {
+                color: var(--color-secondary);
+            }
+        }
+
+        &[open] > summary::after {
+            content: "–";
+        }
+    }
+
+    .fo-jour-duree {
+        margin-left: auto;
+        font-family: var(--font-body);
+        font-size: 0.8125rem;
+        font-weight: $weight-regular;
+        color: var(--text-muted);
+    }
+
+    .fo-demi {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        padding-bottom: 20px;
+
+        // Séquence isolée : le texte n'a pas à s'étirer sur deux colonnes.
+        &--simple {
+            grid-template-columns: 1fr;
+        }
+
+        h3 {
+            margin: 0 0 $space-2;
+            font-family: var(--font-display);
+            font-size: $text-caption;
+            font-weight: $weight-bold;
+
+            span {
+                display: block;
+                margin-bottom: 2px;
+                font-family: var(--font-body);
+                font-size: 0.75rem;
+                font-weight: $weight-regular;
+                color: var(--text-muted);
+            }
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 18px;
+            font-size: $text-caption;
+            line-height: 1.75;
+            color: var(--text-body);
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Socle et déclinaison
+    // -----------------------------------------------------------------
+    .fo-socle {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: $space-4;
+
+        &__carte {
+            padding: 20px 22px;
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+
+            &--socle {
+                background: var(--color-cta-soft);
+            }
+
+            &--vous {
+                background: var(--color-white);
+            }
+        }
+
+        h3 {
+            margin-bottom: 10px;
+            font-size: $text-small;
+            color: var(--color-primary);
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 18px;
+            font-size: $text-small;
+            line-height: 1.8;
+        }
+
+        &__note {
+            margin: 20px 0 0;
+            font-size: $text-caption;
+            color: var(--text-muted);
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Questions fréquentes
+    // -----------------------------------------------------------------
+    .fo-faq {
+        details {
+            border-bottom: 1px solid var(--color-border);
+
+            &:first-of-type {
+                border-top: 1px solid var(--color-border);
+            }
+
+            &[open] summary::after {
+                content: "–";
+            }
+        }
+
+        summary {
+            position: relative;
+            padding: $space-4 36px $space-4 0;
+            font-family: var(--font-display);
+            font-size: $text-small;
+            font-weight: $weight-bold;
+            color: var(--color-primary);
+            cursor: pointer;
+            list-style: none;
+
+            &::-webkit-details-marker {
+                display: none;
+            }
+
+            &::after {
+                content: "+";
+                position: absolute;
+                right: $space-1;
+                top: 14px;
+                font-size: 1.25rem;
+                font-weight: $weight-regular;
+                color: var(--text-muted);
+            }
+
+            &:hover {
+                color: var(--color-secondary);
+            }
+        }
+
+        p {
+            margin: 0;
+            padding-bottom: 18px;
+            font-size: $text-small;
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Modalités — la zone de vérification
+    // -----------------------------------------------------------------
+    .fo-modalites {
+        margin-top: clamp(48px, 7vw, 72px);
+        background: var(--color-primary-soft);
+
+        .fo-bloc {
+            padding-bottom: clamp(40px, 6vw, 60px);
+        }
+    }
+
+    .fo-fiche {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 28px 40px;
+        margin: 0;
+
+        dt {
+            margin-bottom: 6px;
+            font-family: var(--font-display);
+            font-size: 0.8125rem;
+            font-weight: $weight-bold;
+            color: var(--color-secondary);
+        }
+
+        dd {
+            margin: 0;
+            font-size: $text-caption;
+            line-height: 1.7;
+
+            // Le retrait sert aux puces : les formules de session sont des
+            // cartes, elles s'alignent sur le bord du bloc.
+            ul:not(.fo-formules) {
+                margin: 0;
+                padding-left: $space-4;
+            }
+
+            a {
+                color: var(--link);
+            }
+        }
+    }
+
+    // Une entrée des modalités qui occupe toute la largeur de la grille.
+    .fo-fiche__large {
+        grid-column: 1 / -1;
+    }
+
+    // -----------------------------------------------------------------
+    // Formules de session (inter / intra)
+    // -----------------------------------------------------------------
+    .fo-formules {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: $space-3;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        &__note {
+            margin: $space-3 0 0;
+            color: var(--text-muted);
+        }
+    }
+
+    .fo-formule {
+        padding: $space-4 18px;
+        border: 1px solid var(--color-border);
+        border-radius: 12px;
+        background: var(--color-white);
+
+        &__nom {
+            margin: 0 0 $space-1;
+            font-family: var(--font-display);
+            font-size: $text-caption;
+            font-weight: $weight-bold;
+            color: var(--color-secondary);
+        }
+
+        &__prix {
+            margin: 0 0 $space-2;
+            font-family: var(--font-display);
+            font-size: 1.125rem;
+            font-weight: $weight-bold;
+            color: var(--color-primary);
+            white-space: nowrap;
+
+            span {
+                font-family: var(--font-body);
+                font-size: 0.75rem;
+                font-weight: $weight-regular;
+                color: var(--text-muted);
+                white-space: normal;
+            }
+        }
+
+        &__texte {
+            margin: 0;
+        }
+    }
+
+    .fo-maj {
+        margin-top: $space-6;
+        padding-top: $space-4;
+        border-top: 1px solid var(--color-border-strong);
+        font-size: 0.8125rem;
+        color: var(--text-muted);
+    }
+
+    // -----------------------------------------------------------------
+    // CTA
+    // -----------------------------------------------------------------
+    .fo-cta {
+        padding: clamp(48px, 7vw, 64px) 0;
+        background: var(--surface-dark);
+        color: var(--text-on-dark);
+
+        h2 {
+            margin-bottom: 10px;
+            color: var(--text-on-dark);
+        }
+
+        p {
+            margin: 0 auto 22px;
+            font-size: $text-small;
+            color: var(--text-on-dark);
+            opacity: 0.9;
+        }
+
+        .fo-signal-wrap {
+            margin: 0 0 $space-5;
+        }
+    }
+
+    .fo-cta-in {
+        max-width: 560px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .fo-cta-joindre {
+        margin-top: $space-4;
+        font-size: $text-caption;
+
+        a {
+            color: var(--link-on-dark);
+        }
+    }
+
+    // Barre d'action fixe : affichée en mobile seulement (media query plus bas).
+    .fo-sticky {
+        display: none;
+    }
+
+    .fo-print-only {
+        display: none;
+    }
+
+    // -----------------------------------------------------------------
+    // Responsive
+    // -----------------------------------------------------------------
+    @media (max-width: $bp-md) {
+        .fo-socle {
+            grid-template-columns: 1fr;
+            gap: $space-5;
+        }
+
+        .fo-demi {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        // Avant et après s'empilent, la flèche pointe vers le bas.
+        .fo-paire__duo {
+            grid-template-columns: 1fr;
+        }
+
+        .fo-fleche {
+            padding: 8px 0;
+            transform: rotate(90deg);
+        }
+    }
+
+    @media (max-width: 760px) {
+        .fo-meta {
+            grid-template-columns: 1fr 1fr;
+            gap: 14px 28px;
+        }
+
+        .fo-sticky {
+            display: flex;
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 50;
+            gap: 10px;
+            padding: 10px $space-4;
+            border-top: 1px solid var(--color-border);
+            background: var(--color-white);
+            box-shadow: 0 -4px 16px rgba(13, 58, 70, 0.08);
+
+            .af-btn {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // Impression : la fiche sort en document de référence
+    // -----------------------------------------------------------------
+    @media print {
+        .fo-crumbs,
+        .fo-actions,
+        .fo-cta,
+        .fo-sticky,
+        .fo-signal-wrap,
+        .fo-choix__options {
+            display: none !important;
+        }
+
+        // Une fiche imprimée porte toutes les formules, pas seulement celle
+        // qui était sélectionnée à l'écran.
+        [data-formule-target="panneau"][hidden] {
+            display: block !important;
+        }
+
+        .fo-print-only {
+            display: block !important;
+            margin-bottom: 18px;
+            font-size: 10pt;
+            color: #333;
+        }
+
+        .fo-bloc {
+            padding-top: 18px;
+            break-inside: avoid;
+        }
+
+        .fo-modalites {
+            background: #fff;
+        }
+
+        .fo-jour > summary::after,
+        .fo-faq summary::after {
+            display: none;
+        }
+
+        .fo-demi {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .fo-etat--apres {
+            border: 1px solid #999;
+            background: #fff;
+
+            .fo-etat__label,
+            p:last-child {
+                color: #000;
+            }
+        }
+    }
+}
+
+// La barre d'action fixe ne doit pas masquer la fin de page en mobile.
+@media (max-width: 760px) {
+    body:has(.fo-sticky) {
+        padding-bottom: 72px;
+    }
+}
+
+@media print {
+    .site-header,
+    .site-footer {
+        display: none !important;
+    }
+
+    body {
+        background: #fff;
+        font-size: 11pt;
+    }
+}

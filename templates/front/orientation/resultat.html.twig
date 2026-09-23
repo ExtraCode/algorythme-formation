@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les formations qui correspondent à votre besoin - {{ APP_NOM_OF }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/pages/orientation.scss') }}">
+{% endblock %}
+
+{% block body %}
+
+    {# `recommandations` vient de ConseillerFormations : des formations du
+       catalogue SmartOF, chacune accompagnée de la phrase qui la relie au
+       besoin exprimé. #}
+
+    <div class="orientation">
+
+        <nav class="or-crumbs af-container" aria-label="Fil d'ariane">
+            <ol>
+                <li><a href="{{ path('home') }}">Accueil</a></li>
+                <li aria-current="page">Votre besoin</li>
+            </ol>
+        </nav>
+
+        <section class="or-head af-container">
+            <h1>
+                {% if recommandations %}
+                    {{ recommandations|length }} formation{{ recommandations|length > 1 ? 's' }}
+                    répond{{ recommandations|length > 1 ? 'ent' }} à votre besoin
+                {% else %}
+                    {# Sans recommandation, on n'arrive ici qu'après un incident :
+                       l'absence de correspondance, elle, mène au catalogue. #}
+                    Votre besoin n'a pas pu être analysé
+                {% endif %}
+            </h1>
+
+            <blockquote class="or-besoin">
+                <p class="or-besoin__libelle">Votre demande</p>
+                <p>{{ besoin }}</p>
+            </blockquote>
+        </section>
+
+        <div class="af-container">
+
+            {% if erreur %}
+                <p class="or-erreur">{{ erreur }}</p>
+            {% endif %}
+
+            {% if recommandations %}
+                <ul class="cat-grille">
+                    {% for recommandation in recommandations %}
+                        {# Même carte que dans le catalogue ; la phrase qui relie la
+                           formation au besoin prend la place de l'accroche. #}
+                        {{ include('front/formation/_carte.html.twig', {
+                            formation: recommandation.formation,
+                            raison: recommandation.raison,
+                        }) }}
+                    {% endfor %}
+                </ul>
+
+                <p class="or-note">
+                    Ce rapprochement est fait automatiquement à partir de votre demande et de nos
+                    programmes de référence.
+                    <br>Il donne un point de départ, pas un devis : le déroulé
+                    est arrêté avec vous après l'analyse du besoin.
+                </p>
+            {% endif %}
+
+            {# Pas de cas « aucune formation » ici : le visiteur est alors
+               renvoyé vers le catalogue, avec le message qui l'explique. #}
+
+            <div class="or-actions">
+                {# `reformuler` demande à la page d'accueil de remettre le
+                   besoin dans le champ. #}
+                <a href="{{ path('home', { reformuler: 1 }) }}#besoin"
+                   class="af-btn af-btn--secondary">Reformuler mon besoin</a>
+                <a href="{{ path('home') }}#quiz" class="af-btn af-btn--primary">Demander une proposition</a>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
