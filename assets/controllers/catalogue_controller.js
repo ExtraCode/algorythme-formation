@@ -10,7 +10,19 @@ export default class extends Controller {
     static targets = ['form', 'carte', 'compteur', 'vide'];
 
     connect() {
+        this.preselectionner();
         this.filtrer();
+    }
+
+    // Arrivée depuis la page des domaines : /nos-formations?domaine=<slug>.
+    // Un slug inconnu laisse le filtre sur « Tout afficher ».
+    preselectionner() {
+        const domaine = new URLSearchParams(window.location.search).get('domaine');
+        if (!domaine) return;
+
+        const radio = [...this.formTarget.querySelectorAll('input[name="domaine"]')]
+            .find((input) => input.value === domaine);
+        if (radio) radio.checked = true;
     }
 
     filtrer() {

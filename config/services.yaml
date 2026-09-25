@@ -8,6 +8,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     app_nom_of: '%env(APP_NOM_OF)%'
+    app_url: '%env(APP_URL)%'
 
 services:
     # default configuration for services in *this* file
@@ -26,6 +27,15 @@ services:
     App\Service\ConseillerFormations:
         arguments:
             $anthropicApiKey: '%env(ANTHROPIC_API_KEY)%'
+
+    App\Service\MailService:
+        arguments:
+            $destinataireSite: '%env(APP_DESTINATAIRE_EMAIL)%'
+
+    App\Service\VerificationRobot:
+        arguments:
+            $cleSite: '%env(RECAPTCHA_SITE_KEY)%'
+            $cleSecrete: '%env(RECAPTCHA_SECRET_KEY)%'
 
     App\Service\SmartOfApiService:
         arguments:

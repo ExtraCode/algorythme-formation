@@ -15,6 +15,8 @@ $color-secondary: #2F5972; // sous-titres, blocs, sections
 $color-cta: #5DCAD1; // boutons CTA, liens, highlights
 $color-accent: #F3CD74; // pictos, séparateurs, UI
 $color-page: #F5FBF9; // fond de page
+$color-card-alt: #EAF3F0; // une carte sur deux dans le catalogue
+$color-erreur: #B3402F; // messages d'erreur des formulaires
 $color-white: #FFFFFF;
 
 // Dérivés (états, bordures)
@@ -108,3 +110,6 @@ $transition-base: 200ms ease;
 // ---------------------------------------------------------------------
 $bp-sm: 640px;
 $bp-md: 860px;
+// Menu burger : sous cette largeur, les quatre liens, le téléphone et le
+// bouton ne tiennent plus sur une ligne.
+$bp-header: 1080px;

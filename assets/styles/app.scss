@@ -67,6 +67,8 @@ $font-faces: (
 
     --surface-page: #{$color-page};
     --surface-card: #{$color-white};
+    --surface-card-alt: #{$color-card-alt};
+    --color-erreur: #{$color-erreur};
     --surface-dark: #{$color-primary};
     --surface-section: #{$color-secondary};
 
@@ -210,6 +212,20 @@ a {
     letter-spacing: $tracking-caps;
     text-transform: uppercase;
     color: var(--color-secondary);
+}
+
+// Texte réservé aux lecteurs d'écran : complète un pictogramme ou un
+// chiffre qui, seul, ne dirait rien à l'oreille.
+.af-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
 }
 
 // Surlignage de marque — 3 à 4 occurrences maximum par page.
@@ -562,11 +578,27 @@ a {
     z-index: 20;
     background: var(--surface-dark);
 
+    // L'en-tête occupe toute la largeur de la fenêtre, pas celle du
+    // conteneur de page : quatre liens, un numéro et un bouton n'ont pas
+    // la place dans 1120 px. Les marges suivent la largeur d'écran.
+    // Trois colonnes : logo à gauche, menu au centre exact de la page
+    // (les deux colonnes extérieures ont la même largeur), actions à droite.
     &__inner {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
         align-items: center;
         gap: $space-5;
+        max-width: none;
         height: 72px;
+        padding-left: clamp(#{$container-gutter}, 3vw, 56px);
+        padding-right: clamp(#{$container-gutter}, 3vw, 56px);
+    }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        justify-self: end;
+        gap: $space-5;
     }
 
     &__logo-link {
@@ -585,8 +617,8 @@ a {
 
     &__nav {
         display: flex;
-        gap: $space-5;
-        margin-left: auto;
+        justify-self: center;
+        gap: clamp(20px, 2vw, 32px);
 
         a {
             padding: $space-2 0;
@@ -595,6 +627,7 @@ a {
             font-size: $text-caption;
             font-weight: $weight-semibold;
             text-decoration: none;
+            white-space: nowrap;
 
             &:hover,
             &[aria-current="page"] {
@@ -614,6 +647,10 @@ a {
         &:hover {
             color: var(--color-white);
         }
+    }
+
+    &__cta {
+        white-space: nowrap;
     }
 
     &__burger {
@@ -695,9 +732,25 @@ a {
     }
 }
 
-@media (max-width: $bp-md) {
+// Entre le menu complet et le menu replié, le bouton d'appel n'a plus la
+// place : les liens et le numéro passent avant lui.
+@media (max-width: 1160px) {
+    .site-header__cta {
+        display: none;
+    }
+}
+
+@media (max-width: $bp-header) {
     .site-header {
+        // Le menu quitte la grille (il devient un panneau déroulant) :
+        // logo à gauche, actions à droite, en simple ligne.
         &__inner {
+            display: flex;
+            justify-content: space-between;
+            gap: $space-3;
+        }
+
+        &__actions {
             gap: $space-3;
         }
 
@@ -723,10 +776,6 @@ a {
             }
         }
 
-        &__tel {
-            margin-left: auto;
-        }
-
         &__burger {
             display: block;
         }
@@ -735,7 +784,9 @@ a {
             display: none;
         }
     }
+}
 
+@media (max-width: $bp-md) {
     .site-footer__grid {
         grid-template-columns: 1fr;
     }
@@ -757,6 +808,8 @@ a {
 }
 
 .cat-carte {
+    // Le badge de rang se cale sur le coin de la carte.
+    position: relative;
     display: flex;
     flex-direction: column;
     padding: 22px 22px 20px;
@@ -773,6 +826,29 @@ a {
 
     &[hidden] {
         display: none;
+    }
+
+    // Rang dans les résultats d'orientation (« Top 1 », « Top 2 »…), posé
+    // à cheval sur le coin haut droit. Le liseré blanc le détache de la
+    // bordure de la carte.
+    &__rang {
+        position: absolute;
+        top: -14px;
+        right: -18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border: 3px solid var(--color-white);
+        border-radius: $radius-pill;
+        background: var(--color-accent);
+        box-shadow: 0 2px 6px rgba(13, 58, 70, 0.12);
+        font-family: var(--font-display);
+        font-size: 0.9375rem;
+        font-weight: $weight-bold;
+        line-height: 1;
+        color: var(--color-primary);
     }
 
     &__pilier {

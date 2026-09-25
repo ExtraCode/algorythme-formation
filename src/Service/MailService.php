@@ -22,7 +22,16 @@ use Twig\Error\SyntaxError;
 class MailService
 {
 
-    public function __construct(TwigEnvironment $twig, UrlGeneratorInterface $urlGenerator, LoggerInterface $logger)
+    /**
+     * @param string $destinataireSite boîte qui reçoit les demandes envoyées depuis le site
+     *                                 (APP_DESTINATAIRE_EMAIL)
+     */
+    public function __construct(
+        TwigEnvironment         $twig,
+        UrlGeneratorInterface   $urlGenerator,
+        LoggerInterface         $logger,
+        private readonly string $destinataireSite,
+    )
     {
         $this->twig = $twig;
         $this->urlGenerator = $urlGenerator;
@@ -97,7 +106,7 @@ class MailService
     /**
      * Demande de rappel envoyée depuis le quiz de cadrage de la page d'accueil.
      *
-     * @param array<string, string> $contact  nom, poste, email, tel
+     * @param array<string, string> $contact nom, poste, email, tel
      * @param array<string, string> $reponses libellé de la question => réponse choisie
      *
      * @throws BrevoException
@@ -107,7 +116,7 @@ class MailService
      */
     public function sendDemandeRappel(array $contact, array $reponses): void
     {
-        $sujet = 'Demande de rappel — ' . $contact['nom'] . ' (' . $contact['poste'] . ')';
+        $sujet = 'Demande de rappel - ' . $contact['nom'] . ' (' . $contact['poste'] . ')';
 
         $message = $this->twig->render('emails/demande_rappel.html.twig', [
             'sujet' => $sujet,
@@ -115,11 +124,29 @@ class MailService
             'reponses' => $reponses,
         ]);
 
-        $this->sendBrevoMail(
-            $sujet,
-            'contact@algorythme-formation.fr',
-            $message,
-        );
+        $this->sendBrevoMail($sujet, $this->destinataireSite, $message);
+    }
+
+    /**
+     * Demande envoyée depuis le formulaire de la page Contact.
+     *
+     * @param array<string, string> $contact nom, poste, entreprise, email, tel, message
+     *
+     * @throws BrevoException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function sendContact(array $contact): void
+    {
+        $sujet = 'Demande de contact - ' . $contact['nom'] . ' (' . $contact['entreprise'] . ')';
+
+        $message = $this->twig->render('emails/contact.html.twig', [
+            'sujet' => $sujet,
+            'contact' => $contact,
+        ]);
+
+        $this->sendBrevoMail($sujet, $this->destinataireSite, $message);
     }
 
     /*

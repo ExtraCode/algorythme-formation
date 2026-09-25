@@ -1,0 +1,241 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nous contacter - {{ APP_NOM_OF }}{% endblock %}
+
+{% block meta_description %}
+    Organisme de formation tech à Mérignac. Téléphone, courriel et formulaire.
+    Entretien d'analyse du besoin de trente minutes, proposition sous cinq jours ouvrés.
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/pages/contact.scss') }}">
+{% endblock %}
+
+{% block body %}
+
+    {# Le formulaire part par email (ContactController → MailService, Brevo).
+       `valeurs` et `erreurs` viennent du contrôleur après un envoi refusé ;
+       `envoye` vaut vrai juste après un envoi réussi (redirection). #}
+
+    {% set etapes = [
+        {
+            titre: "Nous vous rappelons",
+            texte: "Sous 24 heures ouvrées, pour fixer l'entretien d'analyse du besoin.",
+        },
+        {
+            titre: "Trente minutes d'analyse du besoin",
+            texte: "Vos objectifs, vos outils, le nombre de personnes concernées et leur niveau réel.",
+        },
+        {
+            titre: "Proposition sous cinq jours ouvrés",
+            texte: "Le programme adapté, la durée, le tarif et la prise en charge OPCO.",
+        },
+    ] %}
+
+    <div class="contact">
+
+        <nav class="pg-crumbs af-container" aria-label="Fil d'ariane">
+            <ol>
+                <li><a href="{{ path('home') }}">Accueil</a></li>
+                <li aria-current="page">Contact</li>
+            </ol>
+        </nav>
+
+        <section class="pg-head af-container">
+            <h1>Nous contacter</h1>
+        </section>
+
+        <div class="af-container">
+
+            <section class="pg-bloc pg-bloc--joindre" id="joindre">
+                <div class="pg-joindre">
+                    <div class="pg-canal">
+                        <p class="pg-canal__label">Par téléphone</p>
+                        <a class="pg-canal__valeur" href="tel:0554542484">05 54 54 24 84</a>
+                        <p class="pg-canal__note">Du lundi au vendredi, de 9 h à 18 h.</p>
+                    </div>
+                    <div class="pg-canal">
+                        <p class="pg-canal__label">Par courriel</p>
+                        <a class="pg-canal__valeur" href="mailto:contact@algorythme-formation.fr">contact@algorythme-formation.fr</a>
+                        <p class="pg-canal__note">Réponse sous 24 heures ouvrées.</p>
+                    </div>
+                </div>
+
+                {# Emplacement prévu par la maquette pour nommer l'interlocuteur
+                   commercial (nom et rôle, sans biographie). À décider. #}
+            </section>
+
+            <div class="pg-signal-wrap"
+                 data-controller="signal"
+                 data-signal-disorder-value="1"
+                 data-signal-seed-value="13"
+                 data-signal-height-value="30"></div>
+
+            <section class="pg-bloc pg-bloc--suite" id="suite">
+                <h2>Ce qui se passe ensuite</h2>
+                <div class="pg-etapes">
+                    {% for etape in etapes %}
+                        <div class="pg-etape">
+                            <span class="pg-etape__num" aria-hidden="true"></span>
+                            <div>
+                                <h3>{{ etape.titre }}</h3>
+                                <p>{{ etape.texte }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            {# Le contrôleur `reveler` amène le visiteur sur la première erreur
+               ou sur la confirmation quand la page est réaffichée après un envoi. #}
+            <section class="pg-bloc" id="formulaire"
+                     data-controller="reveler"
+                     data-action="turbo:render@document->reveler#reveler">
+                <h2>Ou écrivez-nous ici</h2>
+
+                {% if envoye %}
+                    <div class="pg-confirmation" role="status" tabindex="-1">
+                        <p class="pg-confirmation__titre">Merci, votre demande est envoyée.</p>
+                        <p>Nous vous rappelons sous 24 heures ouvrées pour fixer l'entretien
+                            d'analyse du besoin.</p>
+                    </div>
+                {% else %}
+
+                    {# Un champ du formulaire : libellé, saisie, message d'erreur. #}
+                    {% macro champ(nom, libelle, valeurs, erreurs, options) %}
+                        {% set options = options|default({}) %}
+                        {# Pas de filtre `default` ici : il prendrait `false` pour une absence. #}
+                        {% set requis = options.requis is defined ? options.requis : true %}
+                        {% set id = 'c-' ~ nom %}
+                        <div class="pg-champ {{ options.large|default(false) ? 'pg-champ--large' }}">
+                            <label class="af-field" for="{{ id }}">
+                                <span>
+                                    {{ libelle }}
+                                    {% if requis %}
+                                        <span class="af-field__required" aria-hidden="true">*</span>
+                                    {% endif %}
+                                </span>
+                                {% if options.multiligne|default(false) %}
+                                    <textarea class="af-input af-input--multiline" id="{{ id }}" name="{{ nom }}"
+                                              placeholder="{{ options.placeholder|default('') }}"
+                                              {{ erreurs[nom] is defined ? 'aria-invalid="true"' }}
+                                              aria-describedby="{{ id }}-aide">{{ valeurs[nom]|default('') }}</textarea>
+                                {% else %}
+                                    <input class="af-input" id="{{ id }}" name="{{ nom }}"
+                                           type="{{ options.type|default('text') }}"
+                                           autocomplete="{{ options.autocomplete|default('off') }}"
+                                           value="{{ valeurs[nom]|default('') }}"
+                                           {{ requis ? 'required' }}
+                                           {{ erreurs[nom] is defined ? 'aria-invalid="true"' }}
+                                           aria-describedby="{{ id }}-aide">
+                                {% endif %}
+                                <span class="af-field__hint pg-champ__erreur" id="{{ id }}-aide">{{ erreurs[nom]|default('') }}</span>
+                            </label>
+                        </div>
+                    {% endmacro %}
+
+                    <form class="pg-form" method="post" action="{{ path('app_contact_envoyer') }}" novalidate
+                          data-controller="attente"
+                          data-action="attente#envoyer turbo:submit-end->attente#terminer">
+                        {# Le jeton sans état vaut « csrf-token » tel quel ; le contrôleur
+                           csrf-protection (chargé à la demande) le remplace par une valeur
+                           aléatoire et pose le cookie correspondant à l'envoi. #}
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('contact') }}"
+                               data-controller="csrf-protection">
+
+                        {% if erreurGlobale %}
+                            <p class="pg-erreur-globale" role="alert" tabindex="-1">{{ erreurGlobale }}</p>
+                        {% endif %}
+
+                        <div class="pg-form__grille">
+                            {{ _self.champ('nom', 'Nom et prénom', valeurs, erreurs, { autocomplete: 'name' }) }}
+                            {{ _self.champ('poste', 'Fonction', valeurs, erreurs, { autocomplete: 'organization-title' }) }}
+                            {{ _self.champ('entreprise', 'Entreprise', valeurs, erreurs, { autocomplete: 'organization' }) }}
+                            {{ _self.champ('tel', 'Téléphone', valeurs, erreurs, { type: 'tel', autocomplete: 'tel' }) }}
+                            {{ _self.champ('email', 'Courriel professionnel', valeurs, erreurs, { type: 'email', autocomplete: 'email', large: true }) }}
+                            {{ _self.champ('message', 'Votre besoin', valeurs, erreurs, {
+                                multiligne: true, large: true, requis: false,
+                                placeholder: 'Domaine concerné, nombre de personnes à former, échéance envisagée.',
+                            }) }}
+
+                            {# RGPD : décochée par défaut, obligatoire. #}
+                            <div class="pg-consent">
+                                <input type="checkbox" id="c-consentement" name="consentement" value="1"
+                                       {{ valeurs.consentement|default('') ? 'checked' }}
+                                       {{ erreurs.consentement is defined ? 'aria-invalid="true"' }}
+                                       aria-describedby="c-consentement-aide">
+                                <div>
+                                    <label for="c-consentement">
+                                        J'accepte que ces informations soient utilisées pour répondre à ma demande
+                                        et pour le suivi de la relation commerciale.
+                                        <a href="{{ path('app_donnees_personnelles') }}">Politique de confidentialité</a>.
+                                    </label>
+                                    <span class="af-field__hint pg-champ__erreur" id="c-consentement-aide">{{ erreurs.consentement|default('') }}</span>
+                                </div>
+                            </div>
+
+                            {# Case « Je ne suis pas un robot » : rendue par le contrôleur
+                               `robot` (reCAPTCHA v2). Absente tant que les clés ne sont pas
+                               configurées. #}
+                            {% if cleRobot %}
+                                <div class="pg-robot">
+                                    <div data-controller="robot" data-robot-cle-value="{{ cleRobot }}"></div>
+                                    <span class="af-field__hint pg-champ__erreur">{{ erreurs.robot|default('') }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="pg-form__pied">
+                            <button type="submit" class="af-btn af-btn--primary af-btn--lg"
+                                    data-attente-target="bouton">
+                                <span class="pg-form__repos">Envoyer ma demande</span>
+                                <span class="pg-form__attente">Envoi en cours…</span>
+                            </button>
+                        </div>
+                    </form>
+                {% endif %}
+            </section>
+
+            <section class="pg-bloc" id="handicap">
+                <h2>Accessibilité et handicap</h2>
+                <p class="pg-intro">
+                    Nos actions sont ouvertes aux personnes en situation de handicap : modalités,
+                    supports et rythme sont adaptés au cas par cas. Signalez-nous la situation dès la
+                    prise de contact, l'étude des adaptations demande deux semaines.
+                </p>
+                <div class="pg-encart">
+                    <p>
+                        Référent handicap : Mathieu Piron-Lafleur,
+                        <a href="mailto:contact@algorythme-formation.fr">contact@algorythme-formation.fr</a>,
+                        <a href="tel:0554542484">05 54 54 24 84</a>.
+                    </p>
+                </div>
+            </section>
+
+        </div>
+
+        <section class="pg-cta">
+            <div class="af-container pg-cta-in">
+                <div class="pg-signal-wrap pg-signal--cta"
+                     data-controller="signal"
+                     data-signal-disorder-value="0"
+                     data-signal-seed-value="13"
+                     data-signal-height-value="28"></div>
+                <h2>Vous préférez commencer par le catalogue</h2>
+                <p>Nos programmes de référence, avec leur durée et leur tarif d'entrée.</p>
+                <a href="{{ path('app_formation') }}" class="af-btn af-btn--primary af-btn--lg">
+                    Voir nos formations
+                </a>
+            </div>
+        </section>
+
+        {# Barre d'action fixe, affichée en mobile uniquement. #}
+        <div class="pg-sticky">
+            <a href="tel:0554542484" class="af-btn af-btn--secondary">Appeler</a>
+            <a href="#formulaire" class="af-btn af-btn--primary">Nous écrire</a>
+        </div>
+
+    </div>
+
+{% endblock %}

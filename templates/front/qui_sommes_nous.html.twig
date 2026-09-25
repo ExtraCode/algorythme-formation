@@ -1,0 +1,144 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Qui sommes-nous - {{ APP_NOM_OF }}{% endblock %}
+
+{% block meta_description %}
+    Organisme de formation tech certifié Qualiopi à Mérignac. Notre méthode en quatre étapes,
+    nos formateurs praticiens en activité et notre procédure de sélection.
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/pages/qui-sommes-nous.scss') }}">
+{% endblock %}
+
+{% block body %}
+
+    {% set etapes = [
+        {
+            titre: "Analyse du besoin",
+            texte: "Trente minutes sur vos objectifs, vos outils et le niveau réel des participants.",
+        },
+        {
+            titre: "Écriture du programme",
+            texte: "Le programme de référence est décliné sur vos environnements, vos cas et votre rythme. Les objectifs et la durée ne bougent pas. Le programme définitif est annexé à la convention.",
+        },
+        {
+            titre: "Animation par un praticien",
+            texte: "Un formateur qui exerce aujourd'hui le métier qu'il transmet. Son CV anonymisé vous est communiqué avant validation, et votre responsable technique peut échanger avec lui en amont.",
+        },
+        {
+            titre: "Bilan partagé",
+            texte: "Chaque participant s'auto-évalue à l'entrée et à la sortie. Vous recevez la progression mesurée, restituée avec vous.",
+        },
+    ] %}
+
+    {% set formateurs = [
+        {
+            nom: "Warda B.",
+            domaine: "Intelligence artificielle",
+            bio: "Référente en transformation numérique par l'intelligence artificielle, avec plus de douze ans d'expérience internationale. Gouvernance, MDM, IA éthique, architecture des plateformes de données, ETL et data visualisation : une expertise technique servie par une pédagogie engagée.",
+        },
+        {
+            nom: "Steven L.",
+            domaine: "Cybersécurité",
+            bio: "Dix ans passés à défendre des systèmes en production : audits, tests d'intrusion et gestion de crise quand l'incident est déjà là. Durcissement des architectures, ISO 27001, supervision SOC. Steven enseigne ce qu'il pratique, avec un principe simple : la sécurité d'une entreprise tient d'abord aux réflexes quotidiens de ses équipes.",
+        },
+        {
+            nom: "Damien P.",
+            domaine: "Data",
+            bio: "Data scientist en poste depuis neuf ans, Damien construit des modèles qui finissent en production et servent des décisions réelles. Python, modélisation statistique, MLOps, industrialisation : il transmet la chaîne complète, de la donnée brute au modèle qui tourne, et ce qu'il faut vérifier avant de lui accorder sa confiance.",
+        },
+    ] %}
+
+    <div class="qui-sommes-nous">
+
+        <nav class="pg-crumbs af-container" aria-label="Fil d'ariane">
+            <ol>
+                <li><a href="{{ path('home') }}">Accueil</a></li>
+                <li aria-current="page">Qui sommes-nous</li>
+            </ol>
+        </nav>
+
+        <section class="pg-head af-container">
+            <h1>Qui sommes-nous</h1>
+            <p class="pg-lede">
+                Organisme de formation tech pour les entreprises.<br>
+                Nous intervenons dans vos locaux ou en classe virtuelle.
+            </p>
+        </section>
+
+        <div class="af-container">
+
+            <div class="pg-signal-wrap"
+                 data-controller="signal"
+                 data-signal-disorder-value="1"
+                 data-signal-seed-value="13"
+                 data-signal-height-value="30"></div>
+
+            <section class="pg-bloc" id="methode">
+                <h2>Notre méthode</h2>
+                <p class="pg-intro">
+                    Quatre étapes, de l'analyse du besoin au bilan. Le même interlocuteur
+                    sur toute la durée.
+                </p>
+                <div class="pg-etapes">
+                    {% for etape in etapes %}
+                        <div class="pg-etape">
+                            <span class="pg-etape__num" aria-hidden="true"></span>
+                            <div>
+                                <h3>{{ etape.titre }}</h3>
+                                <p>{{ etape.texte }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <section class="pg-bloc" id="formateurs">
+                <h2>Nos formateurs</h2>
+                <p class="pg-intro">
+                    Des praticiens en activité, qui forment sur ce qu'ils font aujourd'hui
+                    dans leur métier.
+                </p>
+                <div class="pg-gens">
+                    {% for formateur in formateurs %}
+                        <article>
+                            <h3>{{ formateur.nom }}</h3>
+                            <p class="pg-gens__role">En activité · {{ formateur.domaine }}</p>
+                            <p>{{ formateur.bio }}</p>
+                        </article>
+                    {% endfor %}
+                </div>
+            </section>
+
+        </div>
+
+        <section class="pg-cta" id="proposition">
+            <div class="af-container pg-cta-in">
+                <div class="pg-signal-wrap pg-signal--cta"
+                     data-controller="signal"
+                     data-signal-disorder-value="0"
+                     data-signal-seed-value="13"
+                     data-signal-height-value="28"></div>
+                <h2>Parler de votre besoin</h2>
+                <p>Trente minutes pour préciser le périmètre et le niveau des participants.</p>
+                <a href="{{ path('home') }}#quiz" class="af-btn af-btn--primary af-btn--lg">
+                    Demander une proposition
+                </a>
+                <p class="pg-cta-joindre">
+                    <a href="tel:0554542484">05 54 54 24 84</a> ·
+                    <a href="mailto:contact@algorythme-formation.fr">contact@algorythme-formation.fr</a>
+                </p>
+            </div>
+        </section>
+
+        {# Barre d'action fixe, affichée en mobile uniquement. #}
+        <div class="pg-sticky">
+            <a href="tel:0554542484" class="af-btn af-btn--secondary">Appeler</a>
+            <a href="#proposition" class="af-btn af-btn--primary">Demander une proposition</a>
+        </div>
+
+    </div>
+
+{% endblock %}

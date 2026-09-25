@@ -1,0 +1,218 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos domaines d'expertise - {{ APP_NOM_OF }}{% endblock %}
+
+{% block meta_description %}
+    IA, cybersécurité, data, développement, systèmes et réseaux. Formations en entreprise pour
+    les équipes métier comme pour les équipes techniques.
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/pages/domaines.scss') }}">
+{% endblock %}
+
+{% block body %}
+
+    {# Le texte des domaines est éditorial : il vit ici, pas dans SmartOF.
+       `catalogue` est le slug du domaine SmartOF correspondant (custom_field_4
+       passé au slugger) : le lien vers le catalogue filtré n'apparaît que si
+       ce slug figure dans `domainesCatalogue` (MainController). #}
+    {% set domaines = [
+        {
+            ancre: 'intelligence-artificielle',
+            catalogue: 'intelligence-artificielle',
+            nom: "Intelligence artificielle",
+            accroche: "Les outils sont déjà utilisés dans l'entreprise. Le cadre d'usage et la vérification des résultats restent à construire.",
+            colonnes: [
+                { titre: "Équipes métier", points: [
+                    "Cadrage des usages autorisés, métier par métier",
+                    "Rédaction d'une charte d'utilisation",
+                    "Consignes professionnelles et contrôle des résultats",
+                    "Choix des outils et critères de comparaison",
+                ] },
+                { titre: "Équipes techniques", points: [
+                    "Intégration aux outils internes et aux API",
+                    "Limites et comportements des modèles",
+                    "Confidentialité des données confiées",
+                    "Évaluation de la qualité des réponses produites",
+                ] },
+            ],
+        },
+        {
+            ancre: 'cybersecurite',
+            catalogue: 'cybersecurite',
+            nom: "Cybersécurité",
+            accroche: "La plupart des incidents commencent par un geste quotidien : une pièce jointe, un mot de passe réutilisé, un accès resté ouvert.",
+            colonnes: [
+                { titre: "Tous les collaborateurs", points: [
+                    "Hameçonnage et tentatives d'usurpation",
+                    "Mots de passe et double authentification",
+                    "Postes, mobiles et données sensibles",
+                    "Conduite à tenir en cas d'incident",
+                ] },
+                { titre: "Équipes informatiques", points: [
+                    "Durcissement des systèmes et des réseaux",
+                    "Gestion des accès, des droits et des départs",
+                    "Supervision, journalisation et alertes",
+                    "Sauvegarde et reprise d'activité",
+                ] },
+            ],
+        },
+        {
+            ancre: 'data',
+            catalogue: 'big-data-et-analytics',
+            nom: "Big Data et Data",
+            accroche: "Les données existent déjà dans vos outils. Les rassembler, les fiabiliser et en tirer une décision demande une compétence.",
+            colonnes: [
+                { titre: "Pilotage et fonctions métier", points: [
+                    "Lecture et interprétation d'un tableau de bord",
+                    "Construction d'indicateurs utiles au pilotage",
+                    "Qualité et limites d'un jeu de données",
+                    "Formulation d'une question analysable",
+                ] },
+                { titre: "Équipes data", points: [
+                    "Modélisation et structuration des données",
+                    "Analyse statistique et modèles prédictifs",
+                    "Industrialisation et mise en production",
+                    "Supervision des modèles en service",
+                ] },
+            ],
+        },
+        {
+            ancre: 'developpement',
+            catalogue: 'developpement-informatique',
+            nom: "Développement web, logiciel et mobile",
+            accroche: "Vos développeurs montent en compétence en cours de projet, sous contrainte de livraison. La dette technique suit.",
+            colonnes: [
+                { titre: "Langages et frameworks", points: [
+                    "Montée en compétence sur votre environnement",
+                    "Architecture applicative et conception",
+                    "Bases de données et persistance",
+                    "Interfaces, API et intégrations",
+                ] },
+                { titre: "Pratiques d'équipe", points: [
+                    "Tests automatisés et qualité du code",
+                    "Gestion de versions et revue de code",
+                    "Intégration et déploiement continus",
+                    "Préparation des mises en production",
+                ] },
+            ],
+        },
+        {
+            ancre: 'systemes-reseaux',
+            catalogue: 'systemes-et-reseaux',
+            nom: "Systèmes et réseaux",
+            accroche: "L'infrastructure ne se remarque que le jour où elle tombe. L'administrer et la superviser demande des compétences qui s'entretiennent.",
+            colonnes: [
+                { titre: "Administration", points: [
+                    "Systèmes en production",
+                    "Réseaux et interconnexion",
+                    "Virtualisation et conteneurs",
+                    "Automatisation des tâches courantes",
+                ] },
+                { titre: "Continuité et sécurisation", points: [
+                    "Sauvegarde et restauration",
+                    "Supervision et alertes",
+                    "Durcissement de l'infrastructure",
+                    "Accès distants et cloisonnement",
+                ] },
+            ],
+        },
+    ] %}
+
+    <div class="domaines">
+
+        <nav class="pg-crumbs af-container" aria-label="Fil d'ariane">
+            <ol>
+                <li><a href="{{ path('home') }}">Accueil</a></li>
+                <li aria-current="page">Nos domaines d'expertise</li>
+            </ol>
+        </nav>
+
+        <section class="pg-head af-container">
+            <h1>Nos domaines d'expertise</h1>
+            <p class="pg-lede">
+                Cinq domaines, pour vos équipes métier comme pour vos équipes techniques.
+                Chaque programme est décliné sur vos outils et vos cas.
+            </p>
+            <nav class="pg-ancres" aria-label="Accès direct à un domaine">
+                {% for domaine in domaines %}
+                    <a href="#{{ domaine.ancre }}">{{ domaine.nom }}</a>
+                {% endfor %}
+            </nav>
+        </section>
+
+        <div class="af-container">
+
+            <div class="pg-signal-wrap"
+                 data-controller="signal"
+                 data-signal-disorder-value="1"
+                 data-signal-seed-value="13"
+                 data-signal-height-value="30"></div>
+
+            {% for domaine in domaines %}
+                <section class="pg-dom" id="{{ domaine.ancre }}">
+                    <h2>{{ domaine.nom }}</h2>
+                    <p class="pg-dom__accroche">{{ domaine.accroche }}</p>
+
+                    <div class="pg-dom__duo">
+                        {% for colonne in domaine.colonnes %}
+                            <div>
+                                <h3>{{ colonne.titre }}</h3>
+                                <ul class="pg-liste">
+                                    {% for point in colonne.points %}
+                                        <li>{{ point }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    {% if domaine.catalogue in domainesCatalogue %}
+                        <a class="pg-dom__lien"
+                           href="{{ path('app_formation', { domaine: domaine.catalogue }) }}">
+                            Voir les formations de ce domaine
+                        </a>
+                    {% endif %}
+                </section>
+            {% endfor %}
+
+            <section class="pg-bloc" id="hors-catalogue">
+                <h2>Votre besoin ne rentre dans aucune de ces cases</h2>
+                <p class="pg-intro">
+                    Une action de formation est alors écrite à partir de votre cahier des charges,
+                    avec les mêmes engagements. La prise en charge par un OPCO est possible.
+                </p>
+            </section>
+
+        </div>
+
+        <section class="pg-cta" id="proposition">
+            <div class="af-container pg-cta-in">
+                <div class="pg-signal-wrap pg-signal--cta"
+                     data-controller="signal"
+                     data-signal-disorder-value="0"
+                     data-signal-seed-value="13"
+                     data-signal-height-value="28"></div>
+                <h2>Parler de votre besoin</h2>
+                <p>Trente minutes pour préciser le périmètre et le niveau des participants.</p>
+                <a href="{{ path('home') }}#quiz" class="af-btn af-btn--primary af-btn--lg">
+                    Demander une proposition
+                </a>
+                <p class="pg-cta-joindre">
+                    <a href="tel:0554542484">05 54 54 24 84</a> ·
+                    <a href="mailto:contact@algorythme-formation.fr">contact@algorythme-formation.fr</a>
+                </p>
+            </div>
+        </section>
+
+        {# Barre d'action fixe, affichée en mobile uniquement. #}
+        <div class="pg-sticky">
+            <a href="tel:0554542484" class="af-btn af-btn--secondary">Appeler</a>
+            <a href="#proposition" class="af-btn af-btn--primary">Demander une proposition</a>
+        </div>
+
+    </div>
+
+{% endblock %}

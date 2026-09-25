@@ -4,6 +4,8 @@
    - `formation` : un résumé de CatalogueFormations.
    - `raison`    : sur une page de résultats, la phrase qui relie la formation
                    au besoin exprimé. Elle prend la place de l'accroche.
+   - `rang`      : sur une page de résultats, la position de la formation dans
+                   le classement (1 = la plus pertinente). Affichée en badge.
    - `filtrable` : seul le catalogue est filtré ; ailleurs, les attributs du
                    contrôleur n'auraient rien à piloter. #}
 
@@ -14,6 +16,12 @@
         data-catalogue-target="carte"
         data-domaine="{{ formation.domaine ? formation.domaine.slug : '' }}"
     {% endif %}>
+
+    {% if rang|default(0) %}
+        <span class="cat-carte__rang" title="Top {{ rang }}">
+            <span class="af-sr-only">Top </span>{{ rang }}
+        </span>
+    {% endif %}
 
     {% if formation.domaine %}
         <span class="cat-carte__pilier">{{ formation.domaine.nom }}</span>

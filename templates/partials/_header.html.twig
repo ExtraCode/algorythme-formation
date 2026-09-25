@@ -9,29 +9,38 @@
 
         <nav class="site-header__nav" data-menu-target="nav" aria-label="Navigation principale">
             <a href="{{ path('app_formation') }}" data-action="menu#close"
-               {{ app.current_route starts with 'app_formation' ? 'aria-current="page"' }}>Nos formations</a>
-            <a href="{{ path('home') }}#piliers" data-action="menu#close">Nos domaines d'expertise</a>
-            <a href="{{ path('home') }}#quiz" data-action="menu#close">Cadrer mon besoin</a>
+                {{ app.current_route starts with 'app_formation' ? 'aria-current="page"' }}>Nos formations</a>
+            <a href="{{ path('app_domaines') }}" data-action="menu#close"
+                {{ app.current_route == 'app_domaines' ? 'aria-current="page"' }}>Nos domaines d'expertise</a>
+            <a href="{{ path('app_qui_sommes_nous') }}" data-action="menu#close"
+                {{ app.current_route == 'app_qui_sommes_nous' ? 'aria-current="page"' }}>Qui sommes-nous</a>
+            <a href="{{ path('app_contact') }}" data-action="menu#close"
+                {{ app.current_route starts with 'app_contact' ? 'aria-current="page"' }}>Contact</a>
         </nav>
 
-        <a href="tel:0554542484" class="site-header__tel">05 54 54 24 84</a>
+        {# Numéro, bouton et hamburger : le groupe de droite, le menu étant
+           centré entre le logo et lui. #}
+        <div class="site-header__actions">
+            <a href="tel:0554542484" class="site-header__tel">05 54 54 24 84</a>
 
-        <a href="{{ path('home') }}#cta-final"
-           class="af-btn af-btn--primary af-btn--sm site-header__cta">
-            Réserver un appel de cadrage
-        </a>
+            {# Directement sur le quiz de cadrage de l'accueil. #}
+            <a href="{{ path('home') }}#quiz"
+               class="af-btn af-btn--primary af-btn--sm site-header__cta">
+                Réserver un appel de cadrage
+            </a>
 
-        <button type="button" class="site-header__burger"
-                data-menu-target="burger"
-                data-action="menu#toggle"
-                aria-expanded="false" aria-label="Ouvrir le menu">
-            <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
-                <path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="2"
-                      stroke-linecap="round" data-menu-target="iconOpen"/>
-                <path d="M4 4l14 14M18 4L4 18" stroke="currentColor" stroke-width="2"
-                      stroke-linecap="round" data-menu-target="iconClose" hidden/>
-            </svg>
-        </button>
+            <button type="button" class="site-header__burger"
+                    data-menu-target="burger"
+                    data-action="menu#toggle"
+                    aria-expanded="false" aria-label="Ouvrir le menu">
+                <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+                    <path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" data-menu-target="iconOpen"/>
+                    <path d="M4 4l14 14M18 4L4 18" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" data-menu-target="iconClose" hidden/>
+                </svg>
+            </button>
+        </div>
 
     </div>
 </header>

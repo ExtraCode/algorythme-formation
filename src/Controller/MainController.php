@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use AllowDynamicProperties;
+use App\Service\CatalogueFormations;
 use App\Service\MailService;
 use App\Service\QuotaOrientation;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -201,6 +202,36 @@ class MainController extends AbstractController
 //        return $this->render('front/index.html.twig', [
 //            'produitsFormation' => $produitsFormation
 //        ]);
+    }
+
+    /**
+     * Page éditoriale des domaines. Le texte est écrit dans le template ;
+     * seul le lien « Voir les formations de ce domaine » dépend de SmartOF :
+     * il n'est affiché que si le catalogue contient ce domaine.
+     */
+    #[Route('/nos-domaines', name: 'app_domaines')]
+    public function domaines(CatalogueFormations $catalogue): Response
+    {
+        try {
+            $domainesCatalogue = array_keys($catalogue->domaines());
+        } catch (Throwable) {
+            // SmartOF injoignable : la page reste lisible, sans les liens.
+            $domainesCatalogue = [];
+        }
+
+        return $this->render('front/domaines.html.twig', [
+            'domainesCatalogue' => $domainesCatalogue,
+        ]);
+    }
+
+    /**
+     * Page éditoriale : méthode et formateurs. Tout le texte est dans le
+     * template, rien ne vient de SmartOF.
+     */
+    #[Route('/qui-sommes-nous', name: 'app_qui_sommes_nous')]
+    public function quiSommesNous(): Response
+    {
+        return $this->render('front/qui_sommes_nous.html.twig');
     }
 
     #[Route('/mentions-legales', name: 'app_mentions_legales')]

@@ -1,50 +1,58 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/base.html.twig' %}
 
-{% block title %}{{ parent() }} - Se connecter !{% endblock %}
+{% block title %}Connexion{% endblock %}
 
-{% block body %}
-    <form method="post">
+{% block coquille %}
+    <main class="adm-connexion">
+        <div class="adm-connexion__carte">
 
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
-
-        <div class="container d-flex flex-column mt-5">
+            <div class="adm-connexion__marque">
+                <img src="{{ asset('images/logo_algorythme_formation.png') }}" alt="{{ APP_NOM_OF }}">
+                <span>Administration</span>
+            </div>
 
             {% if app.user %}
-                <div class="mb-3 text-center">
-                    Vous êtes déjà connecté en tant que {{ app.user.userIdentifier }}.
-                    <br><a href="{{ path('app_admin_formation') }}">Vers la partie admin</a> ou <a
-                        href="{{ path('app_logout') }}">Se déconnecter</a>
+                <p>Vous êtes connecté en tant que <strong>{{ app.user.userIdentifier }}</strong>.</p>
+                <div class="adm-connexion__actions">
+                    <a href="{{ path('app_admin_requete') }}" class="adm-bouton adm-bouton--principal">Vers l'admin</a>
+                    <a href="{{ logout_path() }}" class="adm-bouton adm-bouton--discret">Se déconnecter</a>
                 </div>
             {% else %}
+                <h1>Connexion</h1>
 
-                <div class="row mt-5">
-                    <div class="col-6 offset-3">
+                {% if error %}
+                    <p class="adm-alerte" role="alert">
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </p>
+                {% endif %}
 
-                        <h1 class="h3 mb-3 font-weight-normal">Veuillez vous connecter</h1>
-
+                <form method="post" action="{{ path('app_login') }}" class="adm-form" data-turbo="false">
+                    <div class="adm-champ">
                         <label for="username">Email</label>
-                        <input type="email" value="{{ last_username }}" name="_username" id="username"
-                               class="form-control"
+                        <input type="email" name="_username" id="username" value="{{ last_username }}"
                                autocomplete="email" required autofocus>
-                        <label for="password">Password</label>
-                        <input type="password" name="_password" id="password" class="form-control"
-                               autocomplete="current-password"
-                               required>
-
-                        <input type="hidden" name="_csrf_token"
-                               value="{{ csrf_token('authenticate') }}"
-                        >
-
-                        <button class="btn btn-lg btn-primary mt-3" data-turbo="false" type="submit">
-                            Se connecter
-                        </button>
                     </div>
-                </div>
+
+                    <div class="adm-champ">
+                        <label for="password">Mot de passe</label>
+                        <input type="password" name="_password" id="password"
+                               autocomplete="current-password" required>
+                    </div>
+
+                    {# Jeton CSRF sans session : le contrôleur csrf-protection le
+                       remplace et pose le cookie au moment de l'envoi. #}
+                    <input type="hidden" name="_csrf_token"
+                           value="{{ csrf_token('authenticate') }}"
+                           data-controller="csrf-protection">
+
+                    <button type="submit" class="adm-bouton adm-bouton--principal adm-bouton--large">
+                        Se connecter
+                    </button>
+                </form>
             {% endif %}
 
         </div>
 
-    </form>
+        <a href="{{ path('home') }}" class="adm-connexion__retour">← Retour au site</a>
+    </main>
 {% endblock %}

@@ -172,6 +172,19 @@
         margin: 40px 0 20px;
     }
 
+    // Une carte sur deux est teintée : sur le fond de page presque blanc,
+    // seize cartes blanches se fondent en une seule masse. Le « of » ne
+    // compte que les cartes visibles : l'alternance tient après un
+    // filtrage par domaine, qui masque des cartes sans les retirer.
+    .cat-grille > .cat-carte:nth-child(even of :not([hidden])) {
+        background: var(--surface-card-alt);
+        border-color: var(--color-border-strong);
+
+        .cat-carte__pilier {
+            background: var(--color-white);
+        }
+    }
+
     .cat-vide {
         margin: 28px 0 0;
         padding: 22px;

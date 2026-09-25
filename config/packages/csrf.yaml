@@ -13,3 +13,5 @@ framework:
             - rappel
             # Description libre du besoin (page d'accueil → orientation)
             - orientation
+            # Formulaire de la page Contact
+            - contact
