@@ -1,14 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ APP_NOM_OF }} - Vos données personnelles{% endblock %}
+{% block title %}Vos données personnelles - {{ APP_NOM_OF }}{% endblock %}
+
+{% block meta_description %}
+    Politique de protection des données personnelles d'Algorythme Formation : données collectées, finalités, durées de conservation, cookies et droits des personnes.
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/pages/texte.scss') }}">
+{% endblock %}
 
 {% block body %}
-    <!-- Intro Section Start -->
-    <section class="section section-padding">
 
-        <div class="container w-50">
+    <div class="texte">
 
+        <nav class="pg-crumbs af-container" aria-label="Fil d'ariane">
+            <ol>
+                <li><a href="{{ path('home') }}">Accueil</a></li>
+                <li aria-current="page">Vos données personnelles</li>
+            </ol>
+        </nav>
+
+        <section class="pg-head af-container">
             <h1>Vos données personnelles</h1>
+        </section>
+
+        <div class="af-container af-container--narrow pg-texte">
 
             <h2>1. Préambule</h2>
             <p>
@@ -84,7 +102,7 @@
 
             <h2>7. Hébergement et sous-traitance</h2>
             <p>
-                Le site est hébergé par <strong>OVH SAS</strong>, dont le siège est situé <strong>2 rue Kellermann, 59100 Roubaix, France</strong>. :contentReference[oaicite:0]{index=0}
+                Le site est hébergé par <strong>OVH SAS</strong>, dont le siège est situé <strong>2 rue Kellermann, 59100 Roubaix, France</strong>.
             </p>
             <p>
                 Lorsque des traitements sont réalisés par l’intermédiaire de prestataires ou d’un LMS externe, Algorythme Formation veille à encadrer contractuellement ces traitements conformément aux exigences du RGPD.
@@ -171,8 +189,8 @@
             <p>
                 La version en ligne sur le site est celle qui fait foi à la date de consultation.
             </p>
+        </div>
 
-    </section>
-    <!-- Intro Section End -->
+    </div>
 
 {% endblock %}

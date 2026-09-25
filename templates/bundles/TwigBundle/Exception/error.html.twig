@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Une erreur est survenue - {{ APP_NOM_OF }}{% endblock %}
+
+{% block meta_description %}{% endblock %}
+
+{% block robots %}noindex, nofollow{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/pages/texte.scss') }}">
+{% endblock %}
+
+{% block body %}
+
+    <div class="texte">
+
+        <section class="pg-head af-container">
+            <h1>Une erreur est survenue</h1>
+            <p class="pg-lede">
+                Le site n'a pas pu afficher cette page. Réessayez dans un instant ;
+                si le problème persiste, appelez-nous au
+                <a href="tel:0554542484">05 54 54 24 84</a>.
+            </p>
+        </section>
+
+        <div class="af-container pg-texte">
+            <div class="pg-issues">
+                <a href="{{ path('home') }}" class="af-btn af-btn--primary">Retour à l'accueil</a>
+                <a href="{{ path('app_contact') }}" class="af-btn af-btn--secondary">Nous contacter</a>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

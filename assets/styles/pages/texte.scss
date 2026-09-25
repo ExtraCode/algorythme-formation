@@ -1,0 +1,45 @@
+@use "../variables" as *;
+@use "editorial";
+
+// =====================================================================
+// Pages de texte — Algorythme Formation
+// Mentions légales, données personnelles, pages d'erreur : un titre,
+// puis du texte courant sur une colonne étroite. Socle éditorial commun.
+// =====================================================================
+
+.texte {
+    @include editorial.page;
+
+    .pg-texte {
+        padding: $space-5 0 $space-8;
+
+        h2 {
+            margin: $space-6 0 $space-3;
+            font-size: 1.25rem;
+        }
+
+        p,
+        li {
+            max-width: 70ch;
+            font-size: $text-small;
+        }
+
+        ul {
+            padding-left: 1.2em;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+    }
+
+    // Page d'erreur : le texte est court, les issues comptent plus.
+    .pg-issues {
+        display: flex;
+        flex-wrap: wrap;
+        gap: $space-3;
+        margin-top: $space-5;
+    }
+}
+
+@include editorial.racine;

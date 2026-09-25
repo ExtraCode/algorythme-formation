@@ -3,6 +3,7 @@ twig:
     form_themes: [ 'bootstrap_5_layout.html.twig' ]
     globals:
         APP_NOM_OF: '%app_nom_of%'
+        APP_URL: '%app_url%'
 
 when@test:
     twig:

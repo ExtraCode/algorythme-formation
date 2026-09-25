@@ -2,6 +2,9 @@
 
 {% block title %}Les formations qui correspondent à votre besoin - {{ APP_NOM_OF }}{% endblock %}
 
+{# Résultat propre à un visiteur, tiré de sa session : rien à indexer. #}
+{% block robots %}noindex, nofollow{% endblock %}
+
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('styles/pages/orientation.scss') }}">
@@ -50,10 +53,12 @@
                 <ul class="cat-grille">
                     {% for recommandation in recommandations %}
                         {# Même carte que dans le catalogue ; la phrase qui relie la
-                           formation au besoin prend la place de l'accroche. #}
+                           formation au besoin prend la place de l'accroche, et le
+                           rang rappelle que la liste est classée. #}
                         {{ include('front/formation/_carte.html.twig', {
                             formation: recommandation.formation,
                             raison: recommandation.raison,
+                            rang: loop.index,
                         }) }}
                     {% endfor %}
                 </ul>

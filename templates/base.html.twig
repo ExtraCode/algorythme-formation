@@ -5,14 +5,70 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta name="description"
-          content="{% block meta_description %}{% endblock %}">
 
-    {% block stylesheets %}
+    {# Chaque page écrit son titre et sa description une fois (blocs `title`
+       et `meta_description`) ; ils sont repris ici pour les balises de
+       partage. La description est remise sur une ligne : les gabarits
+       l'écrivent indentée. #}
+    {% set titre = block('title')|striptags|trim %}
+    {% set brut %}{% block meta_description %}{% endblock %}{% endset %}
+    {% set description = brut|striptags|replace({"\r": ' ', "\n": ' '})|split(' ')|filter(m => m != '')|join(' ') %}
+    {% set robotsBrut %}{% block robots %}{% endblock %}{% endset %}
+    {% set robots = robotsBrut|trim %}
+    {% set urlCanonique = APP_URL ~ app.request.pathInfo %}
+    {% set imagePartage = APP_URL ~ asset('images/partage.png') %}
 
-        <link rel="stylesheet" href="{{ asset('librairies/font-awesome-7-0-1/css/all.min.css') }}">
+    <meta name="description" content="{{ description }}">
 
-    {% endblock %}
+    {# Une page privée (résultat d'orientation, erreur) se déclare avec le
+       bloc `robots` ; elle n'a alors ni adresse canonique ni partage. #}
+    {% if robots %}
+        <meta name="robots" content="{{ robots }}">
+    {% else %}
+        <link rel="canonical" href="{{ urlCanonique }}">
+
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="{{ APP_NOM_OF }}">
+        <meta property="og:locale" content="fr_FR">
+        <meta property="og:url" content="{{ urlCanonique }}">
+        <meta property="og:title" content="{{ titre }}">
+        <meta property="og:description" content="{{ description }}">
+        <meta property="og:image" content="{{ imagePartage }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="{{ APP_NOM_OF }} : l'IA est déjà dans vos équipes, nous en faisons une compétence maîtrisée.">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ titre }}">
+        <meta name="twitter:description" content="{{ description }}">
+        <meta name="twitter:image" content="{{ imagePartage }}">
+    {% endif %}
+
+    {# Données structurées : l'organisme, présent sur toutes les pages. Les
+       pages ajoutent les leurs (formation, fil d'ariane) dans `head_extra`.
+       JSON_HEX_TAG : aucun `<` ne peut refermer le script. #}
+    {% set optionsJson = constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG') %}
+    <script type="application/ld+json">{{ {
+        '@context': 'https://schema.org',
+        '@type': 'EducationalOrganization',
+        '@id': APP_URL ~ '/#organisation',
+        name: APP_NOM_OF,
+        url: APP_URL ~ '/',
+        logo: APP_URL ~ asset('images/logo-algorythme-formation-blanc.png'),
+        image: imagePartage,
+        telephone: '+33554542484',
+        email: 'contact@algorythme-formation.fr',
+        address: {
+            '@type': 'PostalAddress',
+            streetAddress: '422 avenue de Verdun',
+            postalCode: '33700',
+            addressLocality: 'Mérignac',
+            addressCountry: 'FR',
+        },
+    }|json_encode(optionsJson)|raw }}</script>
+
+    {% block head_extra %}{% endblock %}
+
+    {% block stylesheets %}{% endblock %}
 
     {% block javascripts %}
 

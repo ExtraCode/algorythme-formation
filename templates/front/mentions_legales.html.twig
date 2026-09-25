@@ -1,14 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ APP_NOM_OF }} - Mentions légales{% endblock %}
+{% block title %}Mentions légales - {{ APP_NOM_OF }}{% endblock %}
+
+{% block meta_description %}
+    Mentions légales du site d'Algorythme Formation : éditeur, hébergeur, propriété intellectuelle, données personnelles et droit applicable.
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/pages/texte.scss') }}">
+{% endblock %}
 
 {% block body %}
-    <!-- Intro Section Start -->
-    <section class="section section-padding">
 
-        <div class="container w-50">
+    <div class="texte">
 
+        <nav class="pg-crumbs af-container" aria-label="Fil d'ariane">
+            <ol>
+                <li><a href="{{ path('home') }}">Accueil</a></li>
+                <li aria-current="page">Mentions légales</li>
+            </ol>
+        </nav>
+
+        <section class="pg-head af-container">
             <h1>Mentions légales</h1>
+        </section>
+
+        <div class="af-container af-container--narrow pg-texte">
 
             <h2>Éditeur du site</h2>
             <p>
@@ -83,10 +101,8 @@
                 <br>
                 En cas de litige, et à défaut de résolution amiable, les tribunaux français seront seuls compétents.
             </p>
-
         </div>
 
-    </section>
-    <!-- Intro Section End -->
+    </div>
 
 {% endblock %}

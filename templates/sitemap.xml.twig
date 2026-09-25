@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{% for entree in entrees %}
+    <url>
+        <loc>{{ entree.loc }}</loc>
+{% if entree.majLe %}
+        <lastmod>{{ entree.majLe|date('Y-m-d') }}</lastmod>
+{% endif %}
+        <priority>{{ entree.priorite }}</priority>
+    </url>
+{% endfor %}
+</urlset>

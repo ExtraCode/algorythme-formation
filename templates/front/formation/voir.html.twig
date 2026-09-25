@@ -2,8 +2,52 @@
 
 {% block title %}{{ formation.nom }} - {{ APP_NOM_OF }}{% endblock %}
 
-{% block meta_description %}
-    {{ formation.accroche ?: formation.nom ~ " : formation intra-entreprise " ~ formation.duree ~ ", conduite dans vos locaux ou en classe virtuelle." }}
+{# Même phrase pour la description de la page et les données structurées. #}
+{% set description = formation.accroche ?: formation.nom ~ " : formation intra-entreprise " ~ formation.duree ~ ", conduite dans vos locaux ou en classe virtuelle." %}
+
+{% block meta_description %}{{ description }}{% endblock %}
+
+{# Données structurées : la formation (schéma Course) et le fil d'ariane.
+   La durée en jours devient une durée ISO 8601 (P2D) quand SmartOF la donne. #}
+{% block head_extra %}
+    {% set urlFiche = APP_URL ~ path('app_formation_voir', { slug: formation.slug }) %}
+    {% set jours = formation.dureeJours ? formation.dureeJours|split(' ')|first : '' %}
+    {% set instance = { '@type': 'CourseInstance', courseMode: ['Onsite', 'Online'] } %}
+    {% if jours matches '/^\\d+$/' %}
+        {% set instance = instance|merge({ courseWorkload: 'P' ~ jours ~ 'D' }) %}
+    {% endif %}
+    {% set cours = {
+        '@type': 'Course',
+        name: formation.nom,
+        description: description,
+        url: urlFiche,
+        inLanguage: 'fr',
+        provider: { '@type': 'EducationalOrganization', '@id': APP_URL ~ '/#organisation', name: APP_NOM_OF },
+        hasCourseInstance: [instance],
+    } %}
+    {% if formation.tarifSessionHT %}
+        {% set cours = cours|merge({ offers: {
+            '@type': 'Offer',
+            category: 'Paid',
+            price: formation.tarifSessionHT,
+            priceCurrency: 'EUR',
+            availability: 'https://schema.org/InStock',
+        } }) %}
+    {% endif %}
+    <script type="application/ld+json">{{ {
+        '@context': 'https://schema.org',
+        '@graph': [
+            cours,
+            {
+                '@type': 'BreadcrumbList',
+                itemListElement: [
+                    { '@type': 'ListItem', position: 1, name: 'Accueil', item: APP_URL ~ path('home') },
+                    { '@type': 'ListItem', position: 2, name: 'Nos formations', item: APP_URL ~ path('app_formation') },
+                    { '@type': 'ListItem', position: 3, name: formation.nom, item: urlFiche },
+                ],
+            },
+        ],
+    }|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG'))|raw }}</script>
 {% endblock %}
 
 {% block stylesheets %}
@@ -93,7 +137,7 @@
                             {% for tarif in formules %}
                                 <label class="fo-choix__option">
                                     <input type="radio" name="formule" value="{{ tarif.formule }}"
-                                           {{ loop.first ? 'checked' }}
+                                        {{ loop.first ? 'checked' }}
                                            data-action="formule#choisir">
                                     <span>{{ libelles[tarif.formule].nom }}</span>
                                 </label>
@@ -104,7 +148,7 @@
                     {% for tarif in formules %}
                         <div class="fo-choix__detail"
                              data-formule-target="panneau" data-formule="{{ tarif.formule }}"
-                             {{ loop.first ? '' : 'hidden' }}>
+                            {{ loop.first ? '' : 'hidden' }}>
                             <p class="fo-choix__prix">
                                 {{ tarif.montantHT|number_format(0, ',', ' ') }} € HT
                                 <span>la session</span>
@@ -123,8 +167,8 @@
             {% endif %}
 
             <p class="fo-print-only">
-                {{ APP_NOM_OF }} (SAS) — SIRET 101 916 674 00019 — NDA 75331851633 —
-                422 Avenue de Verdun, 33700 Mérignac — 05 54 54 24 84 —
+                {{ APP_NOM_OF }} (SAS) - SIRET 101 916 674 00019 - NDA 75331851633 -
+                422 Avenue de Verdun, 33700 Mérignac - 05 54 54 24 84 -
                 contact@algorythme-formation.fr
             </p>
 

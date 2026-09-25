@@ -1,0 +1,10 @@
+# Algorythme Formation
+# Tout le site public est indexable. Sont exclus l'espace d'administration
+# et les pages qui n'ont de sens que pour le visiteur qui les a produites.
+User-agent: *
+Disallow: /login
+Disallow: /admin
+Disallow: /trouver-ma-formation
+Disallow: /votre-besoin
+
+Sitemap: https://algorythme-formation.fr/sitemap.xml
