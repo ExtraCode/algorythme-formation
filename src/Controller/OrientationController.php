@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Requete;
 use App\Service\ConseillerFormations;
+use App\Service\EmpreinteVisiteur;
 use App\Service\QuotaOrientation;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +22,7 @@ use Throwable;
  * Le parcours suit le schéma POST → redirection → GET. Deux raisons : une
  * analyse coûte un appel facturé à l'API Claude, et recharger la page ne
  * doit pas le relancer ; et Turbo, qui intercepte les envois de formulaire,
- * refuse d'afficher une réponse 200 à un POST — il attend une redirection.
+ * refuse d'afficher une réponse 200 à un POST - il attend une redirection.
  */
 class OrientationController extends AbstractController
 {
@@ -42,6 +45,13 @@ class OrientationController extends AbstractController
      * reformuler sans tout retaper.
      */
     private const string FLASH_SANS_RESULTAT = 'orientation_sans_resultat';
+
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly EmpreinteVisiteur      $empreinte,
+    )
+    {
+    }
 
     #[Route('/trouver-ma-formation', name: 'app_orientation', methods: ['POST'])]
     public function trouver(
@@ -76,6 +86,11 @@ class OrientationController extends AbstractController
         try {
             $recommandations = $conseiller->conseiller($besoin);
 
+            $this->journaliser($logger, $request, $besoin, array_map(
+                static fn(array $recommandation): string => (string)$recommandation['formation']['nom'],
+                $recommandations,
+            ));
+
             // Aucune correspondance : plutôt qu'une page de résultats vide, on
             // envoie le visiteur voir le catalogue, en lui disant pourquoi.
             if (!$recommandations) {
@@ -89,6 +104,7 @@ class OrientationController extends AbstractController
             // Le détail part dans les logs ; le visiteur, lui, a besoin
             // d'une porte de sortie, pas d'un message technique.
             $logger->error('Orientation : analyse impossible.', ['exception' => $e]);
+            $this->journaliser($logger, $request, $besoin, null);
 
             return $this->resultat($request, $besoin, [], "L'analyse n'a pas abouti. Réessayez dans "
                 . 'un instant, ou exposez-nous votre besoin directement : nous vous répondons sous '
@@ -111,6 +127,33 @@ class OrientationController extends AbstractController
         }
 
         return $this->render('front/orientation/resultat.html.twig', $resultat);
+    }
+
+    /**
+     * Conserve le besoin, l'empreinte du visiteur et les formations retenues
+     * pour l'admin.
+     * Un échec d'écriture ne doit jamais priver le visiteur de son résultat :
+     * il est journalisé, sans plus.
+     *
+     * @param list<string>|null $formations `null` quand l'analyse a échoué
+     */
+    private function journaliser(
+        LoggerInterface $logger,
+        Request         $request,
+        string          $besoin,
+        ?array          $formations,
+    ): void
+    {
+        try {
+            $this->em->persist(new Requete(
+                $besoin,
+                $this->empreinte->calculer($request->getClientIp()),
+                $formations,
+            ));
+            $this->em->flush();
+        } catch (Throwable $e) {
+            $logger->error('Orientation : requête non enregistrée.', ['exception' => $e]);
+        }
     }
 
     /**

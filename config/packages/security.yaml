@@ -22,13 +22,20 @@ security:
             form_login:
                 login_path: app_login
                 check_path: app_login
+                enable_csrf: true
+                # Après connexion, on arrive sur l'admin.
+                default_target_path: app_admin_requete
+
+            # Freine les essais de mot de passe en série sur /login.
+            login_throttling:
+                max_attempts: 5
+                interval: '15 minutes'
 
             remember_me:
                 always_remember_me: true
             logout:
                 path: app_logout
-                # where to redirect after logout
-                # target: app_any_route
+                target: home
 
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall

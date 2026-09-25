@@ -1,0 +1,687 @@
+// =====================================================================
+// Admin — Algorythme Formation
+// Feuille autonome, chargée par assets/admin.js : ni Bootstrap ni les
+// styles du site. Interface d'outil plutôt que vitrine : police système,
+// fonds neutres, densité plus forte ; le bleu-vert de la marque ne sert
+// qu'aux actions et à l'élément actif.
+//   1. Jetons
+//   2. Base
+//   3. Coquille : barre latérale, en-tête
+//   4. Composants : boutons, étiquettes, visiteur
+//   5. Tableau de bord : chiffres clés, carte, tableau, pagination
+//   6. Connexion
+//   7. Petits écrans
+// =====================================================================
+
+// ---------------------------------------------------------------------
+// 1. Jetons
+// ---------------------------------------------------------------------
+:root {
+    --adm-fond: #F3F5F7;
+    --adm-surface: #FFFFFF;
+    --adm-surface-alt: #F8FAFB;
+    --adm-bord: #E2E7EB;
+    --adm-bord-fort: #CBD3D9;
+    --adm-texte: #17252C;
+    --adm-muet: #5E6E77;
+
+    --adm-barre: #0E1B20;
+    --adm-barre-texte: #A9B8BE;
+    --adm-barre-survol: rgba(255, 255, 255, 0.06);
+
+    // Bleu-vert de la marque, assez foncé pour du texte sur blanc (AA).
+    --adm-accent: #177078;
+    --adm-accent-survol: #11585F;
+    --adm-accent-doux: #E4F2F3;
+    --adm-accent-vif: #5DCAD1;
+
+    --adm-erreur: #B42318;
+    --adm-erreur-doux: #FEF1EF;
+
+    --adm-police: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --adm-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+
+    --adm-rayon: 8px;
+    --adm-ombre: 0 1px 2px rgba(16, 24, 40, 0.05);
+    --adm-largeur-barre: 232px;
+}
+
+// ---------------------------------------------------------------------
+// 2. Base
+// ---------------------------------------------------------------------
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body.adm {
+    margin: 0;
+    background: var(--adm-fond);
+    color: var(--adm-texte);
+    font-family: var(--adm-police);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+.adm {
+    h1,
+    h2 {
+        margin: 0;
+        font-weight: 600;
+        line-height: 1.25;
+    }
+
+    a {
+        color: var(--adm-accent);
+        text-decoration: none;
+
+        &:hover {
+            color: var(--adm-accent-survol);
+            text-decoration: underline;
+        }
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--adm-accent);
+        outline-offset: 2px;
+    }
+}
+
+.adm-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
+.adm-muet {
+    color: var(--adm-muet);
+}
+
+// ---------------------------------------------------------------------
+// 3. Coquille
+// ---------------------------------------------------------------------
+.adm-coquille {
+    display: grid;
+    grid-template-columns: var(--adm-largeur-barre) minmax(0, 1fr);
+    min-height: 100vh;
+}
+
+.adm-barre {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 20px 12px;
+    background: var(--adm-barre);
+    color: var(--adm-barre-texte);
+
+    a {
+        color: inherit;
+
+        &:hover {
+            color: #fff;
+            text-decoration: none;
+        }
+    }
+
+    :focus-visible {
+        outline-color: var(--adm-accent-vif);
+    }
+
+    &__marque {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 8px 20px;
+        margin-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+        img {
+            width: auto;
+            height: 30px;
+        }
+
+        span {
+            padding: 2px 7px;
+            border-radius: 4px;
+            background: rgba(93, 202, 209, 0.14);
+            color: var(--adm-accent-vif);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+    }
+
+    &__nav {
+        display: grid;
+        gap: 2px;
+
+        a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-weight: 500;
+
+            &:hover {
+                background: var(--adm-barre-survol);
+            }
+
+            &[aria-current="page"] {
+                background: rgba(93, 202, 209, 0.12);
+                color: #fff;
+
+                svg {
+                    color: var(--adm-accent-vif);
+                }
+            }
+        }
+    }
+
+    &__pied {
+        display: grid;
+        gap: 14px;
+        margin-top: auto;
+        padding: 16px 8px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 13px;
+    }
+
+    &__site {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    &__compte {
+        display: grid;
+        gap: 2px;
+
+        a {
+            color: var(--adm-accent-vif);
+        }
+    }
+
+    &__email {
+        overflow: hidden;
+        color: #fff;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.adm-principal {
+    min-width: 0;
+    padding: 28px 32px 48px;
+}
+
+.adm-entete {
+    margin-bottom: 24px;
+
+    h1 {
+        font-size: 22px;
+    }
+
+    &__sous-titre {
+        margin: 4px 0 0;
+        color: var(--adm-muet);
+    }
+}
+
+// ---------------------------------------------------------------------
+// 4. Composants
+// ---------------------------------------------------------------------
+.adm-bouton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 34px;
+    padding: 6px 12px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font: 500 13px/1.2 var(--adm-police);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease;
+
+    &:hover {
+        text-decoration: none !important;
+    }
+
+    &--principal {
+        background: var(--adm-accent);
+        color: #fff !important;
+
+        &:hover {
+            background: var(--adm-accent-survol);
+        }
+    }
+
+    &--discret {
+        border-color: var(--adm-bord-fort);
+        background: var(--adm-surface);
+        color: var(--adm-texte) !important;
+
+        &:hover {
+            background: var(--adm-surface-alt);
+            border-color: var(--adm-muet);
+        }
+    }
+
+    &--large {
+        width: 100%;
+        min-height: 40px;
+        font-size: 14px;
+    }
+}
+
+.adm-etiquette {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #EEF1F3;
+    color: var(--adm-muet);
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+
+    &--erreur {
+        background: var(--adm-erreur-doux);
+        color: var(--adm-erreur);
+    }
+}
+
+// Visiteur : pastille dont la couleur vient de l'empreinte (--teinte,
+// posée par le gabarit), code court et nombre de recherches.
+.adm-visiteur {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 8px 2px 6px;
+    border: 1px solid var(--adm-bord);
+    border-radius: 999px;
+    background: var(--adm-surface);
+    color: var(--adm-texte) !important;
+    white-space: nowrap;
+
+    &:hover {
+        border-color: hsl(var(--teinte) 45% 55%);
+        background: hsl(var(--teinte) 60% 97%);
+        text-decoration: none !important;
+    }
+
+    &__pastille {
+        flex: none;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: hsl(var(--teinte) 55% 48%);
+    }
+
+    &__code {
+        font-family: var(--adm-mono);
+        font-size: 12px;
+    }
+
+    &__nombre {
+        padding: 0 6px;
+        border-radius: 999px;
+        background: hsl(var(--teinte) 55% 48%);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 18px;
+    }
+
+    &--statique {
+        margin-left: 6px;
+        font-size: 13px;
+        font-weight: 400;
+        vertical-align: 2px;
+    }
+}
+
+// ---------------------------------------------------------------------
+// 5. Tableau de bord
+// ---------------------------------------------------------------------
+.adm-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.adm-stat {
+    padding: 16px 18px;
+    border: 1px solid var(--adm-bord);
+    border-radius: var(--adm-rayon);
+    background: var(--adm-surface);
+    box-shadow: var(--adm-ombre);
+
+    &__libelle {
+        margin: 0 0 6px;
+        color: var(--adm-muet);
+        font-size: 13px;
+    }
+
+    &__valeur {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        line-height: 1.1;
+    }
+}
+
+.adm-carte {
+    border: 1px solid var(--adm-bord);
+    border-radius: var(--adm-rayon);
+    background: var(--adm-surface);
+    box-shadow: var(--adm-ombre);
+    overflow: hidden;
+
+    &__tete {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 16px;
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--adm-bord);
+
+        h2 {
+            font-size: 15px;
+        }
+
+        .adm-bouton {
+            margin-left: auto;
+        }
+    }
+
+    &__compte {
+        margin: 0;
+        color: var(--adm-muet);
+        font-size: 13px;
+    }
+}
+
+.adm-vide {
+    margin: 0;
+    padding: 48px 18px;
+    color: var(--adm-muet);
+    text-align: center;
+}
+
+// La table défile seule en largeur sur petit écran, pas la page.
+.adm-table-zone {
+    overflow-x: auto;
+}
+
+.adm-table {
+    width: 100%;
+    min-width: 820px;
+    border-collapse: collapse;
+
+    th,
+    td {
+        padding: 12px 18px;
+        border-bottom: 1px solid var(--adm-bord);
+        text-align: left;
+        vertical-align: top;
+    }
+
+    th {
+        position: sticky;
+        top: 0;
+        background: var(--adm-surface-alt);
+        color: var(--adm-muet);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+    }
+
+    tbody tr:hover {
+        background: var(--adm-surface-alt);
+    }
+
+    tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    &__date {
+        width: 1%;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+
+        span {
+            display: block;
+            color: var(--adm-muet);
+            font-size: 12px;
+        }
+    }
+
+    &__visiteur {
+        width: 1%;
+    }
+
+    // Le texte saisi garde ses retours à la ligne.
+    &__besoin {
+        width: 48%;
+        overflow-wrap: anywhere;
+        white-space: pre-line;
+    }
+
+    &__formations {
+        margin: 0;
+        padding-left: 1.2em;
+
+        li + li {
+            margin-top: 3px;
+        }
+
+        li::marker {
+            color: var(--adm-muet);
+            font-variant-numeric: tabular-nums;
+        }
+    }
+}
+
+.adm-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 18px;
+    border-top: 1px solid var(--adm-bord);
+    color: var(--adm-muet);
+    font-size: 13px;
+
+    div {
+        display: flex;
+        gap: 8px;
+    }
+}
+
+// ---------------------------------------------------------------------
+// 6. Connexion
+// ---------------------------------------------------------------------
+.adm-connexion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    min-height: 100vh;
+    padding: 24px 16px;
+
+    &__carte {
+        width: 100%;
+        max-width: 380px;
+        padding: 28px;
+        border: 1px solid var(--adm-bord);
+        border-radius: 12px;
+        background: var(--adm-surface);
+        box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06), 0 8px 24px rgba(16, 24, 40, 0.06);
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+    }
+
+    &__marque {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 24px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--adm-bord);
+
+        img {
+            width: auto;
+            height: 34px;
+        }
+
+        span {
+            color: var(--adm-muet);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+    }
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 16px;
+    }
+
+    &__retour {
+        color: var(--adm-muet) !important;
+        font-size: 13px;
+    }
+}
+
+.adm-form {
+    display: grid;
+    gap: 16px;
+
+    .adm-bouton {
+        margin-top: 4px;
+    }
+}
+
+.adm-champ {
+    display: grid;
+    gap: 6px;
+
+    label {
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    input {
+        width: 100%;
+        min-height: 38px;
+        padding: 8px 12px;
+        border: 1px solid var(--adm-bord-fort);
+        border-radius: 6px;
+        background: var(--adm-surface);
+        color: var(--adm-texte);
+        font: 400 14px var(--adm-police);
+
+        &:focus {
+            outline: none;
+            border-color: var(--adm-accent);
+            box-shadow: 0 0 0 3px var(--adm-accent-doux);
+        }
+    }
+}
+
+.adm-alerte {
+    margin: 0 0 16px;
+    padding: 10px 12px;
+    border: 1px solid #F6CFC9;
+    border-radius: 6px;
+    background: var(--adm-erreur-doux);
+    color: var(--adm-erreur);
+    font-size: 13px;
+}
+
+// ---------------------------------------------------------------------
+// 7. Petits écrans : la barre latérale devient une barre du haut.
+// ---------------------------------------------------------------------
+@media (max-width: 1100px) {
+    .adm-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 860px) {
+    .adm-coquille {
+        grid-template-columns: 1fr;
+    }
+
+    .adm-barre {
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 16px;
+        height: auto;
+        padding: 10px 16px;
+
+        &__marque {
+            margin: 0;
+            padding: 0;
+            border: 0;
+
+            img {
+                height: 26px;
+            }
+        }
+
+        &__nav {
+            display: flex;
+        }
+
+        &__pied {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 0 0 0 auto;
+            padding: 0;
+            border: 0;
+        }
+
+        &__email {
+            display: none;
+        }
+    }
+
+    .adm-principal {
+        padding: 20px 16px 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .adm-stats {
+        gap: 10px;
+    }
+
+    .adm-stat__valeur {
+        font-size: 22px;
+    }
+}

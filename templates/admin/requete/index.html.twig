@@ -1,0 +1,140 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Requêtes{% endblock %}
+
+{% block titre_page %}Requêtes d'orientation{% endblock %}
+
+{% block sous_titre %}
+    <p class="adm-entete__sous-titre">Besoins saisis dans le champ de la page d'accueil.</p>
+{% endblock %}
+
+{# Un visiteur : pastille de sa couleur, code court, nombre de recherches.
+   Un clic filtre la liste sur lui. #}
+{% macro visiteur(requete, nombre) %}
+    {% if requete.empreinte is null %}
+        <span class="adm-muet">Inconnu</span>
+    {% else %}
+        <a href="{{ path('app_admin_requete', { visiteur: requete.empreinte }) }}"
+           class="adm-visiteur" style="--teinte: {{ requete.teinte }}"
+           title="{{ nombre > 1 ? 'Voir ses ' ~ nombre ~ ' recherches' : 'Voir sa recherche' }}">
+            <span class="adm-visiteur__pastille" aria-hidden="true"></span>
+            <span class="adm-visiteur__code">#{{ requete.empreinteCourte }}</span>
+            {% if nombre > 1 %}
+                <span class="adm-visiteur__nombre">
+                    ×{{ nombre }}<span class="adm-sr"> recherches</span>
+                </span>
+            {% endif %}
+        </a>
+    {% endif %}
+{% endmacro %}
+
+{% block contenu %}
+
+    <section class="adm-stats" aria-label="Chiffres clés">
+        <div class="adm-stat">
+            <p class="adm-stat__libelle">Requêtes</p>
+            <p class="adm-stat__valeur">{{ stats.total|number_format(0, ',', ' ') }}</p>
+        </div>
+        <div class="adm-stat">
+            <p class="adm-stat__libelle">Visiteurs distincts</p>
+            <p class="adm-stat__valeur">{{ stats.visiteurs|number_format(0, ',', ' ') }}</p>
+        </div>
+        <div class="adm-stat">
+            <p class="adm-stat__libelle">7 derniers jours</p>
+            <p class="adm-stat__valeur">{{ stats.semaine|number_format(0, ',', ' ') }}</p>
+        </div>
+        <div class="adm-stat">
+            <p class="adm-stat__libelle">Sans formation trouvée</p>
+            <p class="adm-stat__valeur">{{ stats.sansResultat|number_format(0, ',', ' ') }}</p>
+        </div>
+    </section>
+
+    <section class="adm-carte">
+
+        <header class="adm-carte__tete">
+            {% if visiteur %}
+                {% set premiere = requetes|first %}
+                <h2>
+                    Recherches du visiteur
+                    <span class="adm-visiteur adm-visiteur--statique" style="--teinte: {{ premiere ? premiere.teinte : 0 }}">
+                        <span class="adm-visiteur__pastille" aria-hidden="true"></span>
+                        <span class="adm-visiteur__code">#{{ visiteur[:6] }}</span>
+                    </span>
+                </h2>
+                <p class="adm-carte__compte">{{ total }} recherche{{ total > 1 ? 's' }}</p>
+                <a href="{{ path('app_admin_requete') }}" class="adm-bouton adm-bouton--discret">
+                    <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    Retirer le filtre
+                </a>
+            {% else %}
+                <h2>Toutes les requêtes</h2>
+                <p class="adm-carte__compte">{{ total }} au total</p>
+            {% endif %}
+        </header>
+
+        {% if total == 0 %}
+            <p class="adm-vide">Aucune requête pour l'instant.</p>
+        {% else %}
+            <div class="adm-table-zone">
+                <table class="adm-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Visiteur</th>
+                            <th scope="col">Requête</th>
+                            <th scope="col">Formations retenues</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for requete in requetes %}
+                            <tr>
+                                <td class="adm-table__date">
+                                    {{ requete.creeLe|date('d/m/Y', 'Europe/Paris') }}
+                                    <span>{{ requete.creeLe|date('H:i', 'Europe/Paris') }}</span>
+                                </td>
+                                <td class="adm-table__visiteur">
+                                    {{ _self.visiteur(requete, recherchesParVisiteur[requete.empreinte] ?? 1) }}
+                                </td>
+                                <td class="adm-table__besoin">{{ requete.besoin }}</td>
+                                <td>
+                                    {% if requete.formations is null %}
+                                        <span class="adm-etiquette adm-etiquette--erreur">Analyse en échec</span>
+                                    {% elseif requete.formations is empty %}
+                                        <span class="adm-etiquette">Aucune formation</span>
+                                    {% else %}
+                                        <ol class="adm-table__formations">
+                                            {% for nom in requete.formations %}
+                                                <li>{{ nom }}</li>
+                                            {% endfor %}
+                                        </ol>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if pages > 1 %}
+                {% set filtre = visiteur ? { visiteur: visiteur } : {} %}
+                <nav class="adm-pagination" aria-label="Pagination">
+                    <span>Page {{ page }} sur {{ pages }}</span>
+                    <div>
+                        {% if page > 1 %}
+                            <a href="{{ path('app_admin_requete', filtre|merge({ page: page - 1 })) }}"
+                               class="adm-bouton adm-bouton--discret">← Plus récentes</a>
+                        {% endif %}
+                        {% if page < pages %}
+                            <a href="{{ path('app_admin_requete', filtre|merge({ page: page + 1 })) }}"
+                               class="adm-bouton adm-bouton--discret">Plus anciennes →</a>
+                        {% endif %}
+                    </div>
+                </nav>
+            {% endif %}
+        {% endif %}
+
+    </section>
+
+{% endblock %}
