@@ -4,6 +4,7 @@ namespace App\Service;
 
 use DateTimeImmutable;
 use Psr\Cache\InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -12,6 +13,7 @@ use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Throwable;
 
 /**
  * Catalogue public des formations, construit à partir des produits SmartOF.
@@ -63,10 +65,18 @@ class CatalogueFormations
      */
     private const string CLE_CACHE_LISTE = 'catalogue_formations_liste_v4';
 
+    /**
+     * Dernière réponse SmartOF obtenue, conservée sans expiration : si
+     * SmartOF ne répond plus, le site continue d'afficher ce catalogue-là
+     * plutôt que rien.
+     */
+    private const string CLE_CACHE_SECOURS = 'catalogue_formations_secours_v4';
+
     public function __construct(
         private readonly SmartOfApiService $smartOfApiService,
         private readonly SluggerInterface  $slugger,
         private readonly CacheInterface    $cache,
+        private readonly LoggerInterface   $logger,
     )
     {
     }
@@ -132,16 +142,62 @@ class CatalogueFormations
      */
     private function produitsPublies(): array
     {
-        return $this->cache->get(self::CLE_CACHE_LISTE, function (ItemInterface $item): array {
-            $item->expiresAfter(self::DUREE_CACHE);
+        try {
+            return $this->cache->get(self::CLE_CACHE_LISTE, $this->chargerProduits(...));
+        } catch (Throwable $e) {
+            // SmartOF ne répond pas (réseau, jeton, 5xx) : on sert la
+            // dernière réponse connue, quel que soit son âge. Sans copie de
+            // secours, on laisse l'erreur remonter : la page l'affiche déjà
+            // proprement.
+            $secours = $this->cache->get(self::CLE_CACHE_SECOURS, static fn(): ?array => null);
 
-            $response = $this->smartOfApiService->callSmartofApi('/api/produit/list');
+            if ($secours === null) {
+                throw $e;
+            }
 
-            return array_values(array_filter(
-                $response['produits'] ?? [],
-                $this->estPubliable(...),
-            ));
-        });
+            $this->logger->error('Catalogue : SmartOF injoignable, copie de secours servie.', ['exception' => $e]);
+
+            return $secours;
+        }
+    }
+
+    /**
+     * Recharge le catalogue depuis SmartOF sans attendre l'expiration du
+     * cache. Appelée par `catalogue:rafraichir`, lancée par cron à un
+     * intervalle plus court que DUREE_CACHE : aucun visiteur ne paie alors
+     * l'appel SmartOF. Si SmartOF échoue, l'ancien cache reste en place.
+     *
+     * @return int Le nombre de formations publiées.
+     *
+     * @throws InvalidArgumentException
+     */
+    public function rafraichir(): int
+    {
+        return count($this->cache->get(self::CLE_CACHE_LISTE, $this->chargerProduits(...), INF));
+    }
+
+    /**
+     * L'appel SmartOF lui-même, avec la mise à jour de la copie de secours.
+     *
+     * @return array<int, array<string, mixed>>
+     *
+     * @throws InvalidArgumentException
+     */
+    private function chargerProduits(ItemInterface $item): array
+    {
+        $item->expiresAfter(self::DUREE_CACHE);
+
+        $response = $this->smartOfApiService->callSmartofApi('/api/produit/list');
+
+        $produits = array_values(array_filter(
+            $response['produits'] ?? [],
+            $this->estPubliable(...),
+        ));
+
+        $this->cache->delete(self::CLE_CACHE_SECOURS);
+        $this->cache->get(self::CLE_CACHE_SECOURS, static fn(): array => $produits);
+
+        return $produits;
     }
 
     /**
@@ -203,22 +259,22 @@ class CatalogueFormations
         $description = $produit['description'] ?? [];
 
         return $resume + [
-            'objectifs' => $this->puces($description['objectifsDeLaFormation'] ?? ''),
-            'objectifsPedagogiques' => $this->puces($description['objectifsPedagogiques'] ?? ''),
-            'ceQuiChange' => $this->ceQuiChange((string)($produit['custom_fields'][self::CHAMP_CE_QUI_CHANGE] ?? '')),
-            'deroule' => $this->deroule((string)($description['contenuDeLaFormation'] ?? '')),
-            'publicVise' => $this->puces($description['publicVise'] ?? ''),
-            'preRequis' => $this->puces($description['preRequis'] ?? ''),
-            'methodes' => $this->puces($description['modalitesPedagogiques'] ?? ''),
-            'moyens' => $this->puces($description['moyensEtSupportsPedagogiques'] ?? ''),
-            'evaluation' => $this->puces($description['modalitesDEvaluationEtDeSuivi'] ?? ''),
-            'acces' => $this->puces($description['modalitesDAccesALaFormation'] ?? ''),
-            'profilFormateurs' => $this->puces($description['profilDuOuDesFormateurs'] ?? ''),
-            'lieu' => trim((string)($description['lieuDeLaFormation'] ?? '')),
-            // L'effectif des sessions est le même pour toutes les formations :
-            // il est écrit dans le gabarit, pas repris de SmartOF.
-            'misAJourLe' => $this->date($produit['updatedAt'] ?? null),
-        ];
+                'objectifs' => $this->puces($description['objectifsDeLaFormation'] ?? ''),
+                'objectifsPedagogiques' => $this->puces($description['objectifsPedagogiques'] ?? ''),
+                'ceQuiChange' => $this->ceQuiChange((string)($produit['custom_fields'][self::CHAMP_CE_QUI_CHANGE] ?? '')),
+                'deroule' => $this->deroule((string)($description['contenuDeLaFormation'] ?? '')),
+                'publicVise' => $this->puces($description['publicVise'] ?? ''),
+                'preRequis' => $this->puces($description['preRequis'] ?? ''),
+                'methodes' => $this->puces($description['modalitesPedagogiques'] ?? ''),
+                'moyens' => $this->puces($description['moyensEtSupportsPedagogiques'] ?? ''),
+                'evaluation' => $this->puces($description['modalitesDEvaluationEtDeSuivi'] ?? ''),
+                'acces' => $this->puces($description['modalitesDAccesALaFormation'] ?? ''),
+                'profilFormateurs' => $this->puces($description['profilDuOuDesFormateurs'] ?? ''),
+                'lieu' => trim((string)($description['lieuDeLaFormation'] ?? '')),
+                // L'effectif des sessions est le même pour toutes les formations :
+                // il est écrit dans le gabarit, pas repris de SmartOF.
+                'misAJourLe' => $this->date($produit['updatedAt'] ?? null),
+            ];
     }
 
     /**
@@ -460,7 +516,7 @@ class CatalogueFormations
         $items = [];
 
         foreach ($lignes as $ligne) {
-            $ligne = trim(preg_replace('/^\s*[•◦▪\-–—*]\s*/u', '', $ligne) ?? '');
+            $ligne = trim(preg_replace('/^\s*[•◦▪\-–*]\s*/u', '', $ligne) ?? '');
 
             if ($ligne !== '') {
                 $items[] = $ligne;
@@ -537,9 +593,9 @@ class CatalogueFormations
                 continue;
             }
 
-            if (preg_match('/^(JOUR\s*\d+)\s*[–—:.-]?\s*(.*)$/ui', $ligne, $titre)) {
+            if (preg_match('/^(JOUR\s*\d+)\s*[–:.-]?\s*(.*)$/ui', $ligne, $titre)) {
                 $journees[] = [
-                    'titre' => rtrim($titre[1] . ' — ' . $titre[2], ' —'),
+                    'titre' => rtrim($titre[1] . ' - ' . $titre[2], ' -'),
                     'duree' => null,
                     'sequences' => [],
                 ];
@@ -563,7 +619,7 @@ class CatalogueFormations
                 continue;
             }
 
-            $point = trim(preg_replace('/^\s*[•▪\-–—*]\s*/u', '', $ligne) ?? '');
+            $point = trim(preg_replace('/^\s*[•▪\-–*]\s*/u', '', $ligne) ?? '');
 
             if ($point === '') {
                 continue;

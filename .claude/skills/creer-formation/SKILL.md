@@ -70,8 +70,7 @@ que les champs voulus, renvoyer `updatedAt` tel quel (sinon 400).
   - `custom_field_4` : domaine, **reprendre une valeur existante à l'identique** (ex.
     `Intelligence Artificielle`, `Développement informatique`, `Big data et analytics`).
   - `custom_field_5` : note sur 5 → `"0"` pour une nouvelle formation.
-  - `custom_field_6` : sous-domaine, même règle que le domaine (apostrophe typographique incluse,
-    ex. `Stratégie et usages de l’IA`).
+  - `custom_field_6` : ancien sous-domaine, supprimé dans SmartOF → toujours `""`.
   - `custom_field_7` : « Ce que ça change, concrètement », 3 blocs :
     ```
     ◦ Situation de travail

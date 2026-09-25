@@ -16,7 +16,7 @@ use RuntimeException;
  */
 class ConseillerFormations
 {
-    private const string MODELE = 'claude-opus-5';
+    private const string MODELE = 'claude-sonnet-5';
 
     /** Au-delà, le besoin est tronqué : personne n'écrit un cahier des charges ici. */
     private const int LONGUEUR_MAX_BESOIN = 2000;
@@ -77,18 +77,22 @@ class ConseillerFormations
             model: self::MODELE,
             maxTokens: 8000,
             system: [
+                ['type' => 'text', 'text' => $this->consignes(count($catalogue))],
                 [
                     'type' => 'text',
-                    'text' => $this->consignes(count($catalogue)),
-                    // Les consignes et le catalogue changent peu d'une visite
-                    // à l'autre : seul le besoin est ajouté après ce point.
-                    'cacheControl' => ['type' => 'ephemeral'],
+                    'text' => $this->catalogueBalise($catalogue),
+                    // Les consignes et le catalogue ne changent qu'avec
+                    // SmartOF : ils sont mis en cache, et seul le besoin est
+                    // relu à chaque visite. Une heure plutôt que cinq minutes,
+                    // le site n'ayant pas assez de trafic pour garder chaud un
+                    // cache court.
+                    'cacheControl' => ['type' => 'ephemeral', 'ttl' => '1h'],
                 ],
             ],
             messages: [
                 [
                     'role' => 'user',
-                    'content' => $this->question($besoin, $catalogue),
+                    'content' => $this->question($besoin),
                 ],
             ],
             outputConfig: [
@@ -102,6 +106,17 @@ class ConseillerFormations
             ],
             requestOptions: ['timeout' => self::DELAI_MAX],
         );
+
+        // Le catalogue est censé être lu depuis le cache à chaque visite :
+        // si `cache_lu` reste à zéro d'un appel à l'autre, quelque chose
+        // fait varier le préfixe et l'appel coûte le prix plein.
+        $this->logger->info('Orientation : réponse du modèle.', [
+            'modele' => self::MODELE,
+            'entree' => $message->usage->inputTokens,
+            'cache_lu' => $message->usage->cacheReadInputTokens,
+            'cache_ecrit' => $message->usage->cacheCreationInputTokens,
+            'sortie' => $message->usage->outputTokens,
+        ]);
 
         if ($message->stopReason === 'refusal') {
             $this->logger->warning('Orientation : requête refusée par le modèle.', [
@@ -147,20 +162,33 @@ class ConseillerFormations
     }
 
     /**
-     * Le besoin du visiteur est balisé : le modèle doit pouvoir distinguer
-     * sans ambiguïté nos consignes de ce qu'un inconnu a saisi.
+     * Le catalogue doit être identique, octet pour octet, d'une visite à
+     * l'autre : sans quoi le cache est manqué. D'où le tri par slug, l'ordre
+     * de l'API SmartOF n'étant pas garanti. Pas d'indentation : elle coûte
+     * des tokens sans rien apprendre au modèle.
      *
      * @param array<int, array<string, mixed>> $catalogue
      */
-    private function question(string $besoin, array $catalogue): string
+    private function catalogueBalise(array $catalogue): string
     {
-        $json = json_encode($catalogue, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+        usort($catalogue, static fn(array $a, array $b) => strcmp($a['slug'], $b['slug']));
+
+        $json = json_encode($catalogue, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
 
         return <<<TXT
             <catalogue>
             $json
             </catalogue>
+            TXT;
+    }
 
+    /**
+     * Le besoin du visiteur est balisé : le modèle doit pouvoir distinguer
+     * sans ambiguïté nos consignes de ce qu'un inconnu a saisi.
+     */
+    private function question(string $besoin): string
+    {
+        return <<<TXT
             <besoin-du-visiteur>
             $besoin
             </besoin-du-visiteur>

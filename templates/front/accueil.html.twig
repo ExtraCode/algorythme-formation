@@ -50,8 +50,14 @@
                    catalogue SmartOF (OrientationController). La zone disparaît
                    quand le quota horaire d'analyses est épuisé. #}
                 {% if orientationDisponible %}
-                    <form class="hero__besoin" method="post" action="{{ path('app_orientation') }}">
-                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('orientation') }}">
+                    <form class="hero__besoin" method="post" action="{{ path('app_orientation') }}"
+                          data-controller="attente"
+                          data-action="attente#envoyer turbo:submit-end->attente#terminer">
+                        {# Jeton CSRF sans session : le contrôleur csrf-protection, chargé
+                           à la demande, le remplace et pose le cookie. Sans cet attribut,
+                           le formulaire dépend du quiz plus bas pour charger ce contrôleur. #}
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('orientation') }}"
+                               data-controller="csrf-protection">
 
                         <label class="af-field" for="besoin">
                             <span class="hero__besoin-titre">Décrivez votre besoin, <mark
@@ -61,8 +67,10 @@
                                       placeholder="Exemple : je dirige une PME industrielle de 60 personnes. Mes équipes administratives utilisent déjà ChatGPT sans cadre, et je veux structurer ces usages avant d'aller plus loin.">{{ besoinPrecedent }}</textarea>
                         </label>
 
-                        <button type="submit" class="af-btn af-btn--dark af-btn--lg">
-                            Voir les formations qui correspondent
+                        <button type="submit" class="af-btn af-btn--dark af-btn--lg"
+                                data-attente-target="bouton">
+                            <span class="hero__besoin-repos">Voir les formations qui correspondent</span>
+                            <span class="hero__besoin-attente">Analyse de votre besoin…</span>
                         </button>
                     </form>
                 {% endif %}

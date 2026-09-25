@@ -67,6 +67,28 @@
             .af-input--multiline {
                 min-height: 128px;
             }
+
+            // Pendant l'analyse (contrôleur `attente`), le bouton change de
+            // libellé. Il reste bien lisible : ce n'est pas une erreur, le
+            // visiteur doit comprendre que sa demande avance.
+            &[aria-busy="true"] .af-btn[disabled] {
+                opacity: 1;
+                cursor: progress;
+            }
+        }
+
+        &__besoin-attente {
+            display: none;
+        }
+
+        &__besoin[aria-busy="true"] {
+            .hero__besoin-repos {
+                display: none;
+            }
+
+            .hero__besoin-attente {
+                display: inline;
+            }
         }
 
         &__besoin-titre {
