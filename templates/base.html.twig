@@ -36,7 +36,8 @@
         <meta property="og:image" content="{{ imagePartage }}">
         <meta property="og:image:width" content="1200">
         <meta property="og:image:height" content="630">
-        <meta property="og:image:alt" content="{{ APP_NOM_OF }} : l'IA est déjà dans vos équipes, nous en faisons une compétence maîtrisée.">
+        <meta property="og:image:alt"
+              content="{{ APP_NOM_OF }} : l'IA est déjà dans vos équipes, nous en faisons une compétence maîtrisée.">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="{{ titre }}">
         <meta name="twitter:description" content="{{ description }}">
@@ -48,23 +49,23 @@
        JSON_HEX_TAG : aucun `<` ne peut refermer le script. #}
     {% set optionsJson = constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG') %}
     <script type="application/ld+json">{{ {
-        '@context': 'https://schema.org',
-        '@type': 'EducationalOrganization',
-        '@id': APP_URL ~ '/#organisation',
-        name: APP_NOM_OF,
-        url: APP_URL ~ '/',
-        logo: APP_URL ~ asset('images/logo-algorythme-formation-blanc.png'),
-        image: imagePartage,
-        telephone: '+33554542484',
-        email: 'contact@algorythme-formation.fr',
-        address: {
-            '@type': 'PostalAddress',
-            streetAddress: '422 avenue de Verdun',
-            postalCode: '33700',
-            addressLocality: 'Mérignac',
-            addressCountry: 'FR',
-        },
-    }|json_encode(optionsJson)|raw }}</script>
+            '@context': 'https://schema.org',
+            '@type': 'EducationalOrganization',
+            '@id': APP_URL ~ '/#organisation',
+            name: APP_NOM_OF,
+            url: APP_URL ~ '/',
+            logo: APP_URL ~ asset('images/logo-algorythme-formation.svg'),
+            image: imagePartage,
+            telephone: '+33554542484',
+            email: 'contact@algorythme-formation.fr',
+            address: {
+                '@type': 'PostalAddress',
+                streetAddress: '422 avenue de Verdun',
+                postalCode: '33700',
+                addressLocality: 'Mérignac',
+                addressCountry: 'FR',
+            },
+        }|json_encode(optionsJson)|raw }}</script>
 
     {% block head_extra %}{% endblock %}
 
